@@ -24,10 +24,12 @@ from src.env import load_env
 from src.models import (
     GroundedFinding,
     ReportSection,
+    ResearchHealth,
     ResearchPlan,
     ResearchReport,
     SynthesisBrief,
 )
+from src.research_health import format_research_health_summary
 
 logger = logging.getLogger(__name__)
 
@@ -104,8 +106,13 @@ class Writer:
         self,
         plan: ResearchPlan,
         synthesis: SynthesisBrief,
+        research_health: ResearchHealth | None = None,
     ) -> ResearchReport:
-        """Compose the user-facing research report from plan + grounded brief."""
+        """Compose the user-facing research report from plan + grounded brief.
+
+        ``research_health`` is optional. When provided, a short summary section
+        may be appended; ignoring it does not change finding content.
+        """
         self.last_warning = None
         self.last_diagnostics = {}
         load_env()
@@ -118,13 +125,13 @@ class Writer:
             )
             report = self._fallback_report(plan, synthesis, reason="API key not found")
             self._set_diagnostics(report, synthesis, source="fallback")
-            return report
+            return _maybe_attach_health(report, research_health)
 
         try:
             report = self._llm_write(plan, synthesis, api_key)
             self.last_warning = None
             self._set_diagnostics(report, synthesis, source="llm")
-            return report
+            return _maybe_attach_health(report, research_health)
         except Exception as exc:  # noqa: BLE001
             reason = _classify_openai_error(exc)
             self.last_warning = (
@@ -134,7 +141,7 @@ class Writer:
             logger.warning("Writer fallback: %s | detail=%s", reason, exc)
             report = self._fallback_report(plan, synthesis, reason=reason)
             self._set_diagnostics(report, synthesis, source="fallback")
-            return report
+            return _maybe_attach_health(report, research_health)
 
     def _set_diagnostics(
         self,
@@ -658,3 +665,27 @@ def _classify_openai_error(exc: BaseException) -> str:
     if "json" in message or "invalid response" in message or "fictional" in message:
         return "invalid response format"
     return f"writer error ({exc.__class__.__name__})"
+
+
+def _maybe_attach_health(
+    report: ResearchReport,
+    research_health: ResearchHealth | None,
+) -> ResearchReport:
+    """Optionally append a short Research Health summary section."""
+    if research_health is None:
+        return report
+    title = "研究健康度"
+    if any(s.title == title for s in report.sections):
+        return report
+    # Place before Sources when present; otherwise append.
+    summary = format_research_health_summary(research_health)
+    section = ReportSection(title=title, content=summary)
+    sources_idx = next(
+        (i for i, s in enumerate(report.sections) if s.title == "Sources"),
+        None,
+    )
+    if sources_idx is None:
+        report.sections.append(section)
+    else:
+        report.sections.insert(sources_idx, section)
+    return report

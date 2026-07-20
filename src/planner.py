@@ -24,6 +24,7 @@ import urllib.error
 import urllib.request
 
 from src.env import load_env, openai_api_key_status
+from src.freshness import classify_task_freshness
 from src.models import (
     AnalyzedQuery,
     QueryType,
@@ -331,19 +332,19 @@ class Planner:
                 ".env (check that the line is uncommented). Using rule-based planner."
             )
             logger.warning(self.last_warning)
-            return self._rule_based_plan(analyzed, depth)
+            return _annotate_plan_freshness(self._rule_based_plan(analyzed, depth), analyzed)
 
         try:
             plan = self._llm_plan(analyzed, depth, api_key)
             self.last_warning = None
-            return plan
+            return _annotate_plan_freshness(plan, analyzed)
         except Exception as exc:  # noqa: BLE001 — intentional graceful fallback
             reason = _classify_openai_error(exc)
             self.last_warning = (
                 f"{reason}. Falling back to rule-based planner."
             )
             logger.warning("OpenAI planner fallback: %s | detail=%s", reason, exc)
-            return self._rule_based_plan(analyzed, depth)
+            return _annotate_plan_freshness(self._rule_based_plan(analyzed, depth), analyzed)
 
     def _rule_based_plan(
         self,
@@ -518,6 +519,23 @@ class Planner:
             analyzed_query=analyzed,
             planner_source="llm",
         )
+
+
+def _annotate_plan_freshness(plan: ResearchPlan, analyzed: AnalyzedQuery) -> ResearchPlan:
+    """Attach time_sensitive + per-task freshness profiles (no new pipeline)."""
+    time_sensitive = bool(getattr(analyzed, "time_sensitive", False))
+    plan.time_sensitive = time_sensitive
+    for step in plan.steps:
+        profile = classify_task_freshness(
+            step.title,
+            step.description,
+            time_sensitive=time_sensitive,
+        )
+        step.freshness_profile = profile.value
+    # v1.2: attach Evidence Strategy and select initial query budget.
+    from src.evidence_strategy import attach_evidence_strategies
+
+    return attach_evidence_strategies(plan, analyzed)
 
 
 def _parse_llm_json(content: str) -> dict:

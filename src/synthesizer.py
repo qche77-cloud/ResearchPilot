@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
 DEFAULT_LLM_MODEL = "gpt-4o-mini"
 OPENAI_TIMEOUT_SECONDS = 90
-MAX_EVIDENCE_ITEMS = 12
+MAX_EVIDENCE_ITEMS = 20
 MAX_EVIDENCE_CHARS = 1800
 MAX_EXCERPT_CHARS = 220
 
@@ -82,6 +82,7 @@ class Synthesizer:
 
         retained = [e for e in evidence if e.keep] or list(evidence)
         retained = sorted(retained, key=lambda e: e.final_score, reverse=True)
+        truncated_by_cap = max(0, len(retained) - MAX_EVIDENCE_ITEMS)
         retained = retained[:MAX_EVIDENCE_ITEMS]
         evidence_index = {f"E{i}": item for i, item in enumerate(retained, start=1)}
 
@@ -92,13 +93,17 @@ class Synthesizer:
                 "emits evidence_gaps only (no invented findings)."
             )
             brief = self._fallback_brief(plan, retained, evidence_index, reason="API key not found")
-            self._set_diagnostics(brief, evidence_index, source="fallback")
+            self._set_diagnostics(
+                brief, evidence_index, source="fallback", truncated_by_cap=truncated_by_cap
+            )
             return brief
 
         try:
             brief = self._llm_synthesize(plan, retained, evidence_index, api_key)
             self.last_warning = None
-            self._set_diagnostics(brief, evidence_index, source="llm")
+            self._set_diagnostics(
+                brief, evidence_index, source="llm", truncated_by_cap=truncated_by_cap
+            )
             return brief
         except Exception as exc:  # noqa: BLE001
             reason = _classify_openai_error(exc)
@@ -107,7 +112,9 @@ class Synthesizer:
             )
             logger.warning("Synthesizer fallback: %s | detail=%s", reason, exc)
             brief = self._fallback_brief(plan, retained, evidence_index, reason=reason)
-            self._set_diagnostics(brief, evidence_index, source="fallback")
+            self._set_diagnostics(
+                brief, evidence_index, source="fallback", truncated_by_cap=truncated_by_cap
+            )
             return brief
 
     def _set_diagnostics(
@@ -116,6 +123,7 @@ class Synthesizer:
         evidence_index: dict[str, EvaluatedEvidence],
         *,
         source: str,
+        truncated_by_cap: int = 0,
     ) -> None:
         finding_count = sum(len(getattr(brief, key)) for key in STRUCTURED_SECTIONS)
         excerpt_count = sum(
@@ -123,13 +131,53 @@ class Synthesizer:
             for key in STRUCTURED_SECTIONS
             for f in getattr(brief, key)
         )
+        id_map = {}
+        sent_per_task: dict[str, int] = {}
+        for eid, item in evidence_index.items():
+            sid = item.source.source_id
+            id_map[eid] = {
+                "source_id": sid,
+                "url": item.source.url,
+                "research_task": item.source.research_task,
+                "final_score": item.final_score,
+                "read_status": item.document.read_status,
+            }
+            task = (item.source.research_task or "unknown").strip() or "unknown"
+            sent_per_task[task] = sent_per_task.get(task, 0) + 1
+
+        findings_per_evidence: dict[str, int] = {eid: 0 for eid in evidence_index}
+        findings_per_task: dict[str, int] = {}
+        for key in STRUCTURED_SECTIONS:
+            for finding in getattr(brief, key) or []:
+                if key != "evidence_gaps" and finding.finding_type != "gap":
+                    tasks_hit: set[str] = set()
+                    for eid in finding.evidence_ids or []:
+                        if eid in findings_per_evidence:
+                            findings_per_evidence[eid] += 1
+                        meta = id_map.get(eid) or {}
+                        task = meta.get("research_task") or "unknown"
+                        tasks_hit.add(str(task))
+                    for task in tasks_hit or {"unknown"}:
+                        findings_per_task[task] = findings_per_task.get(task, 0) + 1
+
+        unused_evidence = [
+            eid for eid, count in findings_per_evidence.items() if count == 0
+        ]
+
         self.last_diagnostics = {
             "synthesizer_source": source,
             "evidence_items_sent": len(evidence_index),
+            "truncated_by_max_evidence_items": truncated_by_cap,
+            "max_evidence_items": MAX_EVIDENCE_ITEMS,
             "generated_findings": finding_count,
             "supporting_excerpts": excerpt_count,
             "synthesizer_warning": self.last_warning,
             "evidence_ids": list(evidence_index.keys()),
+            "evidence_id_map": id_map,
+            "sent_per_research_task": dict(sorted(sent_per_task.items())),
+            "findings_per_research_task": dict(sorted(findings_per_task.items())),
+            "findings_per_evidence_id": findings_per_evidence,
+            "unused_evidence_ids": unused_evidence,
         }
 
     def _llm_synthesize(

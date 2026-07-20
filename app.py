@@ -754,6 +754,41 @@ def render_pipeline_warnings(result: ResearchResult) -> None:
             st.warning(warning)
 
 
+def render_evidence_flow_debug(result: ResearchResult) -> None:
+    """Optional expandable debug panel for evidence-loss funnel (hidden by default)."""
+    diag = result.evidence_flow_diagnostics
+    if not diag:
+        return
+    with st.expander("Evidence flow debug", expanded=False):
+        from src.evidence_flow import format_evidence_flow_table
+
+        st.markdown(format_evidence_flow_table(diag))
+        st.markdown("**Drop-off reasons**")
+        for reason, count in diag.get("drop_off_reasons") or []:
+            st.markdown(f"- {reason}: `{count}`")
+        st.markdown("**Loss summary**")
+        st.code(diag.get("loss_summary") or "")
+        freshness = diag.get("freshness") or {}
+        if freshness:
+            st.markdown("**Freshness**")
+            st.markdown(f"- time_sensitive: `{freshness.get('time_sensitive')}`")
+            for task, profile in (freshness.get("task_profiles") or {}).items():
+                st.markdown(f"- `{task}` → `{profile}`")
+            buckets = freshness.get("retained_age_buckets") or {}
+            if buckets:
+                st.markdown(
+                    "- age buckets: "
+                    + ", ".join(f"`{k}`={v}" for k, v in buckets.items())
+                )
+        if diag.get("id_trace"):
+            st.markdown("**ID trace (S# → E#)**")
+            for row in diag["id_trace"]:
+                st.markdown(
+                    f"- `{row.get('source_id') or '?'}` → `{row.get('evidence_id')}` · "
+                    f"{row.get('research_task')} · findings=`{row.get('findings_using')}`"
+                )
+
+
 def render_synthesis_brief(result: ResearchResult) -> None:
     """Show grounded SynthesisBrief sections before the final report."""
     synthesis = result.synthesis
@@ -801,6 +836,8 @@ def run_animated_workflow(topic: str, depth: ResearchDepth) -> ResearchResult:
     )
     if result.analyzed_query and result.analyzed_query.research_goal:
         st.caption(result.analyzed_query.research_goal)
+
+    render_evidence_flow_debug(result)
 
     agent_slot = st.empty()
     plan_slot = st.empty()
@@ -988,6 +1025,7 @@ def render_landing_extras() -> None:
 def render_completed_workflow(result: ResearchResult) -> None:
     """Render all sections in their completed state (no animation)."""
     render_pipeline_warnings(result)
+    render_evidence_flow_debug(result)
 
     docs = result.documents or []
     evidence_items = result.evidence or []

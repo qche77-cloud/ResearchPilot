@@ -8,13 +8,16 @@ from src.models import ResearchDepth
 def coverage_limits(depth: ResearchDepth) -> tuple[int, int]:
     """Return ``(per_task_target, max_total)`` for coverage-aware retention.
 
-    Standard depth targets ~2 sources per major task and 10–12 total.
+    v1.1 targets (approximate, not hard quotas):
+    - Quick: ~2/task, 8–12 total
+    - Standard: ~3–4/task, 15–20 total
+    - Deep: ~4–6/task, 25–35 total
     """
     if depth == ResearchDepth.QUICK:
-        return 2, 8
-    if depth == ResearchDepth.STANDARD:
         return 2, 12
-    return 2, 14
+    if depth == ResearchDepth.STANDARD:
+        return 3, 18
+    return 5, 30
 
 
 def search_candidate_limit(depth: ResearchDepth, task_count: int) -> int:
@@ -24,6 +27,12 @@ def search_candidate_limit(depth: ResearchDepth, task_count: int) -> int:
     """
     per_task, max_total = coverage_limits(depth)
     tasks = max(1, task_count)
-    pool = max(max_total, per_task * tasks)
-    pool = min(pool + max(2, tasks), 24)
-    return pool
+    # Aim for per-task * tasks, within the documented band.
+    if depth == ResearchDepth.QUICK:
+        pool = max(8, min(12, per_task * tasks + 2))
+    elif depth == ResearchDepth.STANDARD:
+        pool = max(15, min(20, per_task * tasks + 2))
+    else:
+        pool = max(25, min(35, per_task * tasks + 4))
+    # Never go below retention max_total.
+    return max(pool, max_total)

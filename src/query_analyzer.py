@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import re
 
+from src.freshness import detect_time_sensitive
 from src.models import AnalyzedQuery, QueryType
 
 # Explicit company aliases (lowercase key → display name).
@@ -116,12 +117,14 @@ class QueryAnalyzer:
         query_type = self._classify(normalized)
         topic = self._normalize_topic(normalized, query_type)
         goal = self._research_goal(topic, query_type)
+        time_sensitive = detect_time_sensitive(raw)
 
         return AnalyzedQuery(
             raw_query=raw,
             query_type=query_type,
             normalized_topic=topic,
             research_goal=goal,
+            time_sensitive=time_sensitive,
         )
 
     def _classify(self, text: str) -> QueryType:
