@@ -399,7 +399,7 @@ def test_final_persistence_failure(tmp: Path) -> None:
             raise AssertionError(f"wrong exception type: {type(exc)}: {exc}") from exc
     # Initial row may exist, but must not be a successful completed persistence return.
     rows = ResearchRunRepository(db).list_runs(limit=5)
-    assert all(r.get("status") != "completed" for r in rows)
+    assert all(r.status != "completed" for r in rows)
     print("PASS 8: final persistence failure raises ResearchPersistenceError")
 
 

@@ -131,10 +131,10 @@ def test_list_runs_order_and_limit(tmp: Path) -> None:
 
         rows = repo.list_runs(limit=2)
         assert len(rows) == 2
-        assert rows[0]["topic"] == "third"
-        assert rows[1]["topic"] == "second"
-        assert "state_json" not in rows[0]
-        assert "state_snapshot" not in rows[0]
+        assert rows[0].topic == "third"
+        assert rows[1].topic == "second"
+        assert not hasattr(rows[0], "state_json")
+        assert not hasattr(rows[0], "state_snapshot")
         for key in (
             "run_id",
             "topic",
@@ -145,7 +145,7 @@ def test_list_runs_order_and_limit(tmp: Path) -> None:
             "updated_at",
             "error_message",
         ):
-            assert key in rows[0]
+            assert hasattr(rows[0], key)
 
         try:
             repo.list_runs(limit=0)
@@ -160,7 +160,7 @@ def test_list_runs_order_and_limit(tmp: Path) -> None:
         try:
             repo.list_runs(limit=True)  # type: ignore[arg-type]
             raise AssertionError("limit=True should raise")
-        except ValueError:
+        except TypeError:
             pass
     print("PASS 10-11: list_runs order + limit validation")
 
