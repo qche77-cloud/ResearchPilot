@@ -17,7 +17,24 @@ from src.storage import DEFAULT_DB_PATH, ResearchRunRepository
 
 
 class ResearchPersistenceError(RuntimeError):
-    """Raised when the final ResearchState snapshot could not be persisted."""
+    """Raised when the final ResearchState snapshot could not be persisted.
+
+    When the research workflow itself succeeded, ``result`` / ``state`` /
+    ``run_id`` may be attached so callers can still render the report.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        run_id: str | None = None,
+        result: ResearchResult | None = None,
+        state: ResearchState | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.run_id = run_id
+        self.result = result
+        self.state = state
 
 
 @dataclass
@@ -97,7 +114,10 @@ def run_persisted_research(
         repo.save_state(state)
     except Exception as exc:  # noqa: BLE001
         raise ResearchPersistenceError(
-            f"failed to persist completed research run {state.run_id}"
+            f"failed to persist completed research run {state.run_id}",
+            run_id=state.run_id,
+            result=result,
+            state=state,
         ) from exc
 
     return PersistedResearchResult(run_id=state.run_id, result=result, state=state)

@@ -9,8 +9,12 @@ from typing import TYPE_CHECKING
 import streamlit as st
 
 from src.env import load_env
+from src.app_service import execute_research_request, short_run_id
 from src.models import ResearchDepth
-from src.pipeline import run_research
+from src.research_service import (
+    PersistedResearchResult,
+    ResearchPersistenceError,
+)
 
 # Load project-root .env before any research run.
 load_env()
@@ -823,11 +827,30 @@ def render_synthesis_brief(result: ResearchResult) -> None:
             )
 
 
-def run_animated_workflow(topic: str, depth: ResearchDepth) -> ResearchResult:
+def _short_run_id(run_id: str | None) -> str:
+    return short_run_id(run_id)
+
+
+def _show_persistence_warning(exc: ResearchPersistenceError | None = None) -> None:
+    st.warning("研究已完成，但本地运行记录保存失败。")
+    cause = exc.__cause__ if exc is not None else None
+    detail = type(cause).__name__ if cause is not None else (
+        type(exc).__name__ if exc is not None else "ResearchPersistenceError"
+    )
+    with st.expander("Save details", expanded=False):
+        st.caption(detail)
+
+
+def run_animated_workflow(topic: str, depth: ResearchDepth) -> PersistedResearchResult:
     """Execute research with a progressive AI-agent-style UI workflow."""
-    result = run_research(topic, depth)
+    persisted = execute_research_request(topic, depth)
+    result = persisted.result
 
     render_pipeline_warnings(result)
+    if persisted.run_id:
+        st.caption(
+            f"Run ID: {_short_run_id(persisted.run_id)} · Research state saved locally."
+        )
 
     query_type = (
         result.plan.query_type.value
@@ -935,7 +958,7 @@ def run_animated_workflow(topic: str, depth: ResearchDepth) -> ResearchResult:
         unsafe_allow_html=True,
     )
 
-    return result
+    return persisted
 
 
 def render_workflow_banner() -> None:
@@ -1025,6 +1048,13 @@ def render_landing_extras() -> None:
 def render_completed_workflow(result: ResearchResult) -> None:
     """Render all sections in their completed state (no animation)."""
     render_pipeline_warnings(result)
+    if st.session_state.get("persistence_warning"):
+        _show_persistence_warning()
+    run_id = st.session_state.get("run_id")
+    if run_id and not st.session_state.get("persistence_warning"):
+        st.caption(
+            f"Run ID: {_short_run_id(str(run_id))} · Research state saved locally."
+        )
     render_evidence_flow_debug(result)
 
     docs = result.documents or []
@@ -1089,10 +1119,26 @@ else:
                     '<p class="rp-results-header">ResearchPilot · Research in Progress</p>',
                     unsafe_allow_html=True,
                 )
-                result = run_animated_workflow(topic.strip(), depth)
-                st.session_state["result"] = result
+                persisted = run_animated_workflow(topic.strip(), depth)
+                st.session_state["result"] = persisted.result
+                st.session_state["run_id"] = persisted.run_id
+                st.session_state["persistence_warning"] = False
+            except ResearchPersistenceError as exc:
+                # Workflow finished; final SQLite snapshot failed.
+                if exc.result is not None:
+                    st.session_state["result"] = exc.result
+                    st.session_state["run_id"] = exc.run_id
+                    st.session_state["persistence_warning"] = True
+                    _show_persistence_warning(exc)
+                    render_completed_workflow(exc.result)
+                else:
+                    _show_persistence_warning(exc)
+                    render_landing_extras()
             except ValueError as exc:
                 st.error(str(exc))
+                render_landing_extras()
+            except Exception as exc:  # noqa: BLE001 — surface workflow errors in UI
+                st.error(str(exc) or type(exc).__name__)
                 render_landing_extras()
     else:
         render_landing_extras()
