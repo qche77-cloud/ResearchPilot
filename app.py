@@ -9,12 +9,30 @@ from typing import TYPE_CHECKING
 import streamlit as st
 
 from src.env import load_env
-from src.app_service import execute_research_request, short_run_id
+from src.app_service import (
+    HISTORY_PAGE_SIZE,
+    HISTORY_STATUS_OPTIONS,
+    HistoryStateLoadError,
+    calculate_history_pagination,
+    count_research_history,
+    execute_research_request,
+    format_history_error_summary,
+    format_history_timestamp,
+    history_status_note,
+    history_summary_display,
+    list_research_history,
+    load_research_history_state,
+    normalize_history_status_filter,
+    short_run_id,
+    should_reset_history_page,
+)
 from src.models import ResearchDepth
 from src.research_service import (
     PersistedResearchResult,
     ResearchPersistenceError,
 )
+from src.research_state import ResearchState
+from src.storage import ResearchRunSummary
 
 # Load project-root .env before any research run.
 load_env()
@@ -52,7 +70,7 @@ st.set_page_config(
     page_title="ResearchPilot",
     page_icon="🔬",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # ---------------------------------------------------------------------------
@@ -793,11 +811,10 @@ def render_evidence_flow_debug(result: ResearchResult) -> None:
                 )
 
 
-def render_synthesis_brief(result: ResearchResult) -> None:
-    """Show grounded SynthesisBrief sections before the final report."""
-    synthesis = result.synthesis
+def render_synthesis_sections(synthesis) -> None:
+    """Render a ``SynthesisBrief`` (shared by live results and history)."""
     if synthesis is None:
-        st.warning("SynthesisBrief unavailable.")
+        st.caption("SynthesisBrief unavailable.")
         return
 
     st.markdown('<p class="rp-panel-label">Synthesis Brief</p>', unsafe_allow_html=True)
@@ -825,6 +842,11 @@ def render_synthesis_brief(result: ResearchResult) -> None:
             st.markdown(
                 _format_grounded_findings(items, is_gap_section=(title == "evidence_gaps"))
             )
+
+
+def render_synthesis_brief(result: ResearchResult) -> None:
+    """Show grounded SynthesisBrief sections before the final report."""
+    render_synthesis_sections(result.synthesis)
 
 
 def _short_run_id(run_id: str | None) -> str:
@@ -1096,49 +1118,334 @@ def render_completed_workflow(result: ResearchResult) -> None:
 
 
 # ---------------------------------------------------------------------------
+# History UI
+# ---------------------------------------------------------------------------
+
+
+def _ensure_history_session_defaults() -> None:
+    defaults = {
+        "history_page": 1,
+        "history_topic_query": "",
+        "history_status": "All",
+        "selected_history_run_id": None,
+        "history_filter_topic": "",
+        "history_filter_status": "All",
+    }
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+
+def render_research_health(health) -> None:
+    """Compact research health panel for historical runs."""
+    if health is None:
+        return
+    st.markdown('<p class="rp-panel-label">Research Health</p>', unsafe_allow_html=True)
+    st.caption(
+        f"overall={getattr(health, 'overall_score', 0):.0f} · "
+        f"coverage={getattr(health, 'coverage_score', 0):.0f} · "
+        f"freshness={getattr(health, 'freshness_score', 0):.0f} · "
+        f"grounding={getattr(health, 'grounding_score', 0):.0f}"
+    )
+    warnings = list(getattr(health, "warnings", None) or [])
+    suggestions = list(getattr(health, "suggestions", None) or [])
+    if warnings or suggestions:
+        with st.expander("Health notes", expanded=False):
+            for item in warnings:
+                st.markdown(f"- warning: {item}")
+            for item in suggestions:
+                st.markdown(f"- suggestion: {item}")
+
+
+def render_historical_state(state: ResearchState) -> None:
+    """Render a persisted ``ResearchState`` using shared report/evidence helpers."""
+    st.info("Historical run — loaded from local research history (not a new run).")
+    note = history_status_note(state.status)
+    if note:
+        st.warning(note)
+
+    st.markdown(f"**Topic:** {state.topic}")
+    st.caption(
+        f"status=`{state.status}` · depth=`{_depth_label(state.depth)}` · "
+        f"stage=`{state.current_stage}` · "
+        f"run=`{short_run_id(state.run_id)}` · "
+        f"created={format_history_timestamp(state.created_at)} · "
+        f"updated={format_history_timestamp(state.updated_at)}"
+    )
+    if state.error:
+        st.error(format_history_error_summary(state.error, max_len=300) or state.error)
+
+    if state.plan is not None:
+        query_type = (
+            state.plan.query_type.value
+            if getattr(state.plan, "query_type", None)
+            else None
+        )
+        if state.analyzed_query and state.analyzed_query.research_goal:
+            st.caption(state.analyzed_query.research_goal)
+        st.markdown(
+            render_agent_panel(state.plan.topic, -1 if state.status == "completed" else 0, query_type),
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<p class="rp-panel-label">Research Plan</p>'
+            f"{render_plan_checklist(state.plan)}",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.caption("No research plan saved for this run.")
+
+    evidence_items = list(state.evidence or [])
+    docs = list(state.documents or [])
+    if evidence_items or docs:
+        ok_count = sum(1 for d in docs if getattr(d, "read_status", "") == "success")
+        st.markdown(
+            f'<p class="rp-panel-label">Evidence · {len(evidence_items)} sources · '
+            f"{ok_count} read</p>"
+            f"{render_evidence_cards(evidence_items)}",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.caption("No evidence saved for this run.")
+
+    if state.synthesis is not None:
+        render_synthesis_sections(state.synthesis)
+
+    render_research_health(state.research_health)
+
+    if state.report is not None and state.report.sections:
+        st.markdown(
+            f'<p class="rp-panel-label">Final Research Report</p>'
+            f"{render_final_report(state.report)}",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.caption("No final report saved for this run.")
+
+    if state.diagnostics:
+        with st.expander("Diagnostics", expanded=False):
+            st.json(state.diagnostics)
+
+
+def _depth_label(depth) -> str:
+    if hasattr(depth, "value"):
+        return str(depth.value)
+    return str(depth)
+
+
+def render_history_summary_row(summary: ResearchRunSummary) -> None:
+    """One history list row with an Open action."""
+    display = history_summary_display(summary)
+    with st.container():
+        cols = st.columns([5, 1])
+        with cols[0]:
+            st.markdown(f"**{display['topic'] or '(untitled)'}**")
+            st.caption(
+                f"`{display['status']}` · depth=`{display['depth']}` · "
+                f"stage=`{display['current_stage']}` · "
+                f"updated={display['updated_at']} · "
+                f"id=`{display['short_run_id']}`"
+            )
+            if display["error_summary"]:
+                st.caption(f"error: {display['error_summary']}")
+            if display["status_note"]:
+                st.caption(display["status_note"])
+        with cols[1]:
+            if st.button("Open", key=f"history_open_{summary.run_id}", use_container_width=True):
+                st.session_state["selected_history_run_id"] = summary.run_id
+                st.rerun()
+
+
+def render_history_detail(run_id: str) -> None:
+    """Load and show one historical run; clear selection when unavailable."""
+    if st.button("← Back to history", key="history_back_to_list"):
+        st.session_state["selected_history_run_id"] = None
+        st.rerun()
+
+    try:
+        state = load_research_history_state(run_id)
+    except HistoryStateLoadError:
+        st.error("无法读取该历史记录的完整状态（数据可能已损坏）。列表仍可浏览。")
+        st.session_state["selected_history_run_id"] = None
+        return
+
+    if state is None:
+        st.error("历史记录不存在或已不可用")
+        st.session_state["selected_history_run_id"] = None
+        return
+
+    render_historical_state(state)
+
+
+def render_history_list() -> None:
+    """Filters, pagination, and summary cards for research history."""
+    st.markdown("### Research History")
+    st.caption("Browse past research runs saved locally. Opening a run does not re-run research.")
+
+    topic_query = st.text_input(
+        "Search topic",
+        key="history_topic_input",
+        placeholder="e.g. PCB",
+    )
+    status_label = st.selectbox(
+        "Status",
+        options=list(HISTORY_STATUS_OPTIONS),
+        key="history_status_input",
+    )
+    if not isinstance(topic_query, str):
+        topic_query = str(st.session_state.get("history_topic_input") or "")
+    if not isinstance(status_label, str):
+        status_label = str(st.session_state.get("history_status_input") or "All")
+    if status_label not in HISTORY_STATUS_OPTIONS:
+        status_label = "All"
+
+    if should_reset_history_page(
+        st.session_state.get("history_filter_topic"),
+        st.session_state.get("history_filter_status"),
+        topic_query,
+        status_label,
+    ):
+        st.session_state["history_page"] = 1
+    st.session_state["history_filter_topic"] = topic_query
+    st.session_state["history_filter_status"] = status_label
+    st.session_state["history_topic_query"] = topic_query
+    st.session_state["history_status"] = status_label
+
+    status = normalize_history_status_filter(status_label)
+    topic_arg = topic_query.strip() or None
+
+    try:
+        total = count_research_history(status=status, topic_query=topic_arg)
+    except Exception:  # noqa: BLE001
+        st.error("无法加载研究历史。请稍后重试。")
+        return
+
+    pagination = calculate_history_pagination(
+        total,
+        int(st.session_state.get("history_page") or 1),
+        HISTORY_PAGE_SIZE,
+    )
+    if pagination.page != st.session_state.get("history_page"):
+        st.session_state["history_page"] = pagination.page
+
+    st.caption(f"{total} research run{'s' if total != 1 else ''}")
+
+    if total == 0:
+        st.info("No research history yet.")
+        return
+
+    try:
+        rows = list_research_history(
+            limit=pagination.page_size,
+            offset=pagination.offset,
+            status=status,
+            topic_query=topic_arg,
+        )
+    except Exception:  # noqa: BLE001
+        st.error("无法加载研究历史。请稍后重试。")
+        return
+
+    for summary in rows:
+        render_history_summary_row(summary)
+
+    nav_cols = st.columns([1, 2, 1])
+    with nav_cols[0]:
+        if st.button(
+            "Previous",
+            disabled=pagination.page <= 1,
+            key="history_prev_page",
+            use_container_width=True,
+        ):
+            st.session_state["history_page"] = max(1, pagination.page - 1)
+            st.rerun()
+    with nav_cols[1]:
+        st.markdown(
+            f"<p style='text-align:center;margin-top:0.55rem;'>"
+            f"Page {pagination.page} / {max(pagination.total_pages, 1)}"
+            f"</p>",
+            unsafe_allow_html=True,
+        )
+    with nav_cols[2]:
+        if st.button(
+            "Next",
+            disabled=pagination.page >= pagination.total_pages,
+            key="history_next_page",
+            use_container_width=True,
+        ):
+            st.session_state["history_page"] = pagination.page + 1
+            st.rerun()
+
+
+def render_history_page() -> None:
+    """History list or selected-run detail."""
+    _ensure_history_session_defaults()
+    selected = st.session_state.get("selected_history_run_id")
+    if selected:
+        render_history_detail(str(selected))
+    else:
+        render_history_list()
+
+
+def render_new_research_page() -> None:
+    """Existing New Research MVP (unchanged behavior)."""
+    if "result" in st.session_state:
+        st.markdown(
+            '<p class="rp-results-header">ResearchPilot · Latest Results</p>',
+            unsafe_allow_html=True,
+        )
+        render_completed_workflow(st.session_state["result"])
+    else:
+        topic, depth_label, submitted = render_hero_and_form()
+
+        if submitted:
+            if not topic or not topic.strip():
+                st.error("Please enter a research topic before starting.")
+                render_landing_extras()
+            else:
+                depth = ResearchDepth(depth_label)
+                try:
+                    st.markdown(
+                        '<p class="rp-results-header">ResearchPilot · Research in Progress</p>',
+                        unsafe_allow_html=True,
+                    )
+                    persisted = run_animated_workflow(topic.strip(), depth)
+                    st.session_state["result"] = persisted.result
+                    st.session_state["run_id"] = persisted.run_id
+                    st.session_state["persistence_warning"] = False
+                except ResearchPersistenceError as exc:
+                    # Workflow finished; final SQLite snapshot failed.
+                    if exc.result is not None:
+                        st.session_state["result"] = exc.result
+                        st.session_state["run_id"] = exc.run_id
+                        st.session_state["persistence_warning"] = True
+                        _show_persistence_warning(exc)
+                        render_completed_workflow(exc.result)
+                    else:
+                        _show_persistence_warning(exc)
+                        render_landing_extras()
+                except ValueError as exc:
+                    st.error(str(exc))
+                    render_landing_extras()
+                except Exception as exc:  # noqa: BLE001 — surface workflow errors in UI
+                    st.error(str(exc) or type(exc).__name__)
+                    render_landing_extras()
+        else:
+            render_landing_extras()
+
+
+# ---------------------------------------------------------------------------
 # Page routing
 # ---------------------------------------------------------------------------
 
-if "result" in st.session_state:
-    st.markdown(
-        '<p class="rp-results-header">ResearchPilot · Latest Results</p>',
-        unsafe_allow_html=True,
-    )
-    render_completed_workflow(st.session_state["result"])
-else:
-    topic, depth_label, submitted = render_hero_and_form()
+_ensure_history_session_defaults()
+nav = st.sidebar.radio(
+    "Navigation",
+    options=["New Research", "History"],
+    index=0,
+    key="main_nav",
+)
 
-    if submitted:
-        if not topic or not topic.strip():
-            st.error("Please enter a research topic before starting.")
-            render_landing_extras()
-        else:
-            depth = ResearchDepth(depth_label)
-            try:
-                st.markdown(
-                    '<p class="rp-results-header">ResearchPilot · Research in Progress</p>',
-                    unsafe_allow_html=True,
-                )
-                persisted = run_animated_workflow(topic.strip(), depth)
-                st.session_state["result"] = persisted.result
-                st.session_state["run_id"] = persisted.run_id
-                st.session_state["persistence_warning"] = False
-            except ResearchPersistenceError as exc:
-                # Workflow finished; final SQLite snapshot failed.
-                if exc.result is not None:
-                    st.session_state["result"] = exc.result
-                    st.session_state["run_id"] = exc.run_id
-                    st.session_state["persistence_warning"] = True
-                    _show_persistence_warning(exc)
-                    render_completed_workflow(exc.result)
-                else:
-                    _show_persistence_warning(exc)
-                    render_landing_extras()
-            except ValueError as exc:
-                st.error(str(exc))
-                render_landing_extras()
-            except Exception as exc:  # noqa: BLE001 — surface workflow errors in UI
-                st.error(str(exc) or type(exc).__name__)
-                render_landing_extras()
-    else:
-        render_landing_extras()
+if nav == "History":
+    render_history_page()
+else:
+    render_new_research_page()
