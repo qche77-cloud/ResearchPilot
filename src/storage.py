@@ -155,6 +155,15 @@ class ResearchRunRepository:
             conn.commit()
             return cur.rowcount > 0
 
+    def exists(self, run_id: str) -> bool:
+        """Return True if ``run_id`` already has a row."""
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT 1 FROM research_runs WHERE run_id = ? LIMIT 1",
+                (run_id,),
+            ).fetchone()
+        return row is not None
+
     def _connect(self) -> sqlite3.Connection:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(str(self.db_path))
