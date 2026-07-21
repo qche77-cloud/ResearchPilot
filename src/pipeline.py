@@ -15,9 +15,14 @@ When OpenAI and Search APIs are added, swap implementations inside each
 component. The pipeline signature stays the same::
 
     result = run_research(topic, depth)
+
+Optional ResearchState checkpoints (v1.3) can be enabled via keyword-only
+``research_state`` / ``state_callback`` without changing the return type.
 """
 
 from __future__ import annotations
+
+from collections.abc import Callable
 
 from src.domain_penalty import domain_of
 from src.env import load_env
@@ -27,6 +32,7 @@ from src.models import EvidenceDocument, GroundedFinding, ResearchDepth, Researc
 from src.planner import Planner
 from src.query_analyzer import QueryAnalyzer
 from src.reader import REPLACEABLE_EXTRACTION_STATUSES, Reader, build_reader_diagnostics
+from src.research_state import ResearchState
 from src.searcher import Searcher, _canonical_url
 from src.synthesizer import Synthesizer
 from src.writer import Writer
@@ -35,8 +41,86 @@ from src.writer import Writer
 load_env()
 
 _MAX_REPLACEMENTS_PER_TASK = 2
+_PERSIST_DIAG_KEY = "state_persistence"
+_CB_ERROR_MAX_LEN = 240
 
-def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
+
+def _truncate_callback_error(exc: Exception, *, max_len: int = _CB_ERROR_MAX_LEN) -> str:
+    """Short safe message for persistence diagnostics (no traceback)."""
+    text = f"{type(exc).__name__}: {exc}".replace("\r", " ").replace("\n", " ").strip()
+    lower = text.lower()
+    for marker in ("traceback (most recent call last)", "traceback:"):
+        idx = lower.find(marker)
+        if idx >= 0:
+            text = text[:idx].strip()
+            break
+    if len(text) > max_len:
+        text = text[: max_len - 1].rstrip() + "…"
+    return text or type(exc).__name__
+
+
+def _safe_state_checkpoint(
+    state: ResearchState,
+    callback: Callable[[ResearchState], None] | None,
+    *,
+    success_stage: str | None = None,
+) -> None:
+    """Invoke ``state_callback`` without letting persistence errors fail research."""
+    if callback is None:
+        return
+    try:
+        callback(state)
+    except Exception as exc:  # noqa: BLE001 — persistence must not break research
+        bucket = state.diagnostics.get(_PERSIST_DIAG_KEY)
+        if not isinstance(bucket, dict):
+            bucket = {}
+            state.diagnostics[_PERSIST_DIAG_KEY] = bucket
+        bucket["failure_count"] = int(bucket.get("failure_count") or 0) + 1
+        bucket["last_error_type"] = type(exc).__name__
+        bucket["last_error_message"] = _truncate_callback_error(exc)
+        bucket["last_failed_stage"] = state.current_stage
+        # Do not re-enter callback to persist this failure.
+        return
+    if success_stage:
+        bucket = state.diagnostics.get(_PERSIST_DIAG_KEY)
+        if not isinstance(bucket, dict):
+            bucket = {}
+            state.diagnostics[_PERSIST_DIAG_KEY] = bucket
+        bucket["last_success_stage"] = success_stage
+
+
+def _mark_stage(
+    state: ResearchState,
+    stage: str,
+    callback: Callable[[ResearchState], None] | None,
+) -> None:
+    state.mark_running(stage)
+    _safe_state_checkpoint(state, callback, success_stage=stage)
+
+
+def _resolve_research_state(
+    topic: str,
+    depth: ResearchDepth,
+    research_state: ResearchState | None,
+) -> ResearchState:
+    """Create or reuse ResearchState; sync topic/depth to the live call args."""
+    if research_state is None:
+        return ResearchState(topic=topic, depth=depth)
+    # Usability: align caller-provided state with the actual invocation.
+    if research_state.topic != topic or research_state.depth != depth:
+        research_state.topic = topic
+        research_state.depth = depth
+        research_state.touch()
+    return research_state
+
+
+def run_research(
+    topic: str,
+    depth: ResearchDepth,
+    *,
+    research_state: ResearchState | None = None,
+    state_callback: Callable[[ResearchState], None] | None = None,
+) -> ResearchResult:
     """Execute the full AI research workflow for a given topic.
 
     Pipeline stages:
@@ -48,9 +132,16 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
         6. Synthesize — Synthesizer
         7. Write     — Writer
 
+    Optional keyword-only ``research_state`` / ``state_callback`` enable
+    in-memory checkpoints. Persistence is caller-owned (pipeline never opens
+    SQLite). Callback failures are recorded under
+    ``state.diagnostics['state_persistence']`` and do not fail the run.
+
     Args:
         topic: The industry, company, or technology topic to research.
         depth: How thorough the research should be.
+        research_state: Optional existing run state to mutate in place.
+        state_callback: Optional checkpoint hook (e.g. repository.save_state).
 
     Returns:
         A ResearchResult containing analyzed query, plan, sources, evidence, and report.
@@ -59,17 +150,59 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
         ValueError: If topic is empty or whitespace-only.
     """
     load_env()
+    state = _resolve_research_state(topic, depth, research_state)
 
+    try:
+        return _run_research_with_state(topic, depth, state, state_callback)
+    except Exception as exc:
+        # Capture failed stage, checkpoint once, then re-raise the business error.
+        fail_stage = state.current_stage or "failed"
+        state.mark_failed(str(exc), stage=fail_stage)
+        _safe_state_checkpoint(state, state_callback)
+        raise
+
+
+def _run_research_with_state(
+    topic: str,
+    depth: ResearchDepth,
+    state: ResearchState,
+    state_callback: Callable[[ResearchState], None] | None,
+) -> ResearchResult:
+    _safe_state_checkpoint(state, state_callback, success_stage=state.current_stage)
+
+    _mark_stage(state, "analyzing", state_callback)
     analyzed = QueryAnalyzer().analyze(topic)
+    state.analyzed_query = analyzed
+    _safe_state_checkpoint(state, state_callback, success_stage="analyzing")
 
+    _mark_stage(state, "planning", state_callback)
     planner = Planner()
     plan = planner.plan(analyzed, depth)
+    state.plan = plan
+    if getattr(plan, "evidence_strategy_diagnostics", None) is not None:
+        state.diagnostics["evidence_strategy"] = dict(plan.evidence_strategy_diagnostics)
+    _safe_state_checkpoint(state, state_callback, success_stage="planning")
 
+    _mark_stage(state, "searching", state_callback)
     searcher = Searcher()
     sources = searcher.search(plan)
+    state.sources = list(sources)
+    if searcher.last_diagnostics:
+        state.diagnostics["search"] = dict(searcher.last_diagnostics)
+    _safe_state_checkpoint(state, state_callback, success_stage="searching")
 
+    _mark_stage(state, "reading", state_callback)
     reader = Reader()
     documents = reader.read(sources)
+    state.documents = list(documents)
+    _safe_state_checkpoint(state, state_callback, success_stage="reading")
+
+    needs_replace = any(
+        (doc.extraction_status or "").upper() in REPLACEABLE_EXTRACTION_STATUSES
+        for doc in documents
+    )
+    if needs_replace:
+        _mark_stage(state, "replacing_sources", state_callback)
     documents, sources, replacement_diag = _apply_reader_replacements(
         plan=plan,
         searcher=searcher,
@@ -92,9 +225,19 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
         replacement=replacement_diag,
     )
     reader.last_diagnostics = rebuilt
+    state.documents = list(documents)
+    state.sources = list(sources)
+    state.diagnostics["reader"] = dict(reader.last_diagnostics or {})
+    if needs_replace:
+        _safe_state_checkpoint(state, state_callback, success_stage="replacing_sources")
 
+    _mark_stage(state, "evaluating", state_callback)
     evaluator = EvidenceEvaluator()
     evidence = evaluator.evaluate(documents, plan)
+    state.evidence = list(evidence)
+    if evaluator.last_diagnostics:
+        state.diagnostics["evaluator"] = dict(evaluator.last_diagnostics)
+    _safe_state_checkpoint(state, state_callback, success_stage="evaluating")
 
     # v1.2: deterministic coverage check + one bounded follow-up search phase.
     from src.evidence_strategy import (
@@ -104,15 +247,27 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
     )
     from src.synthesizer import CONTENT_SECTIONS
 
+    _mark_stage(state, "checking_coverage", state_callback)
     coverage_before = assess_evidence_coverage(plan, evidence)
+    state.coverage_before = list(coverage_before)
     followup_pairs = build_followup_queries(plan, coverage_before)
     followup_sources: list[Source] = []
     gaps_before = sum(1 for c in coverage_before if c.followup_needed)
+    state.diagnostics["coverage"] = {
+        "before_followup": coverage_to_dicts(coverage_before),
+        "followup_queries": [
+            {"research_task": t, "query": q, "freshness_profile": p}
+            for t, q, p in followup_pairs
+        ],
+        "gaps_before": gaps_before,
+    }
+    _safe_state_checkpoint(state, state_callback, success_stage="checking_coverage")
 
     initial_mode = str((searcher.last_diagnostics or {}).get("mode") or "")
     allow_followup = followup_pairs and "mock" not in initial_mode.lower()
 
     if allow_followup:
+        _mark_stage(state, "followup_searching", state_callback)
         exclude = {_canonical_url(s.url) for s in sources}
         start_id = len(sources) + 1
         followup_sources = searcher.followup_search(
@@ -121,7 +276,11 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
             exclude_urls=exclude,
             start_source_id=start_id,
         )
+        state.diagnostics["search"] = dict(searcher.last_diagnostics or {})
+        _safe_state_checkpoint(state, state_callback, success_stage="followup_searching")
+
         if followup_sources:
+            _mark_stage(state, "followup_reading", state_callback)
             followup_docs = reader.read(followup_sources)
             # Do not recursively replace follow-up failures (keeps cost bounded).
             documents = list(documents) + list(followup_docs)
@@ -149,17 +308,41 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
                 ),
                 replacement=(reader.last_diagnostics or {}).get("replacement"),
             )
+            state.documents = list(documents)
+            state.sources = list(sources)
+            state.diagnostics["reader"] = dict(reader.last_diagnostics or {})
+            _safe_state_checkpoint(state, state_callback, success_stage="followup_reading")
+
+            _mark_stage(state, "followup_evaluating", state_callback)
             evidence = evaluator.evaluate(documents, plan)
+            state.evidence = list(evidence)
+            if evaluator.last_diagnostics:
+                state.diagnostics["evaluator"] = dict(evaluator.last_diagnostics)
+            _safe_state_checkpoint(
+                state, state_callback, success_stage="followup_evaluating"
+            )
 
     coverage_after = assess_evidence_coverage(plan, evidence)
     gaps_after = sum(1 for c in coverage_after if c.followup_needed)
+    state.coverage_after = list(coverage_after)
+    cov_diag = dict(state.diagnostics.get("coverage") or {})
+    cov_diag["after_followup"] = coverage_to_dicts(coverage_after)
+    cov_diag["gaps_after"] = gaps_after
+    state.diagnostics["coverage"] = cov_diag
+    _safe_state_checkpoint(state, state_callback, success_stage="checking_coverage")
 
+    _mark_stage(state, "synthesizing", state_callback)
     synthesizer = Synthesizer()
     synthesis = synthesizer.synthesize(plan, evidence)
     _ensure_time_sensitive_evidence_gaps(plan, evidence, synthesis)
+    state.synthesis = synthesis
+    if synthesizer.last_diagnostics:
+        state.diagnostics["synthesizer"] = dict(synthesizer.last_diagnostics)
+    _safe_state_checkpoint(state, state_callback, success_stage="synthesizing")
 
     from src.research_health import assess_research_health
 
+    _mark_stage(state, "assessing_health", state_callback)
     coverage_for_health = coverage_to_dicts(coverage_after)
     research_health = assess_research_health(
         plan=plan,
@@ -167,9 +350,16 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
         synthesis=synthesis,
         coverage_results=coverage_for_health,
     )
+    state.research_health = research_health
+    _safe_state_checkpoint(state, state_callback, success_stage="assessing_health")
 
+    _mark_stage(state, "writing", state_callback)
     writer = Writer()
     report = writer.write(plan, synthesis, research_health=research_health)
+    state.report = report
+    if writer.last_diagnostics:
+        state.diagnostics["writer"] = dict(writer.last_diagnostics)
+    _safe_state_checkpoint(state, state_callback, success_stage="writing")
 
     search_diag = dict(searcher.last_diagnostics or {})
     findings_count = 0
@@ -216,6 +406,10 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
         "coverage_before": coverage_to_dicts(coverage_before),
         "coverage_after": coverage_to_dicts(coverage_after),
     }
+    state.diagnostics["search_efficiency"] = efficiency
+
+    state.mark_completed()
+    _safe_state_checkpoint(state, state_callback, success_stage="completed")
 
     result = ResearchResult(
         plan=plan,
@@ -249,7 +443,9 @@ def run_research(topic: str, depth: ResearchDepth) -> ResearchResult:
         search_efficiency_diagnostics=efficiency,
     )
     result.evidence_flow_diagnostics = build_evidence_flow_diagnostics(result)
+    state.diagnostics["evidence_flow"] = result.evidence_flow_diagnostics
     return result
+
 
 def _apply_reader_replacements(
     *,
