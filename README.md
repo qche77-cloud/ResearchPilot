@@ -1,5 +1,45 @@
 # ResearchPilot
 
+## Agent workspace preview
+
+Requires Python 3.11 and the dependencies in `requirements.txt`.
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8502
+```
+
+Open http://127.0.0.1:8502. The agent selects searches from evidence gaps,
+reads sources, reassesses coverage, and stops when coverage or its search
+budget is reached. Its action log, evidence, and report are saved in SQLite.
+Research runs in a background thread owned by the local server. Browser
+disconnection does not stop it. Messages and pause requests enter a durable
+SQLite queue and are processed between tool calls. After restarting the server,
+explicitly resume interrupted runs. Completed runs can be continued with an
+additional search budget (default new-run budget: 2).
+Model decisions require `OPENAI_API_KEY`; unavailable model decisions visibly
+fall back to coverage rules. Live searches require `TAVILY_API_KEY`; no mock
+research is presented as live research. Search count is bounded, but is not
+a currency spending limit. Conversational replies use stored report evidence;
+quoted references are checked against stored IDs and verbatim excerpts. This
+checks reference integrity, not semantic truth or investment suitability.
+
+The stock workbench includes A-share daily prices and K-lines, raw financial
+indicators, same-period comparisons, watchlists, thesis journals, and editable
+user preferences. AKShare/Eastmoney and Sina are public data dependencies;
+failures and data timestamps are displayed. Prices are unadjusted, not live
+execution quotes. Financial source values must be checked against original
+report units before numerical comparison. No automated trading is implemented.
+
+Optional watchlist monitors update after 16:00 Asia/Shanghai on weekdays while
+the server is running. They default to off, show changes/errors in-app, and do
+not send external notifications. Non-trading holidays may return unchanged data.
+Local research is in `data/researchpilot.db`; preferences, stock snapshots,
+watchlists, journals and commands are in `data/workbench.db` (not encrypted).
+
+Offline agent regression: `.\.venv\Scripts\python.exe -m scripts.test_agent`.
+Workbench/background regression: `.\.venv\Scripts\python.exe -m scripts.test_workbench`.
+The original pipeline UI remains available through `streamlit run app.py`.
+
 > **An AI-powered research agent that transforms complex research into a
 > structured, evidence-driven, and reproducible workflow.**
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from dataclasses import dataclass, fields, is_dataclass
 from pathlib import Path
 from typing import Any
@@ -31,7 +32,7 @@ from src.models import (
 )
 from src.research_state import ResearchState, research_state_to_json
 
-DEFAULT_DB_PATH = Path("data") / "researchpilot.db"
+DEFAULT_DB_PATH = Path(__file__).resolve().parents[1] / "data" / "researchpilot.db"
 SCHEMA_VERSION = 1
 MAX_HISTORY_LIMIT = 100
 
@@ -294,13 +295,18 @@ class ResearchRunRepository:
             ).fetchone()
         return row is not None
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connect(self):
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(str(self.db_path))
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA foreign_keys=ON")
-        return conn
+        try:
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA foreign_keys=ON")
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
 
 def _row_to_summary(row: sqlite3.Row) -> ResearchRunSummary:
