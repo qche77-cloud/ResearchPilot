@@ -22,6 +22,7 @@ import urllib.request
 from typing import Iterable
 
 from src.env import load_env
+from src.observability import request_json, traced_tool
 from src.models import (
     EvaluatedEvidence,
     GroundedFinding,
@@ -70,6 +71,7 @@ class Synthesizer:
         self.last_diagnostics: dict = {}
         load_env()
 
+    @traced_tool('synthesizer.synthesize')
     def synthesize(
         self,
         plan: ResearchPlan,
@@ -80,7 +82,7 @@ class Synthesizer:
         self.last_diagnostics = {}
         load_env()
 
-        retained = [e for e in evidence if e.keep] or list(evidence)
+        retained = [e for e in evidence if e.keep]
         retained = sorted(retained, key=lambda e: e.final_score, reverse=True)
         truncated_by_cap = max(0, len(retained) - MAX_EVIDENCE_ITEMS)
         retained = retained[:MAX_EVIDENCE_ITEMS]
@@ -214,10 +216,7 @@ class Synthesizer:
             method="POST",
         )
 
-        with urllib.request.urlopen(request, timeout=OPENAI_TIMEOUT_SECONDS) as response:
-            body = response.read().decode("utf-8")
-
-        data = json.loads(body)
+        data = request_json(request, timeout=OPENAI_TIMEOUT_SECONDS, opener=urllib.request.urlopen, operation='synthesizer.generate')
         try:
             content = data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:

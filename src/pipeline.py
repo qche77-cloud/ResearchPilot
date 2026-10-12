@@ -26,6 +26,8 @@ from collections.abc import Callable
 
 from src.domain_penalty import domain_of
 from src.env import load_env
+from src.observability import trace_scope
+from src.verifier import verify_report
 from src.evaluator import EvidenceEvaluator
 from src.evidence_flow import build_evidence_flow_diagnostics
 from src.models import EvidenceDocument, GroundedFinding, ResearchDepth, ResearchResult, Source
@@ -120,6 +122,7 @@ def run_research(
     *,
     research_state: ResearchState | None = None,
     state_callback: Callable[[ResearchState], None] | None = None,
+    financial_payload: dict | None = None,
 ) -> ResearchResult:
     """Execute the full AI research workflow for a given topic.
 
@@ -153,7 +156,8 @@ def run_research(
     state = _resolve_research_state(topic, depth, research_state)
 
     try:
-        return _run_research_with_state(topic, depth, state, state_callback)
+        with trace_scope(state):
+            return _run_research_with_state(topic, depth, state, state_callback, financial_payload)
     except Exception as exc:
         # Capture failed stage, checkpoint once, then re-raise the business error.
         fail_stage = state.current_stage or "failed"
@@ -167,6 +171,7 @@ def _run_research_with_state(
     depth: ResearchDepth,
     state: ResearchState,
     state_callback: Callable[[ResearchState], None] | None,
+    financial_payload: dict | None = None,
 ) -> ResearchResult:
     _safe_state_checkpoint(state, state_callback, success_stage=state.current_stage)
 
@@ -232,9 +237,16 @@ def _run_research_with_state(
         _safe_state_checkpoint(state, state_callback, success_stage="replacing_sources")
 
     _mark_stage(state, "evaluating", state_callback)
+    if financial_payload is not None:
+        from src.financial_analysis import attach_financial_analysis, bind_financial_tasks
+        attach_financial_analysis(state, financial_payload)
+        bind_financial_tasks(state)
+        sources, documents = list(state.sources), list(state.documents)
     evaluator = EvidenceEvaluator()
     evidence = evaluator.evaluate(documents, plan)
     state.evidence = list(evidence)
+    from src.research_reasoning import reflect_plan, update_hypotheses, build_evidence_graph, critic_review
+    reflect_plan(state)
     if evaluator.last_diagnostics:
         state.diagnostics["evaluator"] = dict(evaluator.last_diagnostics)
     _safe_state_checkpoint(state, state_callback, success_stage="evaluating")
@@ -264,7 +276,7 @@ def _run_research_with_state(
     _safe_state_checkpoint(state, state_callback, success_stage="checking_coverage")
 
     initial_mode = str((searcher.last_diagnostics or {}).get("mode") or "")
-    allow_followup = followup_pairs and "mock" not in initial_mode.lower()
+    allow_followup = followup_pairs and "mock" not in initial_mode.lower() and initial_mode != 'unavailable'
 
     if allow_followup:
         _mark_stage(state, "followup_searching", state_callback)
@@ -331,11 +343,16 @@ def _run_research_with_state(
     state.diagnostics["coverage"] = cov_diag
     _safe_state_checkpoint(state, state_callback, success_stage="checking_coverage")
 
+    if not any(item.keep for item in evidence):
+        raise ValueError('没有获得可用证据，研究未完成；未生成模拟报告。')
+
     _mark_stage(state, "synthesizing", state_callback)
     synthesizer = Synthesizer()
     synthesis = synthesizer.synthesize(plan, evidence)
     _ensure_time_sensitive_evidence_gaps(plan, evidence, synthesis)
     state.synthesis = synthesis
+    update_hypotheses(state)
+    build_evidence_graph(state)
     if synthesizer.last_diagnostics:
         state.diagnostics["synthesizer"] = dict(synthesizer.last_diagnostics)
     _safe_state_checkpoint(state, state_callback, success_stage="synthesizing")
@@ -357,6 +374,11 @@ def _run_research_with_state(
     writer = Writer()
     report = writer.write(plan, synthesis, research_health=research_health)
     state.report = report
+    state.diagnostics['verification'] = verify_report(report, synthesis)
+    critic_review(state)
+    if not state.diagnostics['verification']['passed']:
+        state.report = None
+        raise ValueError('报告引用或数值校验失败，证据已保留。')
     if writer.last_diagnostics:
         state.diagnostics["writer"] = dict(writer.last_diagnostics)
     _safe_state_checkpoint(state, state_callback, success_stage="writing")
@@ -409,6 +431,8 @@ def _run_research_with_state(
     state.diagnostics["search_efficiency"] = efficiency
 
     state.mark_completed()
+    from src.research_memory import finalize_research_memory
+    finalize_research_memory(state)
     _safe_state_checkpoint(state, state_callback, success_stage="completed")
 
     result = ResearchResult(

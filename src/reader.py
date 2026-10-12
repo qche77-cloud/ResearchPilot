@@ -41,6 +41,7 @@ from bs4 import BeautifulSoup
 from src.domain_penalty import domain_of as _domain_of_url
 from src.freshness import extract_date_from_html, extract_date_from_text
 from src.models import EvidenceDocument, Source
+from src.observability import traced_tool
 
 logger = logging.getLogger(__name__)
 
@@ -198,6 +199,7 @@ class Reader:
         self._pdf_successes = 0
         self._domain_extract_used = 0
 
+    @traced_tool('reader.read')
     def read(self, sources: list[Source]) -> list[EvidenceDocument]:
         """Fetch and extract readable text for each source.
 

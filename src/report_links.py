@@ -1,24 +1,49 @@
 """Immutable report/evidence snapshots referenced by chat messages."""
 import hashlib
 import json
+import copy
 
 
 def snapshot_report(state):
+    from src.stock_research import is_listing_source
     if not state.report:
         return None
     evidence = {}
     if state.synthesis:
         for eid, item in state.synthesis.evidence_index.items():
             evidence[eid] = {'title': item.source.title, 'url': item.source.url,
-                             'date': item.source.published_date, 'text': item.document.extracted_text}
+                             'date': item.source.published_date, 'text': item.document.extracted_text,
+                             'read_status': item.document.read_status,
+                             'listing_page': is_listing_source(item.source.url),
+                             'date_source': item.source.date_source, 'date_confidence': item.source.date_confidence}
+    findings = []
+    if state.synthesis:
+        from src.synthesizer import CONTENT_SECTIONS
+        for section in CONTENT_SECTIONS:
+            for f in getattr(state.synthesis, section, []) or []:
+                findings.append({'text': f.finding, 'kind': f.finding_type, 'evidence_ids': f.evidence_ids,
+                                 'excerpts': [{'evidence_id': q.evidence_id, 'text': q.excerpt} for q in f.supporting_excerpts]})
     payload = {'sections': [{'title': s.title, 'content': s.content} for s in state.report.sections],
-               'evidence': evidence}
+               'evidence': evidence, 'findings': findings}
+    if state.diagnostics.get('hypotheses'):
+        payload['hypotheses'] = copy.deepcopy(state.diagnostics['hypotheses'])
+    if state.diagnostics.get('financial_analysis'):
+        from src.research_memory import financial_snapshot
+        payload['financial_analysis'] = copy.deepcopy(financial_snapshot(state.diagnostics['financial_analysis']))
+    if state.diagnostics.get('evidence_graph'):
+        payload['evidence_graph'] = copy.deepcopy(state.diagnostics['evidence_graph'])
     version = hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:16]
-    state.diagnostics['agent'].setdefault('report_versions', {}).setdefault(version, payload)
+    agent = state.diagnostics.setdefault('agent', {'budget': 2, 'searches': 0, 'events': [], 'queries': [], 'instructions': [], 'empty_searches': 0})
+    # Reading an unchanged report must not create versions from a new timestamp.
+    payload['as_of'] = agent.get('report_as_of') or state.updated_at
+    agent.setdefault('report_versions', {}).setdefault(version, payload)
     return version
 
 
 def brief_report(state):
+    if state.diagnostics.get('agent', {}).get('update_mode'):
+        from src.stock_research import update_brief
+        return update_brief(state)
     findings = state.synthesis.key_findings if state.synthesis else []
     summary = '；'.join(f.finding for f in findings[:2])
     if not summary:
@@ -54,7 +79,7 @@ def normalize_history(state):
                 message.pop('report_version', None)
                 message['provenance_note'] = '旧回答的报告版本无法核实，仅保留原文。'
                 changed = True
-        if not message.get('display_summary') and (content == legacy or len(content) > 350):
+        if not message.get('structured_summary') and not message.get('display_summary') and (content == legacy or len(content) > 350):
             message.setdefault('original_content', content)
             message['display_summary'] = brief_report(state) if content == legacy else content[:180].rstrip() + '…'
             if content == legacy:
@@ -63,7 +88,8 @@ def normalize_history(state):
                 message['provenance_note'] = '旧回答缺少可验证的版本信息，仅保留原文。'
             changed = True
     if not any(m.get('report_version') == version for m in messages):
-        messages.append({'role': 'assistant', 'content': brief_report(state), 'report_version': version})
+        messages.append({'role': 'assistant', 'content': brief_report(state), 'report_version': version,
+                         'structured_summary': bool(a.get('update_mode'))})
         changed = True
     a['report_in_chat'] = True
     return changed

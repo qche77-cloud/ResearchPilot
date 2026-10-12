@@ -19,6 +19,10 @@ from src.evidence_strategy import assess_evidence_coverage
 from src.synthesizer import Synthesizer
 from src.writer import Writer
 from src.agent_quality import focus_plan, evidence_gaps
+from src.observability import request_json, traced_state
+from src.verifier import verify_report
+from src.financial_analysis import attach_financial_analysis, bind_financial_tasks, agent_financial_summary
+from src.research_reasoning import (reflect_plan, update_hypotheses, build_evidence_graph, critic_review, query_is_new)
 
 
 def create_agent(topic: str, budget: int = 2) -> ResearchState:
@@ -53,13 +57,31 @@ def steer(state: ResearchState, instruction: str):
 
 def choose_action(state):
     a = state.diagnostics['agent']
+    from src.stock_research import is_listing_source
+    revisions = reflect_plan(state)
+    for revision in revisions:
+        event(state, '自主调整计划', revision['trigger'], '新增补查任务；搜索预算保持不变')
     coverage = assess_evidence_coverage(state.plan, state.evidence)
     state.coverage_after = coverage
     a['evidence_gaps'] = evidence_gaps(state)
     if a['searches'] >= a['budget']:
         return {'action': 'finish', 'reason': '已达到搜索预算，将交付已有证据及未解决的问题'}
+    if a.get('search_attempts', 0) >= a.get('max_search_attempts', 34):
+        return {'action': 'finish', 'reason': '已达到累计搜索尝试上限，停止重试并交付证据限制'}
+    if a.get('iterations', 0) >= a.get('max_iterations', 96) - 2:
+        return {'action': 'finish', 'reason': '已达到迭代上限，进入已有证据整理'}
     if a['empty_searches'] >= 2:
         return {'action': 'finish', 'reason': '连续两轮没有新来源，停止重复检索并说明资料限制'}
+    if state.diagnostics.get('financial_analysis', {}).get('usable_records') and any(e.keep for e in state.evidence) and not os.getenv('TAVILY_API_KEY', '').strip():
+        return {'action': 'finish', 'reason': '联网搜索未配置；仅整理已有结构化财务证据，新增反思问题仍待补查'}
+    for pending in a.get('reflection_pending', []):
+        if query_is_new(state, pending['query']) and any(s.title == pending['task'] for s in state.plan.steps):
+            return dict(pending)
+    if a.get('stock_symbol') and state.sources and all(is_listing_source(s.url) for s in state.sources):
+        query = f'{a["stock_symbol"]} 最新 半年度报告 现金流 公告正文 site:cninfo.com.cn'
+        if query_is_new(state, query) and state.plan.steps:
+            return {'action': 'search', 'task': state.plan.steps[0].title, 'query': query,
+                    'reason': '已有来源均为滚动列表页，改查单篇公告原文，不能用列表日期确认新增事实'}
     gaps = [c for c in coverage if c.followup_needed]
     if not gaps and not a.get('steering_pending') and not a['evidence_gaps']:
         return {'action': 'finish', 'reason': '各研究问题已达到基础证据覆盖，开始整理结论'}
@@ -71,6 +93,8 @@ def choose_action(state):
         'coverage': [asdict(c) for c in coverage],
         'previous_queries': a['queries'], 'remaining_searches': a['budget'] - a['searches'],
         'observations': a['events'][-8:],
+        'hypotheses': state.diagnostics.get('hypotheses', []),
+        'financial_analysis': agent_financial_summary(state.diagnostics['financial_analysis']) if state.diagnostics.get('financial_analysis') else None,
         'evidence': [{'title': d.source.title, 'task': d.source.research_task,
                       'url': d.source.url, 'date': d.source.published_date,
                       'read_status': d.read_status,
@@ -98,36 +122,43 @@ def choose_action(state):
                 'https://api.openai.com/v1/chat/completions',
                 data=json.dumps(payload).encode(),
                 headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {key}'})
-            with urllib.request.urlopen(req, timeout=30) as response:
-                decision = json.loads(json.loads(response.read())['choices'][0]['message']['content'])
+            response = request_json(req, timeout=30, opener=urllib.request.urlopen, operation='agent.decide')
+            decision = json.loads(response['choices'][0]['message']['content'])
             if decision.get('action') == 'finish' and state.documents:
                 return {'action': 'finish', 'reason': str(decision.get('reason', '整理当前证据'))[:500]}
             query = str(decision.get('query', '')).strip()[:350]
-            if decision.get('action') == 'search' and decision.get('task') in tasks and query and query not in a['queries']:
+            if decision.get('action') == 'search' and decision.get('task') in tasks and query and query_is_new(state, query):
                 return {'action': 'search', 'task': decision['task'], 'query': query,
                         'reason': str(decision.get('reason', '补充证据'))[:500]}
         except Exception as exc:
             event(state, '决策降级', '模型决策暂不可用', f'{type(exc).__name__}；本轮使用证据缺口规则')
     # Deterministic fallback is explicitly disclosed, never a simulated LLM trace.
+    if not (gaps or coverage):
+        return {'action': 'finish', 'reason': '计划没有可执行任务，保留已有资料与限制'}
     gap = min(gaps or coverage, key=lambda c: sum(e.get('task') == c.research_task for e in a.get('search_history', [])))
     step = tasks[gap.research_task]
     candidates = list(step.search_queries) + [f'{state.topic} {step.title} 年报 公告 原始数据']
     candidates = [g['next'] for g in a['evidence_gaps'] if g['task'] == step.title] + candidates
     if a.get('steering_pending'):
         candidates.insert(0, f'{state.topic} {a["instructions"][-1]}'[:350])
-    query = next((q for q in candidates if q not in a['queries']), '')
+    query = next((q for q in candidates if query_is_new(state, q)), '')
     if not query:
         return {'action': 'finish', 'reason': '可用查询已完成，保留未覆盖的问题'}
     return {'action': 'search', 'task': step.title, 'query': query,
             'reason': f'规则决策：{step.title} 的证据为 {gap.coverage_status}，补充检索'}
 
 
+@traced_state('agent.tick')
 def tick(state: ResearchState):
     """One tool step; caller checkpoints after each tick and controls pause/resume."""
     load_env()
     a = state.diagnostics['agent']
+    a['iterations'] = a.get('iterations', 0) + 1
+    if a['iterations'] > a.get('max_iterations', 96):
+        state.mark_failed('已达到研究迭代上限，资料已保留；请新建研究或明确调整上限。', state.current_stage)
+        return
     symbols = re.findall(r'(?<!\d)\d{6}(?!\d)', state.topic)
-    if state.plan is None and symbols and not a.get('market_checked'):
+    if state.plan is None and len(set(symbols)) == 1 and not a.get('market_checked'):
         from src.stock_data import fetch_stock
         from src.workbench import Workbench
         from datetime import datetime, timezone
@@ -143,6 +174,8 @@ def tick(state: ResearchState):
                 store.save_snapshot(code, data)
             a['market_data'] = {k: data[k] for k in ['symbol', 'exchange', 'fetched_at', 'adjustment', 'price_unit']}
             a['market_data']['latest_daily'] = data['daily'][-1]
+            from src.stock_research import freshness
+            a['freshness'] = freshness(data)
             text = json.dumps(a['market_data'], ensure_ascii=False)
             source = Source(f'{code} 日线快照（不复权）', f'https://quote.eastmoney.com/{data["exchange"].lower()}{code}.html',
                             text, 'market_data', 1, source_id=f'S{len(state.sources)+1}', published_date=str(data['daily'][-1]['日期'])[:10])
@@ -156,9 +189,22 @@ def tick(state: ResearchState):
                                 text[:300], 'financial_data', 1, source_id=f'S{len(state.sources)+1}')
                 state.sources.append(source)
                 state.documents.append(EvidenceDocument(source, text, len(text), 'success'))
+            imported = store.financial_dataset(code)
+            analysis = attach_financial_analysis(state, imported['payload'] if imported else data)
+            event(state, '财务计算', '确定性多期对比，未知口径不计算',
+                  f'可用 {analysis["usable_records"]} 条，待核对 {analysis["blocked_records"]} 条；全部计算保留输入记录')
             event(state, '读取个股数据', '获取结构化日线与财务，保留时点和口径', f'{code}：{len(data["daily"])} 条日线；' + '；'.join(data['warnings']))
         except Exception as exc:
             event(state, '行情数据不可用', '继续使用公开资料研究', type(exc).__name__)
+            # User-imported financials remain usable even when price retrieval
+            # fails. An unavailable price source must not disable this tool.
+            try:
+                imported = Workbench().financial_dataset(code)
+                if imported and not state.diagnostics.get('financial_analysis'):
+                    analysis = attach_financial_analysis(state, imported['payload'])
+                    event(state, '财务计算', '行情不可用，继续分析用户保存的财务输入', f'{analysis["usable_records"]} 条可用记录')
+            except Exception as finance_error:
+                event(state, '财务输入不可用', '保留检索研究能力', type(finance_error).__name__)
         return
     if state.current_stage == 'replanning':
         from dataclasses import replace
@@ -172,8 +218,10 @@ def tick(state: ResearchState):
         quality = focus_plan(candidate)
         a.setdefault('plan_history', []).append(asdict(state.plan) if state.plan else None)
         state.plan = candidate.plan
+        bind_financial_tasks(state)
         state.analyzed_query = analyzed
         state.evidence = EvidenceEvaluator().evaluate(state.documents, state.plan) if state.documents else []
+        reflect_plan(state)
         state.coverage_after = []
         a['evidence_gaps'] = []
         a['empty_searches'] = 0
@@ -184,10 +232,17 @@ def tick(state: ResearchState):
     if state.plan is None:
         state.mark_running('planning')
         planning_goal = state.topic + ('\n用户长期偏好：' + a['preferences'] if a.get('preferences') else '')
+        planning_goal += '\n研究约束：' + '\n'.join(a['instructions'])
         state.analyzed_query = QueryAnalyzer().analyze(planning_goal)
         planner = Planner()
         state.plan = planner.plan(state.analyzed_query, state.depth)
-        a['plan_quality'] = focus_plan(state)
+        from dataclasses import replace
+        focused = replace(state, topic=planning_goal)
+        a['plan_quality'] = focus_plan(focused)
+        state.plan = focused.plan
+        bind_financial_tasks(state)
+        state.evidence = EvidenceEvaluator().evaluate(state.documents, state.plan) if state.documents else []
+        reflect_plan(state)
         event(state, '制定计划', '把研究目标拆成可验证的问题',
               f'{len(state.plan.steps)} 个问题 · {a["plan_quality"]}')
         state.current_stage = 'deciding'
@@ -198,6 +253,7 @@ def tick(state: ResearchState):
         docs = Reader().read(pending)
         state.documents.extend(docs)
         state.evidence = EvidenceEvaluator().evaluate(state.documents, state.plan)
+        update_hypotheses(state)
         event(state, '阅读与核验', '检查原文可读性及证据质量',
               f'读取 {len(docs)} 篇，正文成功 {sum(d.read_status == "success" for d in docs)} 篇')
         if len(state.documents) >= len(state.sources):
@@ -211,6 +267,13 @@ def tick(state: ResearchState):
                                      '\n用户补充要求：' + '\n'.join(a['instructions']))
         synth = Synthesizer()
         state.synthesis = synth.synthesize(synthesis_plan, state.evidence)
+        update_hypotheses(state)
+        build_evidence_graph(state)
+        from src.research_health import assess_research_health
+        state.research_health = assess_research_health(
+            plan=state.plan, evidence=state.evidence, synthesis=state.synthesis,
+            coverage_results=[asdict(c) for c in state.coverage_after],
+        )
         if synth.last_warning:
             event(state, '综合提示', '报告能力状态', synth.last_warning)
         state.current_stage = 'writing'
@@ -218,7 +281,14 @@ def tick(state: ResearchState):
         return
     if state.current_stage == 'writing':
         writer = Writer()
-        state.report = writer.write(state.plan, state.synthesis)
+        state.report = writer.write(state.plan, state.synthesis, research_health=state.research_health)
+        state.diagnostics['verification'] = verify_report(state.report, state.synthesis)
+        review = critic_review(state)
+        build_evidence_graph(state)
+        if not state.diagnostics['verification']['passed']:
+            state.mark_failed('报告引用或数值校验失败，证据已保留。', stage='writing')
+            state.report = None
+            return
         if writer.last_warning:
             event(state, '写作提示', '报告能力状态', writer.last_warning)
         from src.synthesizer import CONTENT_SECTIONS
@@ -230,8 +300,11 @@ def tick(state: ResearchState):
             state.report = None
             return
         a['outcome'] = 'partial' if (state.synthesis.synthesizer_source != 'llm' or
-            state.report.writer_source != 'llm' or any(c.followup_needed for c in state.coverage_after)) else 'complete'
+            state.report.writer_source != 'llm' or any(c.followup_needed for c in state.coverage_after) or review['warnings']) else 'complete'
         state.mark_completed()
+        a['report_as_of'] = state.updated_at
+        from src.research_memory import finalize_research_memory
+        finalize_research_memory(state)
         event(state, '交付', a.get('stop_reason', '完成'),
               '部分完成，仍有证据缺口或模型降级' if a['outcome'] == 'partial' else '报告已生成，可继续调整研究方向')
         return

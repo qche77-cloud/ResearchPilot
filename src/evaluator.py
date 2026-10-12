@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunparse
 
 from src.evidence_coverage import coverage_limits
+from src.observability import traced_tool
 from src.freshness import (
     FreshnessProfile,
     PROFILE_WEIGHTS,
@@ -144,6 +145,7 @@ class EvidenceEvaluator:
     def __init__(self) -> None:
         self.last_diagnostics: dict = {}
 
+    @traced_tool('evaluator.evaluate')
     def evaluate(
         self,
         documents: list[EvidenceDocument],

@@ -7,8 +7,8 @@ Planner's per-task ``search_queries`` (via Tavily when configured) and
 return normalized ``Source`` metadata.
 
 Does not fetch full page content (Reader) or score quality
-(EvidenceEvaluator). Falls back to mock sources if the API key is
-missing or requests fail.
+(EvidenceEvaluator). Missing keys and request failures return no evidence;
+synthetic source templates are private fixtures and never a live fallback.
 """
 
 from __future__ import annotations
@@ -22,6 +22,7 @@ from urllib.parse import urlparse, urlunparse
 
 from src.domain_penalty import apply_relevance_penalty, domain_of, load_domain_penalties
 from src.env import load_env
+from src.observability import request_json, traced_tool
 from src.evidence_coverage import coverage_limits, search_candidate_limit
 from src.evidence_types import classify_evidence_type, preference_boost
 from src.freshness import (
@@ -451,11 +452,11 @@ class Searcher:
         self.last_diagnostics: dict = {}
         load_env()
 
+    @traced_tool('searcher.search')
     def search(self, plan: ResearchPlan) -> list[Source]:
         """Search using Planner ``search_queries`` when available.
 
-        Tries Tavily when ``TAVILY_API_KEY`` is set; otherwise uses mocks.
-        On API failure, falls back to mocks and sets ``last_warning``.
+        Missing configuration or service failures never manufacture evidence.
         """
         self.last_warning = None
         self.last_diagnostics = {}
@@ -464,30 +465,33 @@ class Searcher:
 
         if not api_key:
             self.last_warning = (
-                "TAVILY_API_KEY is not configured. Using mock search results. "
+                "TAVILY_API_KEY is not configured. No live search was performed. "
                 "Add the key to your .env file to enable live web search."
             )
             logger.info(self.last_warning)
-            return self._mock_search(plan)
+            self.last_diagnostics = {'mode': 'unavailable', 'error_type': 'missing_configuration', 'tavily_search_calls': 0}
+            return []
 
         try:
             sources = self._tavily_multi_query_search(plan, api_key)
             if not sources:
                 self.last_warning = (
-                    "Tavily returned no results. Falling back to mock search results."
+                    "Tavily returned no results. No simulated sources were substituted."
                 )
                 logger.warning(self.last_warning)
-                return self._mock_search(plan)
+                self.last_diagnostics['mode'] = 'no_results'
+                return []
             return sources
         except Exception as exc:  # noqa: BLE001 — intentional graceful fallback
             self.last_warning = (
-                f"Tavily search failed ({exc}). Falling back to mock search results."
+                f"Tavily search failed ({type(exc).__name__}). No simulated sources were substituted."
             )
             logger.warning(self.last_warning)
-            return self._mock_search(plan)
+            self.last_diagnostics.update(mode='unavailable', error_type=type(exc).__name__)
+            return []
 
     def _mock_search(self, plan: ResearchPlan) -> list[Source]:
-        """Return template-based mock sources (offline / fallback path)."""
+        """Private synthetic fixture helper; never used by the live search path."""
         topic = plan.topic
         slug = _slugify(topic)
         count = plan.depth.source_count
@@ -696,6 +700,7 @@ class Searcher:
         }
         return balanced
 
+    @traced_tool('searcher.followup_search')
     def followup_search(
         self,
         plan: ResearchPlan,
@@ -883,8 +888,8 @@ class Searcher:
         )
 
         try:
-            with urllib.request.urlopen(request, timeout=TAVILY_TIMEOUT_SECONDS) as response:
-                body = response.read().decode("utf-8")
+            data = request_json(request, timeout=TAVILY_TIMEOUT_SECONDS, opener=urllib.request.urlopen,
+                                operation='tavily.search', kind='tool')
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:300]
             raise RuntimeError(f"HTTP {exc.code}: {detail or exc.reason}") from exc
@@ -892,7 +897,8 @@ class Searcher:
             raise RuntimeError(f"network error: {exc.reason}") from exc
 
         try:
-            data = json.loads(body)
+            if not isinstance(data, dict):
+                raise RuntimeError('invalid JSON response from Tavily')
         except json.JSONDecodeError as exc:
             raise RuntimeError("invalid JSON response from Tavily") from exc
 

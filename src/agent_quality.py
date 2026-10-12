@@ -5,6 +5,8 @@ import os
 import urllib.request
 
 from src.models import ResearchPlanStep
+from src.observability import request_json
+from src.evidence_strategy import attach_evidence_strategies
 
 
 def focus_plan(state):
@@ -19,6 +21,7 @@ def focus_plan(state):
             {'role': 'system', 'content':
              '将用户研究目标转为3到5个直接支持判断的可验证问题，不要通用行业目录。'
              '返回JSON: objective, steps:[{question,criterion,queries:[2条简短搜索词]}]。'
+             '每个step可追加hypothesis字段（可证伪的命题），criterion说明支持和反例判据；不能预设假设已成立。'
              'criterion明确什么原始证据支持判断，以及何种情况不能下结论。'
              '比较业绩兑现时必须区分实际收入/利润、已交付订单、仅签约订单及扩产规划；'
              '注明比较期间、单位及业务口径需要一致，不得编造企业数据。'},
@@ -29,9 +32,10 @@ def focus_plan(state):
         data=json.dumps(payload).encode(),
         headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {key}'})
     try:
-        with urllib.request.urlopen(req, timeout=40) as response:
-            data = json.loads(json.loads(response.read())['choices'][0]['message']['content'])
+        response = request_json(req, timeout=40, opener=urllib.request.urlopen, operation='planner.focus')
+        data = json.loads(response['choices'][0]['message']['content'])
         steps = []
+        hypotheses = {}
         for item in data.get('steps', [])[:5]:
             question, criterion = item.get('question'), item.get('criterion')
             queries = item.get('queries')
@@ -41,10 +45,14 @@ def focus_plan(state):
             if not question.strip() or not queries or question in [s.title for s in steps]:
                 continue
             steps.append(ResearchPlanStep(len(steps) + 1, question[:150], criterion[:1200], queries))
+            if isinstance(item.get('hypothesis'), str) and item['hypothesis'].strip():
+                hypotheses[question[:150]] = {'content': item['hypothesis'].strip()[:1200], 'criterion': criterion[:1200]}
         if len(steps) < 3:
             raise ValueError('invalid focused plan')
         plan.steps = steps
         plan.research_objective = str(data.get('objective') or state.topic)[:2000]
+        attach_evidence_strategies(plan, state.analyzed_query)
+        state.diagnostics.setdefault('agent', {})['planned_hypotheses'] = hypotheses
         return '已按研究目标制定问题与证据标准'
     except Exception as exc:
         return f'目标规划暂不可用（{type(exc).__name__}），沿用原计划'

@@ -5,9 +5,12 @@ import streamlit as st
 from src.stock_data import normalize_symbol, fetch_stock, changes, data_error_message
 from src.stock_presentation import search_directory, fetch_directory, financial_summary
 from src.ui_theme import page_intro
+from src.stock_research import freshness, stock_history
+from src.judgment_ui import render_judgment
+from src.financial_ui import render_financial_tools
 
 
-def render_workbench(store, start_research):
+def render_workbench(store, start_research, repo=None):
     page_intro('看清公司，也记录你的判断。', '行情、财务、自选与复盘放在一起。用数据核查假设，让每次研究都有迹可循。')
     stock, watch, comparison, memory = st.tabs(['个股与复盘', '自选股变化', '公司对比', '长期偏好'])
     with stock:
@@ -36,6 +39,30 @@ def render_workbench(store, start_research):
             code = None
         if code:
             st.caption(f'{name} · {exchange}:{code} · 盘后日线研究')
+            with st.expander('个股研究档案', expanded=True):
+                profile = store.profile(code)
+                with st.form('profile_' + code):
+                    focus = st.text_area('关注点', profile['focus'])
+                    supporting = st.text_area('支持证据与来源（用户记录）', profile['supporting'])
+                    contrary = st.text_area('反面证据与来源（用户记录）', profile['contrary'])
+                    questions = st.text_area('待核查问题', profile['questions'])
+                    if st.form_submit_button('保存档案'):
+                        store.save_profile(code, focus, supporting, contrary, questions)
+                        st.success('已保存；Agent 只提供建议，不自动覆盖你的判断。')
+                st.caption('投资假设沿用下方复盘记录。上述内容是用户记录，不等于已核实事实。')
+                if repo is not None:
+                    history = stock_history(store, repo, code)
+                    if st.button('更新这家公司', key='refresh_research_' + code, type='primary'):
+                        start_research(f'更新 A 股 {code} 的研究：检查新增公告、业绩与风险，逐项对照上次判断。', symbol=code, update=True)
+                    if history:
+                        st.caption('历史关联：明确绑定的研究及按代码匹配的单股旧研究；名称型旧记录仍可在侧栏搜索。')
+                        for previous in history[:10]:
+                            if st.button(f'{previous.created_at[:10]} · {previous.status} · {previous.topic[:28]}', key='stock_run_' + previous.run_id):
+                                st.session_state.run_id = previous.run_id
+                                st.session_state.page = '研究对话'
+                                st.rerun()
+                    else:
+                        st.caption('尚无关联研究；首次更新将建立基线，不声称已经发生判断变化。')
             c1, c2, c3 = st.columns(3)
             if c1.button('更新行情与财务', type='primary'):
                 try:
@@ -54,6 +81,8 @@ def render_workbench(store, start_research):
                 data = snapshots[0]['payload']
                 st.caption(f"来源：{data['provider']} · 获取时间：{data['fetched_at']} · {data['adjustment']}")
                 st.caption('当前展示本地已保存快照，并非实时行情；获取时间不等于交易日期。')
+                with st.expander('数据时效检查'):
+                    st.json(freshness(data))
                 daily = pd.DataFrame(data['daily'])
                 last = daily.iloc[-1]
                 c1, c2, c3 = st.columns(3)
@@ -92,6 +121,7 @@ def render_workbench(store, start_research):
                 st.download_button('下载数据快照', json.dumps(data, ensure_ascii=False, indent=2), f'{code}.json')
             else:
                 st.info('尚无数据快照，点击更新获取。')
+            render_financial_tools(store, code, snapshots[0]['payload'] if snapshots else None)
             st.subheader('投资假设与复盘')
             with st.form('thesis'):
                 thesis = st.text_area('为什么关注？')
@@ -114,6 +144,8 @@ def render_workbench(store, start_research):
                             st.rerun()
                     if st.button('Agent 核查假设', key='verify_' + item['id']):
                         start_research(f"核查 A 股 {code} 的假设：{item['thesis']}；催化：{item['catalyst']}；证伪条件：{item['invalidation']}。搜索公告和反例，不预设结论。")
+                    if repo is not None:
+                        render_judgment(store, repo, code, item)
     with watch:
         st.caption('可手动刷新，也可开启工作日 16 点后的自动更新。仅在本地服务运行时执行，变化记录显示在这里，不发送外部通知。')
         for item in store.watches():
@@ -123,6 +155,20 @@ def render_workbench(store, start_research):
             enabled = st.checkbox('启用盘后自动更新', value=bool(config.get('enabled')), key='monitor_' + code)
             if enabled != bool(config.get('enabled')):
                 store.set_monitor(code, enabled)
+            with st.expander('监控频率、来源与运行记录'):
+                with st.form('monitor_settings_' + code):
+                    hours = st.number_input('最短更新间隔（小时）', min_value=1, max_value=168,
+                                            value=max(1, int(config.get('interval_seconds', 72000) / 3600)))
+                    modes = ['daily_and_financials', 'daily']
+                    mode = st.selectbox('监控内容', modes, index=modes.index(config.get('source_mode', modes[0])),
+                                        format_func=lambda m: '日线与财务源值变化' if m == modes[0] else '日线变化')
+                    if st.form_submit_button('保存监控设置'):
+                        store.configure_monitor(code, int(hours) * 3600, mode)
+                        st.success('已保存；仍只在本地服务运行且满足盘后时段时执行。')
+                st.caption('日线来源：AKShare/东方财富；财务来源：新浪。源值变化不是已核实的新公告，不自动消耗模型或检索预算。')
+                events = store.monitor_events(code)
+                if events:
+                    st.dataframe([{'时间': e['created'], '状态': e['status'], '来源': e['source'], '明细': json.dumps(e['detail'], ensure_ascii=False)} for e in events], hide_index=True)
             for alert in store.alerts(code):
                 st.caption(alert['created'] + ' · ' + alert['content'])
             snapshots = store.snapshots(code)
@@ -139,8 +185,7 @@ def render_workbench(store, start_research):
                 except Exception as exc:
                     st.error(data_error_message(exc) + '已有快照保留。')
             if c2.button('研究最新变化', key='research_' + code):
-                since = snapshots[0]['created'] if snapshots else '最近一个月'
-                start_research(f'检查 A 股 {code} 自 {since} 以来的新公告、业绩、回购减持和业务变化，说明是否影响判断并逐项给出来源。')
+                start_research(f'更新 A 股 {code} 的公告、业绩、回购减持和业务变化，核查是否影响原判断。', symbol=code, update=True)
             if c3.button('移出自选', key='remove_' + code):
                 store.unwatch(code)
                 store.set_monitor(code, False)

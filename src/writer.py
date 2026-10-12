@@ -21,6 +21,8 @@ import urllib.error
 import urllib.request
 
 from src.env import load_env
+from src.observability import request_json, traced_tool
+from src.verifier import citation_ids, verify_report
 from src.models import (
     GroundedFinding,
     ReportSection,
@@ -102,6 +104,7 @@ class Writer:
         self.last_diagnostics: dict = {}
         load_env()
 
+    @traced_tool('writer.write')
     def write(
         self,
         plan: ResearchPlan,
@@ -188,10 +191,7 @@ class Writer:
             method="POST",
         )
 
-        with urllib.request.urlopen(request, timeout=OPENAI_TIMEOUT_SECONDS) as response:
-            body = response.read().decode("utf-8")
-
-        data = json.loads(body)
+        data = request_json(request, timeout=OPENAI_TIMEOUT_SECONDS, opener=urllib.request.urlopen, operation='writer.generate')
         try:
             content = data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
@@ -323,12 +323,16 @@ class Writer:
             ReportSection(title="Sources", content=_format_sources_section(synthesis))
         )
 
-        return ResearchReport(
+        report = ResearchReport(
             topic=synthesis.topic,
             depth=synthesis.depth,
             sections=sections,
             writer_source="llm",
         )
+        verification = verify_report(report, synthesis)
+        if not verification['passed']:
+            raise RuntimeError('report integrity verification failed')
+        return report
 
     def _fallback_report(
         self,
@@ -616,7 +620,12 @@ def _strip_trailing_gap_notes(content: str) -> str:
 
 
 def _sanitize_citations(content: str, valid_ids: set[str]) -> str:
-    """Drop citation markers that are not in the evidence index."""
+    """Reject invalid references instead of retaining an unsupported assertion."""
+
+    if citation_ids(content) - valid_ids:
+        raise RuntimeError('report contains unknown evidence references')
+    if any(not re.fullmatch(r'E\d+', marker, re.I) for marker in re.findall(r'\[(E[^\]]*)\]', content, re.I)):
+        raise RuntimeError('report contains malformed evidence references')
 
     def _repl(match: re.Match[str]) -> str:
         eid = match.group(1).upper()

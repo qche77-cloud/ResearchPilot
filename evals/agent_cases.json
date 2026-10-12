@@ -1,0 +1,629 @@
+{
+  "provenance": "synthetic_offline_fixture",
+  "as_of": "2026-10-12",
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "industry-valid",
+      "scenario": "industry",
+      "query": "Synthetic industry regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "industry-missing-task",
+      "scenario": "industry",
+      "query": "Synthetic industry regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue",
+        "supply_chain"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 0.5,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "industry-fallback-is-not-coverage",
+      "scenario": "industry",
+      "query": "Synthetic industry regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "fallback"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 0.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "industry-invalid-reference",
+      "scenario": "industry",
+      "query": "Synthetic industry regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E99]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": false,
+        "issues": [
+          "invalid_citation"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "company-valid",
+      "scenario": "company",
+      "query": "Synthetic company regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "company-uncited-fact",
+      "scenario": "company",
+      "query": "Synthetic company regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10%"
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": false,
+        "issues": [
+          "missing_citation"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "company-fabricated-quote",
+      "scenario": "company",
+      "query": "Synthetic company regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 99%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": false,
+        "issues": [
+          "quote_mismatch"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "company-listing-is-not-coverage",
+      "scenario": "company",
+      "query": "Synthetic company regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success",
+          "listing_page": true
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 0.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "finance-decimal-equality",
+      "scenario": "finance",
+      "query": "Synthetic finance regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [
+        {
+          "claim": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": "100"
+          },
+          "fact": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": "100.000"
+          }
+        }
+      ],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": [
+          "consistent"
+        ]
+      }
+    },
+    {
+      "id": "finance-number-conflict",
+      "scenario": "finance",
+      "query": "Synthetic finance regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [
+        {
+          "claim": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": "100"
+          },
+          "fact": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": "120"
+          }
+        }
+      ],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": true,
+        "observations": [
+          "conflict"
+        ]
+      }
+    },
+    {
+      "id": "finance-unit-mismatch",
+      "scenario": "finance",
+      "query": "Synthetic finance regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [
+        {
+          "claim": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": "100"
+          },
+          "fact": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "million_yuan",
+            "basis": "single_quarter",
+            "value": "100"
+          }
+        }
+      ],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": [
+          "unknown"
+        ]
+      }
+    },
+    {
+      "id": "finance-missing-value",
+      "scenario": "finance",
+      "query": "Synthetic finance regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [
+        {
+          "claim": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": "100"
+          },
+          "fact": {
+            "entity": "synthetic-company",
+            "metric": "revenue",
+            "period": "2025-Q1",
+            "currency": "CNY",
+            "unit": "yuan",
+            "basis": "single_quarter",
+            "value": null
+          }
+        }
+      ],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": [
+          "unknown"
+        ]
+      }
+    },
+    {
+      "id": "conflict-opposite-direction",
+      "scenario": "conflict",
+      "query": "Synthetic conflict regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue decreased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue decreased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": false,
+        "issues": [
+          "direction_conflict"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": true,
+        "observations": []
+      }
+    },
+    {
+      "id": "conflict-percentage-mismatch",
+      "scenario": "conflict",
+      "query": "Synthetic conflict regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 50% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": false,
+        "issues": [
+          "numeric_mismatch"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": true,
+        "observations": []
+      }
+    },
+    {
+      "id": "conflict-different-period-is-unknown",
+      "scenario": "conflict",
+      "query": "Synthetic conflict regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Q1 Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Q2 Revenue decreased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Q2 Revenue decreased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    },
+    {
+      "id": "conflict-omitted-opposing-evidence",
+      "scenario": "conflict",
+      "query": "Synthetic conflict regression",
+      "as_of": "2026-10-12",
+      "answer": {
+        "action": "answer",
+        "answer": "Revenue increased 10% [E1]",
+        "supports": {
+          "E1": "Revenue increased 10%"
+        }
+      },
+      "evidence": {
+        "E1": {
+          "text": "Revenue increased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success"
+        },
+        "E2": {
+          "text": "Revenue decreased 10%.",
+          "task": "revenue",
+          "url": "https://example.invalid/synthetic-source",
+          "read_status": "success",
+          "relation": "contrary"
+        }
+      },
+      "required_tasks": [
+        "revenue"
+      ],
+      "observations": [],
+      "expected": {
+        "passed": false,
+        "issues": [
+          "omitted_counterevidence"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      }
+    }
+  ]
+}

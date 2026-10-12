@@ -7,6 +7,8 @@ from src.env import load_env
 from src.report_links import normalize_history
 from src.workbench_ui import render_workbench
 from src.ui_theme import apply_theme, page_intro, status_strip, page_motion, welcome, starter_card
+from src.stock_research import attach_research, symbols_in, freshness, update_brief
+from src.evidence_cards import render_cards
 
 load_env()
 st.set_page_config(page_title='ResearchPilot · 投研工作台', page_icon='◈', layout='wide')
@@ -24,13 +26,21 @@ service = runner()
 repo, store = service.repo, service.store
 
 
-def start_research(topic):
+def start_research(topic, symbol=None, update=False):
+    candidates = symbols_in(topic, store.directory())
+    symbol = symbol or (candidates[0] if len(candidates) == 1 else None)
+    if symbol and symbol not in topic:
+        topic = f'{symbol} · {topic}'
     state = create_agent(topic, st.session_state.get('budget', 2))
+    if symbol:
+        attach_research(state, store, repo, symbol, update)
     state.diagnostics['agent']['preferences'] = store.preferences()
     state.diagnostics['agent']['messages'] = [
         {'role': 'user', 'content': topic},
         {'role': 'assistant', 'content': '我会核查原始资料，区分已兑现的事实与仍需验证的判断。研究在后台运行，可以继续发消息。'}]
     repo.save_state(state)
+    if symbol:
+        store.link_run(symbol, state.run_id)
     st.session_state.run_id = state.run_id
     st.session_state.page = '研究对话'
     service.submit(state.run_id, 'resume')
@@ -45,12 +55,7 @@ def show_snapshot(snapshot, kind, version):
             st.subheader(section['title'])
             st.markdown(section['content'])
     else:
-        for eid, item in snapshot['evidence'].items():
-            with st.expander(f'[{eid}] {item["title"]}'):
-                st.caption('日期：' + str(item['date'] or '未知'))
-                if urlsplit(item['url']).scheme in {'http', 'https'}:
-                    st.link_button('原始来源 ↗', item['url'])
-                st.text(item['text'])
+        render_cards(snapshot)
 
 
 with st.sidebar:
@@ -75,7 +80,8 @@ with st.sidebar:
         st.caption('关闭浏览器不影响后台任务；重启本地服务后需手动恢复。')
     st.divider()
     st.caption('最近研究 / HISTORY')
-    for row in repo.list_runs(limit=20):
+    history_query = st.text_input('搜索研究历史', placeholder='公司名称、代码或主题')
+    for row in repo.list_runs(limit=50, topic_query=history_query or None):
         if st.button(row.topic[:30], key=row.run_id, help=row.topic, use_container_width=True):
             st.session_state.run_id = row.run_id
             st.session_state.page = '研究对话'
@@ -83,7 +89,7 @@ with st.sidebar:
 
 page_motion((st.session_state.get('page', '研究对话'), st.session_state.get('run_id')))
 if st.session_state.get('page') == '个股与自选':
-    render_workbench(store, start_research)
+    render_workbench(store, start_research, repo=repo)
     st.stop()
 
 run_id = st.session_state.get('run_id')
@@ -98,16 +104,17 @@ if not run_id:
             starter_card(*card)
             if st.button('从这里开始 ↗', key='starter_' + card[0], help=suggestion, use_container_width=True):
                 st.session_state.research_draft = suggestion
+                st.session_state.home_editor = suggestion
     st.markdown('<div class="rp-footnote">A 股盘后研究 · 来源可追溯 · 记录保存在本地</div>', unsafe_allow_html=True)
-    if st.session_state.get('research_draft'):
-        with st.form('research_starter'):
-            draft = st.text_area('补充股票名称、代码和关注的问题', st.session_state.research_draft)
-            if st.form_submit_button('开始研究', type='primary') and draft.strip():
-                start_research(draft.strip())
-    with st.container():
-        topic = st.chat_input('输入公司名称或代码，开始你的研究…')
-    if topic:
-        start_research(topic)
+    if 'home_editor' not in st.session_state:
+        st.session_state.home_editor = st.session_state.get('research_draft', '')
+    def save_home_draft():
+        st.session_state.research_draft = st.session_state.home_editor
+    topic = st.text_area('输入公司名称、代码和关注的问题', key='home_editor', on_change=save_home_draft, height=100)
+    st.caption('草稿在当前浏览器会话切页时保留；关闭或刷新浏览器不保证保留。')
+    if st.button('开始研究', type='primary') and topic.strip():
+        st.session_state.research_draft = ''
+        start_research(topic.strip())
     st.stop()
 
 
@@ -118,10 +125,35 @@ def conversation(run_id):
         st.error('未找到研究记录。')
         return
     a = state.diagnostics.get('agent', {})
+    from src.reasoning_ui import render_reasoning
+    render_reasoning(state)
     outcome = a.get('outcome')
     label = '后台执行中' if active else ('执行失败' if state.status == 'failed' else
         ('部分完成' if outcome == 'partial' else ('已完成' if state.status == 'completed' else '已暂停 / 待恢复')))
     status_strip(f'{label} · 搜索 {a.get("searches", 0)}/{a.get("budget", 2)} · 来源 {len(state.sources)}')
+    if a.get('stock_symbol'):
+        st.caption('当前研究对象：' + a['stock_symbol'])
+        if st.button('基于档案更新研究', key='update_bound_stock', disabled=active):
+            start_research(f'更新 A 股 {a["stock_symbol"]} 的研究，对照上次结论核查新增信息。', symbol=a['stock_symbol'], update=True)
+    with st.expander('数据时点与口径'):
+        if a.get('freshness'):
+            st.json(a['freshness'])
+        else:
+            st.caption('尚无结构化数据时点，不能确认资料为最新。')
+        st.dataframe([{'来源': s.title, '公告/来源日期': s.published_date or '未知', '链接': s.url}
+                      for s in state.sources], hide_index=True)
+        st.caption('来源日期为采集元数据，可能不准确；财报期间不等于公告日期。')
+    baseline = a.get('baseline')
+    if baseline:
+        with st.expander('与上次研究对照'):
+            st.caption('上次研究时间：' + baseline['as_of'])
+            st.write(baseline['summary'])
+            st.write(update_brief(state))
+            if baseline.get('snapshot') and st.button('查看基线报告版本', key='baseline_version'):
+                show_snapshot(baseline['snapshot'], 'report', baseline['version'])
+            if st.button('打开上次研究', key='baseline_open'):
+                st.session_state.run_id = baseline['run_id']
+                st.rerun()
     with st.expander('研究控制与执行详情', expanded=False):
         if active:
             if st.button('暂停（当前工具结束后生效）', key='pause'):
@@ -140,6 +172,8 @@ def conversation(run_id):
             for gap in a.get('evidence_gaps', []):
                 st.caption(gap['task'] + '：' + gap['issue'])
         with st.expander('工具执行记录'):
+            from src.trace_ui import render_trace
+            render_trace(state)
             for item in a.get('events', []):
                 st.write(f'**{item["tool"]}** · {item["reason"]}')
                 st.caption(item['result'])
@@ -170,10 +204,20 @@ def conversation(run_id):
                 st.info('待处理消息：' + command['content'])
         if state.error:
             st.error(state.error)
-    incoming = st.chat_input('继续追问、补充要求或核查新的资料…', key='followup')
-    if incoming:
-        service.submit(run_id, 'chat', incoming)
-        st.rerun(scope='fragment')
+    draft_key = 'draft_' + run_id
+    widget_key = 'draft_widget_' + run_id
+    if widget_key not in st.session_state:
+        st.session_state[widget_key] = st.session_state.get(draft_key, '')
+    def remember_draft():
+        st.session_state[draft_key] = st.session_state[widget_key]
+    st.text_area('继续追问（切换页面后保留草稿）', key=widget_key, on_change=remember_draft, height=90)
+    def send_draft():
+        incoming = st.session_state.get(widget_key, '').strip()
+        if incoming:
+            service.submit(run_id, 'chat', incoming)
+            st.session_state[draft_key] = ''
+            st.session_state[widget_key] = ''
+    st.button('发送追问', key='send_' + run_id, type='primary', on_click=send_draft)
 
 
 conversation(run_id)

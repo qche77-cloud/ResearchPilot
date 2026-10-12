@@ -24,6 +24,7 @@ import urllib.error
 import urllib.request
 
 from src.env import load_env, openai_api_key_status
+from src.observability import request_json, traced_tool
 from src.freshness import classify_task_freshness
 from src.models import (
     AnalyzedQuery,
@@ -301,6 +302,7 @@ class Planner:
         self.last_warning: str | None = None
         load_env()
 
+    @traced_tool('planner.plan')
     def plan(self, analyzed: AnalyzedQuery, depth: ResearchDepth) -> ResearchPlan:
         """Generate a research plan for the analyzed query and depth.
 
@@ -427,8 +429,7 @@ class Planner:
         )
 
         try:
-            with urllib.request.urlopen(request, timeout=OPENAI_TIMEOUT_SECONDS) as response:
-                body = response.read().decode("utf-8")
+            data = request_json(request, timeout=OPENAI_TIMEOUT_SECONDS, opener=urllib.request.urlopen, operation='planner.generate')
         except urllib.error.HTTPError:
             # Re-raise so _classify_openai_error can inspect status/body.
             raise
@@ -436,7 +437,8 @@ class Planner:
             raise
 
         try:
-            data = json.loads(body)
+            if not isinstance(data, dict):
+                raise RuntimeError('invalid response format')
         except json.JSONDecodeError as exc:
             raise RuntimeError("invalid response format") from exc
 
