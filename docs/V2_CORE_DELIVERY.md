@@ -2,6 +2,8 @@
 
 日期：2026-10-12。这是本地 v2.0 开发版本，含用户原有工作区修改；不是已经发布或完整生产认证的 Git 标签。
 
+发布状态更新（2026-10-13）：该开发版本已提交并推送至 GitHub `main`，提交 `3eacab3`。本文件保留开发时的验收记录；最新启动验证、发布信息及未完成项见 [2026-10-13 报告](DAILY_2026-10-13.md)。没有创建正式 release 或版本标签。
+
 ## 现在可直接使用
 
 1. **多期财务分析**：个股工作台新增入口，可导入带来源的 JSON，也可在核对后声明旧快照的单位/币种/单季累计/合并母公司口径。计算同比、累计转单季、环比、毛利率、费用率、净利率、TTM 和基础估值。输入缺失、冲突、零/负基期或估值前视时显示明确状态。
@@ -72,7 +74,7 @@
 
 新增测试/演示：`scripts/test_v2_financial.py`、`scripts/test_v2_autonomy.py`、`scripts/test_v2_memory.py`、`scripts/demo_v2.py`。更新 `scripts/test_v2_quality.py` 和 `scripts/run_offline_tests.py`；新增本阶段文档及 artifacts 中对应报告和演示。
 
-生产库没有运行破坏性迁移或清理。workbench 新增 financial_inputs、monitor_settings、monitor_events，旧表原记录不覆盖；服务启动按需建表。当前 `.git` 权限为只读，且存在用户原有未提交改动；没有创建 commit、打标签或推送，也没有将这些原改动混入提交。
+生产库没有运行破坏性迁移或清理。workbench 新增 financial_inputs、monitor_settings、monitor_events，旧表原记录不覆盖；服务启动按需建表。开发验收结束时尚未提交；2026-10-13 在用户明确授权上传后，通过受控权限创建升级提交并推送 `main`，包括集成所需的原工作区改动。未打版本标签，详见最新发布报告。
 
 ## 费用、风险与未完成项
 

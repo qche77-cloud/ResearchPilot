@@ -54,6 +54,7 @@ contract tests, not live model/account certification.
 See [core implementation and limitations](docs/V2_CORE_DELIVERY.md),
 [architecture](docs/V2_ARCHITECTURE.md), and
 [official-source technology assessment](docs/V2_TECH_EVALUATION.md).
+Latest test and GitHub publication record: [2026-10-13 delivery report](docs/DAILY_2026-10-13.md).
 This is a tested development build. General semantic verification and live API
 quality are not certified; `unknown` must not be interpreted as verified truth.
 
