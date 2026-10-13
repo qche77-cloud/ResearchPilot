@@ -1,0 +1,26 @@
+{
+  "mode": "isolated_synthetic_browser_preview",
+  "viewport_widths": [
+    1440,
+    1024,
+    390
+  ],
+  "checks": [
+    "desktop_home_draft_navigation",
+    "desktop_stock_financial_report_evidence_reasoning_views",
+    "tablet_home_no_horizontal_overflow",
+    "mobile_home_no_horizontal_overflow",
+    "mobile_stock_financial_view_no_horizontal_overflow"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "conversation-desktop.png",
+    "finance-desktop.png",
+    "finance-mobile.png",
+    "home-desktop.png",
+    "home-mobile.png",
+    "home-tablet.png",
+    "report-desktop.png",
+    "stock-desktop.png"
+  ]
+}

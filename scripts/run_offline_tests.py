@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 UNIT_MODULES = [
     'scripts.test_agent', 'scripts.test_workbench', 'scripts.test_stock_research',
     'scripts.test_judgments', 'scripts.test_stock_presentation',
+    'scripts.test_ui_workspace',
 ]
 SCRIPT_MODULES = [
     'scripts.test_research_health', 'scripts.test_v112_reader_reliability',

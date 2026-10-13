@@ -5,6 +5,7 @@ import json
 import math
 from decimal import Decimal
 import streamlit as st
+from src.ui_theme import empty_state
 from src.financial_analysis import (METRICS, analyze_financials, chart_points, financial_evidence,
                                     number, valuation, identity)
 
@@ -36,39 +37,44 @@ def render_analysis(analysis, *, key):
     st.caption(f'可用原始记录 {analysis["usable_records"]} 条 · 口径或数据待核对 {analysis["blocked_records"]} 条')
     records = analysis['records']
     if not records:
-        st.info('尚无可分析财务数据。可导入下方 JSON 格式的带来源财务记录。')
+        empty_state('等待财务数据', '导入带来源的财务记录，或核对已有快照的单位与口径后开始分析。')
         return
     record_table = [{ '指标': r['label'], '期间': r['period_end'], '口径': r['basis'], '范围': r['scope'],
                      '币种': r['currency'], '标准值': r['value'] if r['status'] == 'ok' else None,
                      '单位': r['unit'], '状态': '可计算' if r['status'] == 'ok' else '待核对',
                      '原因': '；'.join(REASONS.get(i, i) for i in r['issues']), '记录 ID': r['id'] } for r in records]
-    st.dataframe(record_table, hide_index=True)
     computations = analysis['computations']
-    st.dataframe([{'指标': METRICS.get(c['metric'], c['metric']), '期间': c['period_end'], '口径': c['basis'],
-                   '计算': c['kind'], '结果': c['value'], '单位': c['unit'], '状态': c['status'],
-                   '说明': REASONS.get(c.get('reason'), c.get('reason')), '输入记录': ', '.join(c['input_ids'])}
-                  for c in computations], hide_index=True)
-    metric = st.selectbox('多期财务图表', sorted({r['metric'] for r in records}), format_func=lambda m: METRICS[m], key=key + '_metric')
-    basis = st.selectbox('比较口径', ['cumulative', 'single_quarter', 'instant'],
+    metrics, bases = st.columns(2)
+    metric = metrics.selectbox('多期财务图表', sorted({r['metric'] for r in records}), format_func=lambda m: METRICS[m], key=key + '_metric')
+    basis = bases.selectbox('比较口径', ['cumulative', 'single_quarter', 'instant'],
                          format_func=lambda b: {'cumulative': '年初至今累计', 'single_quarter': '单季度', 'instant': '期末时点'}[b], key=key + '_basis')
     points = chart_points(analysis, metric, basis)
     if points:
         scopes = sorted({(p['currency'], p['scope']) for p in points})
-        chosen = st.selectbox('币种与报表范围', scopes, key=key + '_scope')
+        chosen = st.selectbox('币种与报表范围', scopes, key=key + '_scope',
+                              format_func=lambda s: f'{s[0]} · ' + {'consolidated': '合并报表', 'parent_company': '母公司报表'}.get(s[1], s[1]))
         selected = [p for p in points if (p['currency'], p['scope']) == chosen]
         display = []
         for p in selected:
             value = float(p['value'])
             if math.isfinite(value):
                 display.append(dict(p, chart_value=value))
-        st.vega_lite_chart(display, {'mark': {'type': 'line', 'point': True},
+        st.vega_lite_chart(display, {'height': 300, 'mark': {'type': 'line', 'point': True, 'color': '#19766b', 'strokeWidth': 2.5},
             'encoding': {'x': {'field': 'period', 'type': 'ordinal', 'sort': 'ascending', 'title': '财报期末'},
                          'y': {'field': 'chart_value', 'type': 'quantitative', 'title': f'{chosen[0]} {selected[0]["unit"]}'},
                          'tooltip': [{'field': f, 'type': 'nominal'} for f in ('period', 'value', 'currency', 'basis', 'record_id', 'source_url', 'fetched_at')]} })
         st.caption('图表仅将确定性计算结果转换为绘图坐标；精确值、原始记录 ID 与来源可在下表和下载文件中核对。')
-        st.dataframe(selected, hide_index=True)
+        with st.expander('图表精确值与来源'):
+            st.dataframe(selected, hide_index=True, use_container_width=True)
     else:
         st.info('此口径没有通过校验的图表数据；未知值不会画成零。')
+    with st.expander('原始记录与数据质量'):
+        st.dataframe(record_table, hide_index=True, use_container_width=True)
+    with st.expander('计算结果与输入记录'):
+        st.dataframe([{'指标': METRICS.get(c['metric'], c['metric']), '期间': c['period_end'], '口径': c['basis'],
+                      '计算': c['kind'], '结果': c['value'], '单位': c['unit'], '状态': c['status'],
+                      '说明': REASONS.get(c.get('reason'), c.get('reason')), '输入记录': ', '.join(c['input_ids'])}
+                     for c in computations], hide_index=True, use_container_width=True)
     with st.expander('计算公式与原始数据追溯'):
         st.json(financial_evidence(analysis))
     st.download_button('下载财务分析与证据', json.dumps(financial_evidence(analysis), ensure_ascii=False, indent=2),

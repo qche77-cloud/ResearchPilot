@@ -4,18 +4,19 @@ import pandas as pd
 import streamlit as st
 from src.stock_data import normalize_symbol, fetch_stock, changes, data_error_message
 from src.stock_presentation import search_directory, fetch_directory, financial_summary
-from src.ui_theme import page_intro
+from src.ui_theme import page_intro, empty_state
 from src.stock_research import freshness, stock_history
 from src.judgment_ui import render_judgment
 from src.financial_ui import render_financial_tools
 
 
 def render_workbench(store, start_research, repo=None):
-    page_intro('看清公司，也记录你的判断。', '行情、财务、自选与复盘放在一起。用数据核查假设，让每次研究都有迹可循。')
+    page_intro('个股研究台', '跟踪业绩与现金流，把数据、研究档案和投资判断连在一起。')
     stock, watch, comparison, memory = st.tabs(['个股与复盘', '自选股变化', '公司对比', '长期偏好'])
     with stock:
-        query = st.text_input('股票名称或六位代码', '002837', max_chars=40)
-        if st.button('更新股票名称目录'):
+        search, directory_action = st.columns([4, 1], vertical_alignment='bottom')
+        query = search.text_input('股票名称或六位代码', '002837', max_chars=40)
+        if directory_action.button('更新股票名称目录', use_container_width=True):
             try:
                 with st.spinner('更新名称目录…'):
                     store.save_directory(fetch_directory())
@@ -39,113 +40,121 @@ def render_workbench(store, start_research, repo=None):
             code = None
         if code:
             st.caption(f'{name} · {exchange}:{code} · 盘后日线研究')
-            with st.expander('个股研究档案', expanded=True):
-                profile = store.profile(code)
-                with st.form('profile_' + code):
-                    focus = st.text_area('关注点', profile['focus'])
-                    supporting = st.text_area('支持证据与来源（用户记录）', profile['supporting'])
-                    contrary = st.text_area('反面证据与来源（用户记录）', profile['contrary'])
-                    questions = st.text_area('待核查问题', profile['questions'])
-                    if st.form_submit_button('保存档案'):
-                        store.save_profile(code, focus, supporting, contrary, questions)
-                        st.success('已保存；Agent 只提供建议，不自动覆盖你的判断。')
-                st.caption('投资假设沿用下方复盘记录。上述内容是用户记录，不等于已核实事实。')
-                if repo is not None:
-                    history = stock_history(store, repo, code)
-                    if st.button('更新这家公司', key='refresh_research_' + code, type='primary'):
-                        start_research(f'更新 A 股 {code} 的研究：检查新增公告、业绩与风险，逐项对照上次判断。', symbol=code, update=True)
-                    if history:
-                        st.caption('历史关联：明确绑定的研究及按代码匹配的单股旧研究；名称型旧记录仍可在侧栏搜索。')
-                        for previous in history[:10]:
-                            if st.button(f'{previous.created_at[:10]} · {previous.status} · {previous.topic[:28]}', key='stock_run_' + previous.run_id):
-                                st.session_state.run_id = previous.run_id
-                                st.session_state.page = '研究对话'
-                                st.rerun()
-                    else:
-                        st.caption('尚无关联研究；首次更新将建立基线，不声称已经发生判断变化。')
             c1, c2, c3 = st.columns(3)
-            if c1.button('更新行情与财务', type='primary'):
+            if c1.button('更新行情与财务', type='primary', use_container_width=True):
                 try:
                     with st.spinner('获取真实数据…'):
                         store.save_snapshot(code, fetch_stock(code))
                     st.success('已保存快照。')
                 except Exception as exc:
                     st.error(data_error_message(exc) + '已有快照保留；下方如有数据，仍是缓存快照。')
-            if c2.button('加入自选'):
+            if c2.button('加入自选', use_container_width=True):
                 store.watch(code, name)
                 st.success('已加入自选。')
-            if c3.button('Agent 研究个股'):
+            if c3.button('Agent 研究个股', use_container_width=True):
                 start_research(f'研究 A 股 {exchange}:{code} 的财务质量、现金流、近期公告、估值和风险，给出证据及推翻判断的条件。')
             snapshots = store.snapshots(code)
-            if snapshots:
-                data = snapshots[0]['payload']
-                st.caption(f"来源：{data['provider']} · 获取时间：{data['fetched_at']} · {data['adjustment']}")
-                st.caption('当前展示本地已保存快照，并非实时行情；获取时间不等于交易日期。')
-                with st.expander('数据时效检查'):
-                    st.json(freshness(data))
-                daily = pd.DataFrame(data['daily'])
-                last = daily.iloc[-1]
-                c1, c2, c3 = st.columns(3)
-                c1.metric('最近收盘（元）', f"{float(last['收盘']):.2f}")
-                c2.metric('交易日期', str(last['日期'])[:10])
-                c3.metric('成交量（手）', f"{float(last['成交量']):,.0f}")
-                daily['日期'] = pd.to_datetime(daily['日期'])
-                chart = st.radio('图表', ['收盘走势', '日 K 线'], horizontal=True)
-                if chart == '收盘走势':
-                    st.line_chart(daily.set_index('日期')[['收盘']])
+            overview_tab, financial_tab, profile_tab, thesis_tab = st.tabs(['行情概览', '财务分析', '研究档案', '投资复盘'])
+            with overview_tab:
+                if snapshots:
+                    data = snapshots[0]['payload']
+                    st.caption(f"来源：{data['provider']} · 获取时间：{data['fetched_at']} · {data['adjustment']}")
+                    st.caption('当前展示本地已保存快照，并非实时行情；获取时间不等于交易日期。')
+                    with st.expander('数据时效检查'):
+                        st.json(freshness(data))
+                    daily = pd.DataFrame(data['daily'])
+                    last = daily.iloc[-1]
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric('最近收盘（元）', f"{float(last['收盘']):.2f}")
+                    c2.metric('交易日期', str(last['日期'])[:10])
+                    c3.metric('成交量（手）', f"{float(last['成交量']):,.0f}")
+                    daily['日期'] = pd.to_datetime(daily['日期'])
+                    chart = st.radio('图表', ['收盘走势', '日 K 线'], horizontal=True)
+                    if chart == '收盘走势':
+                        st.line_chart(daily.set_index('日期')[['收盘']])
+                    else:
+                        st.vega_lite_chart(daily, {
+                            'encoding': {'x': {'field': '日期', 'type': 'temporal'},
+                                'color': {'condition': {'test': 'datum.收盘 >= datum.开盘', 'value': '#d85454'}, 'value': '#178576'}},
+                            'layer': [
+                                {'mark': 'rule', 'encoding': {'y': {'field': '最低', 'type': 'quantitative', 'scale': {'zero': False}}, 'y2': {'field': '最高'}}},
+                                {'mark': {'type': 'bar', 'size': 4}, 'encoding': {'y': {'field': '开盘', 'type': 'quantitative', 'scale': {'zero': False}}, 'y2': {'field': '收盘'},
+                                 'tooltip': [{'field': k, 'type': 'quantitative'} for k in ['开盘', '收盘', '最高', '最低']]}}]}, use_container_width=True)
+                    st.caption('不复权价格；除权除息可能影响比较，不等于投资收益率。')
+                    if len(snapshots) > 1:
+                        st.info(changes(snapshots[1]['payload'], data))
+                    for warning in data['warnings']:
+                        st.warning(warning)
+                    st.download_button('下载数据快照', json.dumps(data, ensure_ascii=False, indent=2), f'{code}.json')
                 else:
-                    st.vega_lite_chart(daily, {
-                        'encoding': {'x': {'field': '日期', 'type': 'temporal'},
-                            'color': {'condition': {'test': 'datum.收盘 >= datum.开盘', 'value': '#d85454'}, 'value': '#178576'}},
-                        'layer': [
-                            {'mark': 'rule', 'encoding': {'y': {'field': '最低', 'type': 'quantitative', 'scale': {'zero': False}}, 'y2': {'field': '最高'}}},
-                            {'mark': {'type': 'bar', 'size': 4}, 'encoding': {'y': {'field': '开盘', 'type': 'quantitative', 'scale': {'zero': False}}, 'y2': {'field': '收盘'},
-                             'tooltip': [{'field': k, 'type': 'quantitative'} for k in ['开盘', '收盘', '最高', '最低']]}}]}, use_container_width=True)
-                st.caption('不复权价格；除权除息可能影响比较，不等于投资收益率。')
-                if len(snapshots) > 1:
-                    st.info(changes(snapshots[1]['payload'], data))
-                for warning in data['warnings']:
-                    st.warning(warning)
-                if data['finance']:
-                    st.subheader('财务摘要')
-                    period = st.selectbox('财报期间', sorted({str(r['报告期']) for r in data['finance']}, reverse=True), key='financial_period')
-                    st.dataframe(pd.DataFrame(financial_summary(data['finance'], period)), hide_index=True)
-                    st.caption('只有源字段或指标名称明确提供货币单位时才换算为亿元；单位未知的值保留原口径。季度期间可能是年初至今累计值。')
-                with st.expander('公司概况与财务原始指标'):
-                    st.dataframe(pd.DataFrame(data['info']), hide_index=True)
-                    st.caption('保留原始报告期与指标单位，未统一口径前不自动跨期或跨公司比较。')
-                    finance = pd.DataFrame(data['finance'])
-                    columns = [c for c in ['报告期', 'item_title', 'item_value', 'item_tongbi'] if c in finance]
-                    st.dataframe(finance[columns].astype(str).rename(columns={'item_title': '指标', 'item_value': '源值（单位以原报告为准）', 'item_tongbi': '同比原值'}), hide_index=True)
-                    st.link_button('核对财务数据源', f'https://vip.stock.finance.sina.com.cn/corp/go.php/vFD_FinanceSummary/stockid/{code}.phtml')
-                st.download_button('下载数据快照', json.dumps(data, ensure_ascii=False, indent=2), f'{code}.json')
-            else:
-                st.info('尚无数据快照，点击更新获取。')
-            render_financial_tools(store, code, snapshots[0]['payload'] if snapshots else None)
-            st.subheader('投资假设与复盘')
-            with st.form('thesis'):
-                thesis = st.text_area('为什么关注？')
-                catalyst = st.text_input('期待的催化')
-                invalidation = st.text_input('什么证据会推翻判断？')
-                if st.form_submit_button('保存假设') and thesis.strip():
-                    store.add_thesis(code, thesis, catalyst, invalidation)
-                    st.rerun()
-            for item in store.theses(code):
-                with st.expander(item['status'] + ' · ' + item['thesis'][:40]):
-                    st.write(item['thesis'])
-                    st.write('催化：' + item['catalyst'])
-                    st.write('证伪条件：' + item['invalidation'])
-                    with st.form(item['id']):
-                        review = st.text_area('复盘记录', item['review'])
-                        options = ['观察中', '得到支持', '被推翻', '已结束']
-                        status = st.selectbox('状态', options, index=options.index(item['status']))
-                        if st.form_submit_button('保存复盘'):
-                            store.review(item['id'], review, status)
-                            st.rerun()
-                    if st.button('Agent 核查假设', key='verify_' + item['id']):
-                        start_research(f"核查 A 股 {code} 的假设：{item['thesis']}；催化：{item['catalyst']}；证伪条件：{item['invalidation']}。搜索公告和反例，不预设结论。")
+                    empty_state('还没有行情快照', '点击「更新行情与财务」获取数据。已有财务导入可在财务分析页查看。')
+            with financial_tab:
+                if snapshots:
+                    data = snapshots[0]['payload']
+                    if data['finance']:
+                        st.subheader('财务摘要')
+                        period = st.selectbox('财报期间', sorted({str(r['报告期']) for r in data['finance']}, reverse=True), key='financial_period')
+                        st.dataframe(pd.DataFrame(financial_summary(data['finance'], period)), hide_index=True)
+                        st.caption('只有源字段或指标名称明确提供货币单位时才换算为亿元；单位未知的值保留原口径。季度期间可能是年初至今累计值。')
+                    with st.expander('公司概况与财务原始指标'):
+                        st.dataframe(pd.DataFrame(data['info']), hide_index=True)
+                        st.caption('保留原始报告期与指标单位，未统一口径前不自动跨期或跨公司比较。')
+                        finance = pd.DataFrame(data['finance'])
+                        columns = [c for c in ['报告期', 'item_title', 'item_value', 'item_tongbi'] if c in finance]
+                        st.dataframe(finance[columns].astype(str).rename(columns={'item_title': '指标', 'item_value': '源值（单位以原报告为准）', 'item_tongbi': '同比原值'}), hide_index=True)
+                        st.link_button('核对财务数据源', f'https://vip.stock.finance.sina.com.cn/corp/go.php/vFD_FinanceSummary/stockid/{code}.phtml')
+                render_financial_tools(store, code, snapshots[0]['payload'] if snapshots else None)
+            with profile_tab:
+                with st.container():
+                    st.subheader('个股研究档案')
+                    profile = store.profile(code)
+                    with st.form('profile_' + code):
+                        focus = st.text_area('关注点', profile['focus'])
+                        supporting = st.text_area('支持证据与来源（用户记录）', profile['supporting'])
+                        contrary = st.text_area('反面证据与来源（用户记录）', profile['contrary'])
+                        questions = st.text_area('待核查问题', profile['questions'])
+                        if st.form_submit_button('保存档案'):
+                            store.save_profile(code, focus, supporting, contrary, questions)
+                            st.success('已保存；Agent 只提供建议，不自动覆盖你的判断。')
+                    st.caption('投资假设在「投资复盘」页管理。上述内容是用户记录，不等于已核实事实。')
                     if repo is not None:
-                        render_judgment(store, repo, code, item)
+                        history = stock_history(store, repo, code)
+                        if st.button('更新这家公司', key='refresh_research_' + code, type='primary'):
+                            start_research(f'更新 A 股 {code} 的研究：检查新增公告、业绩与风险，逐项对照上次判断。', symbol=code, update=True)
+                        if history:
+                            st.caption('历史关联：明确绑定的研究及按代码匹配的单股旧研究；名称型旧记录仍可在侧栏搜索。')
+                            for previous in history[:10]:
+                                if st.button(f'{previous.created_at[:10]} · {previous.status} · {previous.topic[:28]}', key='stock_run_' + previous.run_id):
+                                    st.session_state.run_id = previous.run_id
+                                    st.session_state.page = '研究对话'
+                                    st.rerun()
+                        else:
+                            st.caption('尚无关联研究；首次更新将建立基线，不声称已经发生判断变化。')
+            with thesis_tab:
+                st.subheader('投资假设与复盘')
+                with st.form('thesis'):
+                    thesis = st.text_area('为什么关注？')
+                    catalyst = st.text_input('期待的催化')
+                    invalidation = st.text_input('什么证据会推翻判断？')
+                    if st.form_submit_button('保存假设') and thesis.strip():
+                        store.add_thesis(code, thesis, catalyst, invalidation)
+                        st.rerun()
+                for item in store.theses(code):
+                    with st.expander(item['status'] + ' · ' + item['thesis'][:40]):
+                        st.write(item['thesis'])
+                        st.write('催化：' + item['catalyst'])
+                        st.write('证伪条件：' + item['invalidation'])
+                        with st.form(item['id']):
+                            review = st.text_area('复盘记录', item['review'])
+                            options = ['观察中', '得到支持', '被推翻', '已结束']
+                            status = st.selectbox('状态', options, index=options.index(item['status']))
+                            if st.form_submit_button('保存复盘'):
+                                store.review(item['id'], review, status)
+                                st.rerun()
+                        if st.button('Agent 核查假设', key='verify_' + item['id']):
+                            start_research(f"核查 A 股 {code} 的假设：{item['thesis']}；催化：{item['catalyst']}；证伪条件：{item['invalidation']}。搜索公告和反例，不预设结论。")
+                        if repo is not None:
+                            render_judgment(store, repo, code, item)
     with watch:
         st.caption('可手动刷新，也可开启工作日 16 点后的自动更新。仅在本地服务运行时执行，变化记录显示在这里，不发送外部通知。')
         for item in store.watches():
@@ -191,7 +200,7 @@ def render_workbench(store, start_research, repo=None):
                 store.set_monitor(code, False)
                 st.rerun()
         if not store.watches():
-            st.info('在个股页添加自选股。')
+            empty_state('建立你的观察名单', '在个股页点击「加入自选」，集中跟踪公司变化与研究进展。')
     with comparison:
         st.caption('选择已有快照的自选股进行比较。财务只展示共同报告期，不混用不同期间。')
         available = [w['symbol'] for w in store.watches() if store.snapshots(w['symbol'], 1)]

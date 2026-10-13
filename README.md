@@ -1,5 +1,27 @@
 # ResearchPilot
 
+## Research desk interface — 2026-10-13
+
+The redesigned workspace uses a warm light canvas, a teal navigation sidebar and
+separate views for conversations, reports, evidence and verification. Stock
+research separates market snapshots, financial charts, company profiles and thesis
+reviews. Existing local data and background research commands are retained.
+
+[Interface delivery and test report](docs/UI_REDESIGN_2026-10-13.md) ·
+[Desktop preview](artifacts/ui-preview/home-desktop.png) ·
+[Mobile preview](artifacts/ui-preview/home-mobile.png)
+
+The current upgraded local service runs at `http://127.0.0.1:8504`; the previous
+8502 process was preserved. For a fresh service, use an available port:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8504
+```
+
+Requires Streamlit 1.41 or newer. Offline regression now includes 132 unit tests
+across 22 suite entries. Optional browser acceptance uses isolated fictional data;
+see the interface report for setup and limits.
+
 ## v2.0 core capabilities — development build
 
 New usable features are integrated into the existing application:
