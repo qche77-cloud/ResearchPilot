@@ -18,8 +18,10 @@ The current upgraded local service runs at `http://127.0.0.1:8504`; the previous
 .\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8504
 ```
 
-Requires Streamlit 1.41 or newer. Offline regression now includes 132 unit tests
-across 22 suite entries. Optional browser acceptance uses isolated fictional data;
+Requires Streamlit 1.41 or newer. Offline regression now includes 138 unit tests
+across 23 suite entries, including Windows asyncio/socketpair isolation checks.
+See the [GitHub CI diagnosis and fix](docs/CI_FIX_2026-10-13.md).
+Optional browser acceptance uses isolated fictional data;
 see the interface report for setup and limits.
 
 ## v2.0 core capabilities — development build

@@ -20,4 +20,6 @@ jobs:
         if: always()
         with:
           name: offline-regression
-          path: artifacts/*.json
+          path: |
+            artifacts/offline-tests.json
+            artifacts/agent-evaluation.json

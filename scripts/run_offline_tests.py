@@ -15,6 +15,7 @@ UNIT_MODULES = [
     'scripts.test_agent', 'scripts.test_workbench', 'scripts.test_stock_research',
     'scripts.test_judgments', 'scripts.test_stock_presentation',
     'scripts.test_ui_workspace',
+    'scripts.test_offline_guard',
 ]
 SCRIPT_MODULES = [
     'scripts.test_research_health', 'scripts.test_v112_reader_reliability',
@@ -26,16 +27,61 @@ SCRIPT_MODULES = [
 ]
 
 
+def make_internal_socketpair(original_connect):
+    """Windows socketpair fallback with one private, self-created loopback endpoint.
+
+    This does not allow ordinary loopback connections. Only the two sockets owned
+    by this call use the saved connector, so asyncio IPC works under the guard.
+    """
+    import socket
+
+    def socketpair(family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
+        if family not in (socket.AF_INET, socket.AF_INET6):
+            raise ValueError('Only AF_INET and AF_INET6 are supported')
+        if type != socket.SOCK_STREAM or proto != 0:
+            raise ValueError('Only SOCK_STREAM with protocol zero is supported')
+        host = '127.0.0.1' if family == socket.AF_INET else '::1'
+        client = accepted = None
+        with socket.socket(family, type, proto) as listener:
+            listener.settimeout(5)
+            listener.bind((host, 0))
+            listener.listen(1)
+            try:
+                client = socket.socket(family, type, proto)
+                client.settimeout(5)
+                original_connect(client, listener.getsockname())
+                accepted, _ = listener.accept()
+                client.settimeout(None)
+                accepted.settimeout(None)
+                return accepted, client
+            except BaseException:
+                if client is not None:
+                    client.close()
+                if accepted is not None:
+                    accepted.close()
+                raise
+
+    return socketpair
+
+
 def install_guard():
-    """Fail closed on network and production SQLite access, including in threads."""
+    """Block external/ordinary network and production DB access; permit socketpair IPC."""
     import socket
     import sqlite3
     from urllib.parse import unquote
     os.environ['RESEARCHPILOT_OFFLINE_TEST'] = '1'
+    if getattr(socket.socket.connect, '_researchpilot_offline_guard', False):
+        return
+    original_socket_connect = socket.socket.connect
 
     def blocked(*args, **kwargs):
         raise RuntimeError('OFFLINE_NETWORK_BLOCKED')
 
+    blocked._researchpilot_offline_guard = True
+    # Native socketpair uses local IPC directly. The Python Windows fallback
+    # instead calls connect(), which would otherwise trip this offline guard.
+    if os.name == 'nt' and socket.socketpair.__module__ == 'socket':
+        socket.socketpair = make_internal_socketpair(original_socket_connect)
     socket.socket.connect = blocked
     socket.socket.connect_ex = blocked
     socket.getaddrinfo = blocked
@@ -102,7 +148,12 @@ def main(argv=None):
         except subprocess.TimeoutExpired:
             rows.append(dict(module=module, kind=kind, passed=False, timeout_seconds=90))
         print(f'{"PASS" if rows[-1]["passed"] else "FAIL"} {module}', flush=True)
-    result = dict(mode='offline_network_blocked', production_db_access='blocked', python=sys.version,
+        if not rows[-1]['passed']:
+            detail = (rows[-1].get('stdout', '') + rows[-1].get('stderr', ''))[-8000:]
+            if detail:
+                print(detail, flush=True)
+    result = dict(mode='offline_network_blocked', production_db_access='blocked',
+                  network_policy='external_and_ordinary_loopback_blocked; internal_socketpair_allowed', python=sys.version,
                   suites=len(rows), passed_suites=sum(bool(r['passed']) for r in rows),
                   unit_tests=sum(r.get('tests') or 0 for r in rows), results=rows)
     target = Path(args.output)
