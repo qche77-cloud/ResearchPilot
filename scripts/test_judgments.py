@@ -97,7 +97,10 @@ class JudgmentTests(unittest.TestCase):
         next(b for b in app.button if b.label == '确认并保存新版本').click().run()
         self.assertFalse(app.exception)
         self.assertEqual(self.store.proposals('002837')[0]['status'], 'pending')
-        app.checkbox[0].check().run()
+        # A real form submits its checkbox and button in one batch. Running the
+        # app between editing and submitting discards unsubmitted form state in
+        # newer AppTest versions and does not model the browser interaction.
+        app.checkbox[0].check()
         next(b for b in app.button if b.label == '确认并保存新版本').click().run()
         self.assertFalse(app.exception)
         self.assertEqual(self.store.proposals('002837')[0]['status'], 'confirmed')
