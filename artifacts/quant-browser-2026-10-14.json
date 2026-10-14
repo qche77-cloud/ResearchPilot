@@ -1,0 +1,13 @@
+{
+  "provenance": "synthetic_demo_on_local_workspace",
+  "url": "http://127.0.0.1:8506",
+  "http_status": 200,
+  "checks": [
+    "screening_tab",
+    "keyboard_demo_toggle",
+    "matched_one_of_two",
+    "two_decimal_display",
+    "no_real_research_buttons",
+    "no_page_exceptions"
+  ]
+}

@@ -91,6 +91,8 @@ def render_financial_tools(store, symbol, snapshot=None):
     else:
         st.caption('当前分析输入：行情快照中的财务源值；未知单位或期间口径会阻止计算。')
     render_analysis(analyze_financials(payload), key='fin_' + symbol)
+    from src.financial_quality_ui import render_financial_quality
+    render_financial_quality(payload, key='quality_' + symbol)
     if snapshot and snapshot.get('finance'):
         with st.expander('核对快照财务口径后启用计算'):
             with st.form('fin_metadata_' + symbol):
@@ -112,7 +114,7 @@ def render_financial_tools(store, symbol, snapshot=None):
                         store.save_financial_dataset(symbol, verified)
                         st.rerun()
     with st.expander('导入带来源的财务数据 / 查看合成演示'):
-        st.caption('JSON 顶层包含 symbol、fetched_at、financial_records。每条指标明确 metric/value/unit/currency/basis/scope/period_end/source_url；估值另需 published_at。导入是用户提供数据，并非自动核实来源真实性。')
+        st.caption('JSON 顶层包含 symbol、fetched_at、financial_records。每条指标明确 metric/value/unit/currency/basis/scope/period_end/source_url；估值与体检另需 published_at，延迟可用或重述版本可加 available_at。导入是用户提供数据，并非自动核实来源真实性。')
         st.download_button('下载 JSON 格式示例（虚构数值）', json.dumps(example_dataset(symbol), ensure_ascii=False, indent=2),
                            'synthetic-financial-example.json', key='fin_example_' + symbol)
         upload = st.file_uploader('导入财务 JSON（最大 2 MB）', type=['json'], key='fin_upload_' + symbol)
@@ -131,6 +133,7 @@ def render_financial_tools(store, symbol, snapshot=None):
         if st.checkbox('查看离线合成演示（不写入研究数据）', key='fin_demo_' + symbol):
             st.warning('以下为合成示例，不代表这家公司的真实财务数据。')
             render_analysis(analyze_financials(example_dataset(symbol)), key='demo_' + symbol)
+            render_financial_quality(example_dataset(symbol), key='quality_demo_' + symbol)
     with st.expander('基础估值计算（PE / PB）'):
         analysis = analyze_financials(payload)
         eligible = [r for r in analysis['records'] + analysis['ttm_records'] if r['status'] == 'ok' and

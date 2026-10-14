@@ -12,7 +12,7 @@ from src.financial_ui import render_financial_tools
 
 def render_workbench(store, start_research, repo=None):
     page_intro('个股研究台', '跟踪业绩与现金流，把数据、研究档案和投资判断连在一起。')
-    stock, watch, comparison, memory = st.tabs(['个股与复盘', '自选股变化', '公司对比', '长期偏好'])
+    stock, watch, comparison, screening, memory = st.tabs(['个股与复盘', '自选股变化', '公司对比', '财务筛选', '长期偏好'])
     with stock:
         search, directory_action = st.columns([4, 1], vertical_alignment='bottom')
         query = search.text_input('股票名称或六位代码', '002837', max_chars=40)
@@ -223,6 +223,9 @@ def render_workbench(store, start_research, repo=None):
                 st.info('缺少共同财报期间，暂不比较财务指标。')
             if st.button('Agent 深入比较'):
                 start_research('比较 A 股 ' + '、'.join(selected) + ' 的业务壁垒、现金流及业绩兑现；统一财务期间和单位，缺少可比数据时明确说明。')
+    with screening:
+        from src.financial_screening_ui import render_financial_screening
+        render_financial_screening(store, start_research)
     with memory:
         with st.form('preferences'):
             value = st.text_area('明确保存的偏好（例如只看 A 股、优先公告、关注现金流）', store.preferences(), height=150)

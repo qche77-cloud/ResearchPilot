@@ -1,5 +1,22 @@
 # ResearchPilot
 
+## Financial screening foundation — 2026-10-14
+
+The stock workspace now includes **财务质量体检** and **财务筛选**. Review
+revenue/profit growth, margins and cash conversion with explicit dates, scope,
+currency, formulas and input IDs. Filter up to 50 locally saved watchlist datasets;
+missing values stay unavailable, and screening does not fetch data or call a model.
+An explicit fictional demo is available without saving or launching real research.
+
+Financial calculations support date-level `as_of`; valuation selects an older
+publicly available report when the latest one was not disclosed at the market date.
+Invalid publication metadata and inconsistent/nonfinite OHLCV bars are rejected.
+
+Current fresh local service: `http://127.0.0.1:8506`.
+See the [delivery and limitations](docs/QUANT_FOUNDATION_2026-10-14.md) and
+[review roadmap](docs/REVIEW_AND_QUANT_ROADMAP_2026-10-14.md).
+This is financial research screening, without strategy backtesting or trading.
+
 ## Research desk interface — 2026-10-13
 
 The redesigned workspace uses a warm light canvas, a teal navigation sidebar and
@@ -18,8 +35,8 @@ The current upgraded local service runs at `http://127.0.0.1:8504`; the previous
 .\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8504
 ```
 
-Requires Streamlit 1.41 or newer. Offline regression now includes 138 unit tests
-across 23 suite entries, including Windows asyncio/socketpair isolation checks.
+Requires Streamlit 1.41 or newer. Offline regression now includes 164 unit tests
+across 24 suite entries, including Windows asyncio/socketpair isolation checks.
 See the [GitHub CI diagnosis and fix](docs/CI_FIX_2026-10-13.md).
 Optional browser acceptance uses isolated fictional data;
 see the interface report for setup and limits.

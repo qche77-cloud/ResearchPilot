@@ -2,6 +2,7 @@
 import json
 import re
 import requests
+import math
 from datetime import datetime, timedelta
 
 
@@ -35,6 +36,32 @@ def frame_records(frame):
     return json.loads(frame.to_json(orient='records', force_ascii=False, date_format='iso'))
 
 
+def validate_daily(frame, *, as_of=None):
+    """Reject inconsistent bars rather than silently repairing their prices."""
+    import pandas as pd
+    needed = {'日期', '开盘', '收盘', '最高', '最低', '成交量'}
+    if not needed.issubset(frame.columns) or frame.empty:
+        raise ValueError('日线字段缺失或数据为空')
+    result = frame.copy()
+    dates = pd.to_datetime(result['日期'], errors='coerce')
+    if dates.isna().any() or dates.dt.normalize().duplicated().any():
+        raise ValueError('日线日期无效或重复，不能采用')
+    if as_of is not None and (dates.dt.date > as_of).any():
+        raise ValueError('日线包含晚于查询时点的日期')
+    for field in ('开盘', '收盘', '最高', '最低', '成交量'):
+        values = pd.to_numeric(result[field], errors='coerce')
+        if not values.map(lambda v: math.isfinite(v)).all():
+            raise ValueError('日线存在缺失或非有限数值')
+        result[field] = values
+    if (result[['开盘', '收盘', '最高', '最低']] <= 0).any().any() or (result['成交量'] < 0).any():
+        raise ValueError('价格必须为正，成交量不能为负')
+    if ((result['最低'] > result[['开盘', '收盘']].min(axis=1)) |
+        (result['最高'] < result[['开盘', '收盘']].max(axis=1))).any():
+        raise ValueError('日线最高/最低价与开盘/收盘价矛盾')
+    result['_order'] = dates
+    return result.sort_values('_order').drop(columns='_order')
+
+
 def fetch_stock(symbol):
     import akshare as ak
     code, exchange = normalize_symbol(symbol)
@@ -47,9 +74,7 @@ def fetch_stock(symbol):
     needed = {'日期', '开盘', '收盘', '最高', '最低', '成交量'}
     if not needed.issubset(hist.columns):
         raise ValueError('日线数据源字段发生变化，已停止展示。')
-    hist = hist.sort_values('日期').drop_duplicates('日期')
-    if hist[['开盘', '收盘', '最高', '最低']].isna().any().any() or (hist[['开盘', '收盘', '最高', '最低']] <= 0).any().any():
-        raise ValueError('日线存在缺失或非正价格，不能用于展示。')
+    hist = validate_daily(hist, as_of=end.date())
     warnings = []
     info = []
     finance = []

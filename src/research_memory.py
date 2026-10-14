@@ -6,10 +6,10 @@ import re
 
 
 def financial_snapshot(analysis):
-    fields = ('id', 'symbol', 'metric', 'period_start', 'period_end', 'basis', 'currency', 'scope', 'unit', 'value', 'status', 'issues', 'source_url', 'fetched_at')
+    fields = ('id', 'symbol', 'metric', 'period_start', 'period_end', 'basis', 'currency', 'scope', 'unit', 'value', 'status', 'issues', 'source_url', 'fetched_at', 'published_at', 'available_at')
     return {'records': [{k: r.get(k) for k in fields} for r in analysis.get('records', [])],
             'calculations': analysis.get('computations', []), 'valuations': analysis.get('valuations', []),
-            'fetched_at': analysis.get('fetched_at')}
+            'fetched_at': analysis.get('fetched_at'), 'as_of': analysis.get('as_of')}
 
 
 def compare_snapshots(previous, current):

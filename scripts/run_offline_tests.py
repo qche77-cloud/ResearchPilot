@@ -16,6 +16,7 @@ UNIT_MODULES = [
     'scripts.test_judgments', 'scripts.test_stock_presentation',
     'scripts.test_ui_workspace',
     'scripts.test_offline_guard',
+    'scripts.test_quant_foundation',
 ]
 SCRIPT_MODULES = [
     'scripts.test_research_health', 'scripts.test_v112_reader_reliability',

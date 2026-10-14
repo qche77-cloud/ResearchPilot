@@ -79,13 +79,28 @@ def quarter_start(end):
     return date(end.year, 3 * quarter - 2, 1) if quarter else None
 
 
-def normalize_financials(payload):
+def availability_date(value):
+    """Strict ISO date/datetime for observation metadata, unlike provider periods."""
+    if value is None or value == '':
+        return None
+    try:
+        if isinstance(value, date) and not isinstance(value, datetime):
+            return value
+        return datetime.fromisoformat(str(value).replace('Z', '+00:00')).date()
+    except (ValueError, TypeError):
+        return None
+
+
+def normalize_financials(payload, *, as_of=None):
     """Accept canonical records or legacy Sina rows plus user-verified metadata.
 
     Historical values are never reinterpreted from an undocumented provider
     assumption. Verification metadata is explicit and retained in each record.
     """
     meta = payload.get('finance_metadata') or {}
+    cutoff = availability_date(as_of) if as_of is not None else None
+    if as_of is not None and cutoff is None:
+        raise ValueError('as_of must be an ISO date or datetime')
     verified = meta.get('verified') is True and bool(meta.get('basis_evidence'))
     rows = payload.get('financial_records', payload.get('finance', []))
     records = []
@@ -152,6 +167,7 @@ def normalize_financials(payload):
         if not source_url:
             source_url = f'https://vip.stock.finance.sina.com.cn/corp/go.php/vFD_FinanceSummary/stockid/{symbol}.phtml' if 'item_field' in raw else None
         fetched_at = raw.get('fetched_at') or payload.get('fetched_at')
+        fetched_day = availability_date(fetched_at)
         if not source_url or not str(source_url).startswith(('https://', 'http://')):
             issues.append('missing_source')
         if not fetched_at:
@@ -164,6 +180,27 @@ def normalize_financials(payload):
                     issues.append('future_reporting_period')
             except ValueError:
                 issues.append('invalid_update_time')
+        published = availability_date(raw.get('published_at'))
+        available = availability_date(raw.get('available_at')) if raw.get('available_at') else published
+        if raw.get('published_at') and published is None:
+            issues.append('invalid_publication_date')
+        if raw.get('available_at') and available is None:
+            issues.append('invalid_availability_date')
+        if published and end and published < end:
+            issues.append('publication_before_period_end')
+        if published and fetched_day and published > fetched_day:
+            issues.append('publication_after_fetch')
+        if available and published and available < published:
+            issues.append('availability_before_publication')
+        if available and fetched_day and available > fetched_day:
+            issues.append('availability_after_fetch')
+        if cutoff:
+            if not published or not available:
+                issues.append('publication_required_for_as_of')
+            elif available > cutoff:
+                issues.append('not_available_as_of')
+            if end and end > cutoff:
+                issues.append('report_period_after_as_of')
         record = {'id': identity([symbol, raw, fetched_at]), 'symbol': symbol, 'metric': metric,
                   'label': METRICS[metric], 'value': numeric_string(value) if value is not None else None,
                   'unit': canonical_unit, 'raw_unit': unit, 'currency': currency, 'basis': basis,
@@ -171,6 +208,7 @@ def normalize_financials(payload):
                   'period_end': str(end) if end else str(raw.get('period_end') or raw.get('报告期') or ''),
                   'source_url': source_url, 'fetched_at': fetched_at, 'raw': json_safe(dict(raw)),
                   'published_at': raw.get('published_at'),
+                  'available_at': raw.get('available_at') or raw.get('published_at'),
                   'metadata_evidence': meta.get('basis_evidence') if verified else 'explicit_source_fields',
                   'status': 'ok' if not issues else 'blocked', 'issues': issues, 'input_ids': []}
         if value is not None and metric in {'revenue', 'total_revenue', 'cost_of_revenue', 'total_operating_cost'} and value < 0:
@@ -182,6 +220,8 @@ def normalize_financials(payload):
     deduped = {r['id']: r for r in records}
     groups = {}
     for r in deduped.values():
+        if r['status'] != 'ok':
+            continue
         key = tuple(r[k] for k in ('symbol', 'metric', 'period_end', 'currency', 'basis', 'scope'))
         groups.setdefault(key, []).append(r)
     for group in groups.values():
@@ -229,6 +269,8 @@ def single_quarters(records):
                 derived['formula'] = 'quarter = current YTD - preceding YTD'
                 publications = [parse_period(r.get('published_at')) for r in (row, previous)]
                 derived['published_at'] = str(max(publications)) if all(publications) else None
+                available_dates = [availability_date(r.get('available_at')) for r in (row, previous)]
+                derived['available_at'] = str(max(available_dates)) if all(available_dates) else None
                 derived_number = number(derived['value'])
                 if derived_number is None:
                     derived.update(status='blocked', issues=['abnormal_derived_magnitude'])
@@ -317,12 +359,13 @@ def valuation(market, denominator, kind):
               'input_ids': [market.get('id'), denominator.get('id')], 'status': 'blocked', 'reason': 'incomparable_scope'}
     if any(not market.get(k) or market.get(k) != denominator.get(k) for k in ('symbol', 'currency')):
         return result
-    market_date, report_date = parse_period(market.get('as_of')), parse_period(denominator.get('period_end'))
-    if not market_date or not report_date or report_date > market_date or not market.get('source_url'):
+    market_date, report_date = availability_date(market.get('as_of')), parse_period(denominator.get('period_end'))
+    if not market_date or not report_date or report_date > market_date or not str(market.get('source_url', '')).startswith(('https://', 'http://')):
         result['reason'] = 'invalid_valuation_date_or_source'
         return result
-    published = parse_period(denominator.get('published_at'))
-    if not published or published > market_date:
+    published = availability_date(denominator.get('published_at'))
+    available = availability_date(denominator.get('available_at') or denominator.get('published_at'))
+    if not published or not available or published > market_date or available > market_date:
         result['reason'] = 'publication_date_required_for_point_in_time_valuation'
         return result
     expected = 'attributable_net_profit' if kind == 'pe' else 'attributable_net_assets'
@@ -351,8 +394,8 @@ def valuation(market, denominator, kind):
 
 
 @traced_tool('financial.analyze')
-def analyze_financials(payload):
-    records = normalize_financials(payload)
+def analyze_financials(payload, *, as_of=None):
+    records = normalize_financials(payload, as_of=as_of)
     quarters = single_quarters(records)
     computations = []
     candidates = records + [q for q in quarters if q['id'] not in {r['id'] for r in records}]
@@ -376,6 +419,7 @@ def analyze_financials(payload):
             if len(matches) == 1:
                 computations.append(ratio(matches[0], revenue, result_metric, subtract))
     result = {'schema_version': 1, 'symbol': payload.get('symbol'), 'fetched_at': payload.get('fetched_at'),
+            'as_of': str(availability_date(as_of)) if as_of is not None else None,
             'records': records, 'quarter_records': quarters, 'computations': computations,
             'ttm_records': trailing_twelve_months(quarters),
             'usable_records': sum(r['status'] == 'ok' for r in records),
@@ -390,7 +434,16 @@ def analyze_financials(payload):
     result['valuations'] = []
     if isinstance(market, dict):
         for kind, metric in [('pe', 'attributable_net_profit'), ('pb', 'attributable_net_assets')]:
-            eligible = [r for r in records + result['ttm_records'] if r['metric'] == metric and r['status'] == 'ok']
+            market_day = availability_date(market.get('as_of'))
+            eligible = [r for r in records + result['ttm_records'] if r['metric'] == metric and r['status'] == 'ok'
+                        and r['symbol'] == market.get('symbol') and r['currency'] == market.get('currency')
+                        and r['scope'] == 'consolidated'
+                        and (kind == 'pb' and r['basis'] == 'instant' or kind == 'pe' and
+                             (r['basis'] == 'ttm' or r['basis'] == 'cumulative' and parse_period(r['period_end']).month == 12))]
+            available = [r for r in eligible if market_day and availability_date(r.get('available_at') or r.get('published_at'))
+                         and availability_date(r.get('available_at') or r.get('published_at')) <= market_day
+                         and parse_period(r['period_end']) <= market_day]
+            eligible = available or eligible  # Preserve explicit blocked reasons if nothing was publicly available.
             if eligible:
                 chosen = max(eligible, key=lambda r: (r['period_end'], r['basis'] == 'ttm'))
                 result['valuations'].append(valuation(market, chosen, kind))
@@ -412,7 +465,7 @@ def financial_evidence(analysis):
         market = analysis['market_input']
         inputs[market['id']] = market
     computations = [c for c in analysis['computations'] + analysis.get('valuations', []) if c['status'] == 'ok']
-    return {'symbol': analysis['symbol'], 'fetched_at': analysis['fetched_at'],
+    return {'symbol': analysis['symbol'], 'fetched_at': analysis['fetched_at'], 'as_of': analysis.get('as_of'),
             'inputs': inputs, 'calculations': computations,
             'blocked': [{'id': r['id'], 'issues': r['issues']} for r in analysis['records'] if r['status'] != 'ok'],
             'policy': '只能引用这些已计算数值；未知单位、币种、口径或缺失值不可推断；所有计算保留 input_ids 和 formula。'}
@@ -443,10 +496,12 @@ def trailing_twelve_months(quarters):
             ctx.rounding = ROUND_HALF_EVEN
             total = sum((number(r['value']) for r in rows), Decimal(0))
         publications = [parse_period(r.get('published_at')) for r in rows]
+        available_dates = [availability_date(r.get('available_at')) for r in rows]
         result.append(dict(current, id=identity([r['id'] for r in rows], 'T'), value=numeric_string(total),
                            basis='ttm', period_start=rows[-1]['period_start'], input_ids=[r['id'] for r in rows],
                            status='ok' if number(total) is not None else 'blocked',
                            published_at=str(max(publications)) if all(publications) else None,
+                           available_at=str(max(available_dates)) if all(available_dates) else None,
                            formula='TTM = sum of four consecutive single quarters'))
     return result
 
@@ -457,6 +512,7 @@ def agent_financial_summary(analysis):
             'recent_calculations': sorted([c for c in analysis['computations'] if c['status'] == 'ok'],
                                            key=lambda c: c['period_end'], reverse=True)[:16],
             'valuations': analysis.get('valuations', []),
+            'quality': analysis.get('quality'),
             'sources': analysis['sources'], 'policy': analysis['calculation_policy']}
 
 
@@ -497,6 +553,17 @@ def attach_financial_analysis(state, payload):
                         'financial_calculation', 1, source_id=f'S{len(state.sources)+1}', research_task='financial_data')
         state.sources.append(source)
         state.documents.append(EvidenceDocument(source, text, len(text.split()), 'success', extraction_status='FULL_TEXT'))
+    from src.financial_quality import financial_quality
+    if availability_date(payload.get('fetched_at')):
+        quality = financial_quality(payload)
+        state.diagnostics['financial_quality'] = quality
+        analysis['quality'] = {k: quality[k] for k in ('as_of', 'period_end', 'factors', 'flags', 'available_factors', 'policy')}
+        if quality['available_factors']:
+            text = json.dumps(dict(label='财务质量', **quality), ensure_ascii=False)
+            source = Source(f'{payload["symbol"]} 财务质量体检（确定性计算）', analysis['sources'][0],
+                            text[:300], 'financial_calculation', 1, source_id=f'S{len(state.sources)+1}', research_task='financial_data')
+            state.sources.append(source)
+            state.documents.append(EvidenceDocument(source, text, len(text.split()), 'success', extraction_status='FULL_TEXT'))
     return analysis
 
 

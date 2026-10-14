@@ -1,0 +1,73 @@
+{
+  "provenance": "synthetic_offline_review_probes",
+  "real_api_calls": 0,
+  "historical_valuation_selection": {
+    "actual": [
+      {
+        "id": "Vcf12fafb9afff9ce47b4",
+        "kind": "pe",
+        "value": null,
+        "unit": "multiple",
+        "formula": "market_cap / attributable_profit",
+        "input_ids": [
+          "Md0b3f25ee0eb2b1525cf",
+          "F74e8e15a13dfbb2bebc3"
+        ],
+        "status": "blocked",
+        "reason": "publication_date_required_for_point_in_time_valuation"
+      }
+    ],
+    "available_older_report": "2024-12-31 published 2025-04-20; PE=1000/100=10 would be usable on 2026-02-01"
+  },
+  "publication_after_fetch": {
+    "published_at": "2099-04-20",
+    "fetched_at": "2026-10-14T00:00:00Z",
+    "record_status": "ok",
+    "issues": []
+  },
+  "semantic_entailment_boundary": {
+    "passed": true,
+    "issues": [],
+    "cited_ids": [
+      "E1"
+    ],
+    "semantic_support": "unknown",
+    "method": "deterministic_integrity_v1"
+  },
+  "memory_keeps_publication_date": false,
+  "ohlcv_validation_probes": [
+    {
+      "case": "invalid_ohlc_order_negative_volume",
+      "returned_without_validation_error": true,
+      "stored_daily": [
+        {
+          "日期": "2026-10-13",
+          "开盘": 10.0,
+          "收盘": 11.0,
+          "最高": 2,
+          "最低": 12,
+          "成交量": -100
+        }
+      ]
+    },
+    {
+      "case": "infinite_high",
+      "returned_without_validation_error": true,
+      "stored_daily": [
+        {
+          "日期": "2026-10-13",
+          "开盘": 10.0,
+          "收盘": 11.0,
+          "最高": null,
+          "最低": 9,
+          "成交量": 100
+        }
+      ]
+    }
+  ],
+  "two_writer_snapshot_probe": {
+    "temporary_db_only": true,
+    "first_update_retained": false,
+    "second_update_retained": true
+  }
+}
