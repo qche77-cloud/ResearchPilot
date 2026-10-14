@@ -102,4 +102,8 @@ $env:PLAYWRIGHT_BROWSERS_PATH='G:\ResearchPilot\.venv\playwright-browsers'
 - 本轮测试付费 API 消耗为 0；新交互与筛选仅需本地 CPU/SQLite。实际创建研究、追问及旧 AI 建议功能仍使用已有 API 配置和预算，未执行真实交易。
 - 下一阶段再讨论研究规划、证据支持评分、反思策略、模型成本预算及因子验证。本轮没有编造收益、Alpha 或算法评测成绩，也没有默认迁移 Agent 框架。
 
-GitHub 代码提交与真实云端 CI 结果在推送后补记。
+代码已提交并推送 `main`：`e3695ba034e962f35126e032febd458df5b844b8`，提交说明为 `feat: complete company cockpit and reliable cross-process research workers`。
+
+[GitHub Actions 38600813215](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38600813215) 已完成且成功。下载真实 `offline-regression` 产物并核对：27/27 组、197 个单元测试通过。云端报告和原 Agent 评测产物保存在 `artifacts/cockpit-ci-e3695ba/`；运行元数据在 `artifacts/cockpit-cloud-run-e3695ba.json`。本地35项浏览器验收未标记为云端浏览器测试。
+
+CI 成功后仅用 `[skip ci]` 文档提交补记证据，不修改已验证代码。最终健康检查：8520、8521 均返回 `ok`。

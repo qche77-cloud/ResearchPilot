@@ -35,6 +35,9 @@ checks**, plus **21/21 existing UI checks**. No paid API calls during acceptance
 [Research timeline](artifacts/cockpit-browser/timeline-desktop.png) ·
 [Mobile finance](artifacts/cockpit-browser/finance-mobile.png)
 
+[GitHub CI for the full cockpit](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38600813215)
+passed 27/27 suites and 197 unit tests for code commit `e3695ba`.
+
 All published screenshots use isolated fictional inputs. Stock quotes, monitor
 configuration and AI judgment-proposal confirmation remain in **完整数据工具**.
 
