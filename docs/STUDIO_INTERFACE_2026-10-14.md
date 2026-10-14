@@ -54,6 +54,7 @@ flowchart LR
 | JavaScript 语法 | Node `--check` 通过 | `src/studio_component/studio.js` |
 | 隔离浏览器验收 | 15/15 项，页面错误 0 | `artifacts/studio-preview/browser-checks.json` |
 | 正式入口只读验收 | 读取真实历史、打开已完成报告及筛选页面；页面错误 0，付费命令 0 | `artifacts/studio-live-smoke-2026-10-14.json` |
+| GitHub Actions | 已完成且 success；25/25 组，178 个单元测试通过 | `artifacts/studio-cloud-run-0dc212b.json`、`artifacts/studio-ci-0dc212b/offline-tests.json` |
 
 全量回归使用 Python 3.11 与隔离安装的 Streamlit 1.65。浏览器与正式本地服务使用已安装的 Streamlit 1.63。未声称测试了整个 `streamlit>=1.41,<2` 版本范围。
 
@@ -92,4 +93,8 @@ $env:PLAYWRIGHT_BROWSERS_PATH='G:\ResearchPilot\.venv\playwright-browsers'
 - 新界面没有新增付费依赖。状态轮询只访问本地数据库；Token 与费用仅显示历史实际记录，未知用量不推算。
 - 后续可继续迁移财务导入/复盘表单，并把证据关系从展开明细升级为可导航的节点视图。当前并未将这些未实现项列为完成。
 
-GitHub 提交与云端 CI 的最终结果在代码推送后补记；本地通过不等于云端通过。
+代码已提交并推送至 `main`：`0dc212b9b7757d22b89da9aba567ee33939fa61e`，提交说明为 `feat: build ResearchPilot Studio with linked report and evidence workspace`。
+
+[GitHub Actions 38537194631](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38537194631) 已实际完成且成功。通过 GitHub CLI 下载 `offline-regression` 产物并核对：25 组全部通过，178 个单元测试。云端原始报告与原评测产物保存在 `artifacts/studio-ci-0dc212b/`；这些结果不是本地报告的复制。浏览器截图与正式入口验收在本地执行，不将其标记为云端浏览器测试。
+
+CI 成功后仅补记文档与真实云端产物，用 `[skip ci]` 文档提交保存记录；不修改已验证代码。最终健康端点检查：8510、8511 均返回 `ok`。

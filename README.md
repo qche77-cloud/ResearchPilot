@@ -31,6 +31,8 @@ scheduler. Avoid executing the same task from multiple application processes.
 
 Offline regression: **25/25 suites, 178 unit tests**. Browser acceptance: **15/15
 checks** at 1440, 1024 and 390 pixels. All published screenshots use fictional data.
+The [GitHub CI run](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38537194631)
+also passed 25/25 suites and 178 unit tests for code commit `0dc212b`.
 
 ## Financial screening foundation — 2026-10-14
 
