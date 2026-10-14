@@ -8,7 +8,16 @@ ResearchPilot is an **AI research agent workflow** for China A-share industry an
 Query → Analyze → Plan → Search → Read → Evaluate → Synthesize → Write
 ```
 
-Each stage has a single owner. The Streamlit UI (`app.py`) presents progress and results; research logic lives under `src/`.
+Each stage has a single owner. UI entry points are `studio_app.py` (the custom
+research workspace), `agent_app.py` (the original conversational workbench) and
+`app.py` (the sequential pipeline). Research logic lives under `src/`.
+
+Studio embeds a local HTML/CSS/JavaScript component and translates explicit user
+intents through `src/studio_bridge.py`. Read-only packets contain existing report
+versions, their own evidence snapshots, messages and task status. Commands reuse
+the existing Runner; financial screening reuses the deterministic calculation
+modules. Full stock/import/review tools remain in the native Workbench UI. See
+[Studio implementation and verification](STUDIO_INTERFACE_2026-10-14.md).
 
 ## Components
 

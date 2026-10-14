@@ -15,6 +15,7 @@ UNIT_MODULES = [
     'scripts.test_agent', 'scripts.test_workbench', 'scripts.test_stock_research',
     'scripts.test_judgments', 'scripts.test_stock_presentation',
     'scripts.test_ui_workspace',
+    'scripts.test_studio',
     'scripts.test_offline_guard',
     'scripts.test_quant_foundation',
 ]

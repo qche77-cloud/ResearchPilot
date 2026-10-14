@@ -1,0 +1,14 @@
+{
+  "mode": "production_readonly_ui_smoke",
+  "url": "http://127.0.0.1:8511",
+  "history_count": 13,
+  "checks": [
+    "production_component_loaded",
+    "real_history_read_without_worker_start",
+    "saved_completed_report_loaded",
+    "production_screening_loaded"
+  ],
+  "paid_commands": 0,
+  "page_errors": [],
+  "screenshots": "none; preserve user data privacy"
+}

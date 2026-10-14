@@ -1,0 +1,37 @@
+{
+  "mode": "isolated_synthetic_studio_preview",
+  "viewport_widths": [
+    1440,
+    1024,
+    390
+  ],
+  "checks": [
+    "home_draft_survives_navigation",
+    "poll_preserves_draft_and_report_scroll",
+    "report_citation_opens_matching_saved_evidence",
+    "old_version_never_uses_new_evidence",
+    "message_report_and_citation_are_version_scoped",
+    "hypotheses_and_uncertainty_visible",
+    "resizable_workspace_keyboard_control",
+    "download_matches_selected_version",
+    "session_drafts_and_selected_version_survive_refresh",
+    "keyboard_task_search_and_navigation",
+    "deterministic_screen_and_original_input_lineage",
+    "unsafe_html_and_link_schemes_rejected",
+    "legacy_financial_and_review_tools_remain_accessible",
+    "tablet_report_evidence_no_overflow_and_navigation",
+    "mobile_report_evidence_no_overflow_and_navigation"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "evidence-desktop.png",
+    "evidence-mobile.png",
+    "evidence-tablet.png",
+    "home-desktop.png",
+    "home-mobile.png",
+    "home-tablet.png",
+    "report-mobile.png",
+    "research-desktop.png",
+    "screening-desktop.png"
+  ]
+}

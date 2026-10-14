@@ -1,6 +1,8 @@
 # v2.0 开发版本架构
 
-沿用 Python、Streamlit、SQLite、OpenAI Chat Completions 与现有数据适配器。没有整体迁移框架。两条入口继续共用组件：
+沿用 Python、Streamlit、SQLite、OpenAI Chat Completions 与现有数据适配器。没有整体迁移框架。Studio、自主对话与原顺序流水线入口继续共用组件：
+
+2026-10-14 新增 `studio_app.py`：本地自定义组件负责分栏工作区和交互，`studio_bridge` 提供只读展示与白名单操作契约。研究任务仍交由原 Runner 执行，财务模块与 SQLite 不变。Studio 不自动启动监控调度器。引用定位绑定保存的报告版本，不使用新证据回填旧版本。完整原生工作台作为数据工具入口保留。详见 [Studio 交付记录](STUDIO_INTERFACE_2026-10-14.md)。
 
 ```mermaid
 flowchart TD

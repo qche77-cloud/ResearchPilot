@@ -1,5 +1,37 @@
 # ResearchPilot
 
+## ResearchPilot Studio — 2026-10-14
+
+The new `studio_app.py` entry point replaces the research page layout with a
+dedicated frontend: a persistent task library, report canvas and assistant/source
+inspector. Click a citation to inspect its original saved evidence beside the
+report; switch report versions or open the version associated with a chat message.
+It also adds a resizable workspace, keyboard task search (`Ctrl/Cmd K`), browser
+session drafts, responsive reading and financial screening with input lineage.
+
+The frontend is a local HTML/CSS/JavaScript Streamlit component. It uses the
+existing Python Runner, financial calculations and SQLite repositories; no new
+frontend build tools, graph database or paid service are required. Full financial
+imports, stock tools and investment review remain accessible through **完整数据工具**.
+The original `agent_app.py` remains available.
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run studio_app.py --server.address 127.0.0.1 --server.port 8511
+```
+
+Fresh local Studio: `http://127.0.0.1:8511`. Isolated fictional preview:
+`http://127.0.0.1:8510`. These are local links, not public hosting.
+Studio does not automatically resume historical jobs or start a second monitor
+scheduler. Avoid executing the same task from multiple application processes.
+
+[Implementation and acceptance report](docs/STUDIO_INTERFACE_2026-10-14.md) ·
+[Research workspace](artifacts/studio-preview/research-desktop.png) ·
+[Citation inspector](artifacts/studio-preview/evidence-desktop.png) ·
+[Mobile reading](artifacts/studio-preview/report-mobile.png)
+
+Offline regression: **25/25 suites, 178 unit tests**. Browser acceptance: **15/15
+checks** at 1440, 1024 and 390 pixels. All published screenshots use fictional data.
+
 ## Financial screening foundation — 2026-10-14
 
 The stock workspace now includes **财务质量体检** and **财务筛选**. Review
@@ -12,7 +44,7 @@ Financial calculations support date-level `as_of`; valuation selects an older
 publicly available report when the latest one was not disclosed at the market date.
 Invalid publication metadata and inconsistent/nonfinite OHLCV bars are rejected.
 
-Current fresh local service: `http://127.0.0.1:8506`.
+The prior financial-screening Streamlit entry was verified at `http://127.0.0.1:8506`.
 See the [delivery and limitations](docs/QUANT_FOUNDATION_2026-10-14.md) and
 [review roadmap](docs/REVIEW_AND_QUANT_ROADMAP_2026-10-14.md).
 This is financial research screening, without strategy backtesting or trading.
@@ -28,14 +60,14 @@ reviews. Existing local data and background research commands are retained.
 [Desktop preview](artifacts/ui-preview/home-desktop.png) ·
 [Mobile preview](artifacts/ui-preview/home-mobile.png)
 
-The current upgraded local service runs at `http://127.0.0.1:8504`; the previous
+The October 13 interface was verified at `http://127.0.0.1:8504`; the previous
 8502 process was preserved. For a fresh service, use an available port:
 
 ```powershell
 .\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8504
 ```
 
-Requires Streamlit 1.41 or newer. Offline regression now includes 164 unit tests
+Requires Streamlit 1.41 or newer. That delivery included 164 unit tests
 across 24 suite entries, including Windows asyncio/socketpair isolation checks.
 See the [GitHub CI diagnosis and fix](docs/CI_FIX_2026-10-13.md).
 Optional browser acceptance uses isolated fictional data;
