@@ -55,4 +55,6 @@ $env:PLAYWRIGHT_BROWSERS_PATH='G:\ResearchPilot\.venv\playwright-browsers'
 
 正式入口：`http://127.0.0.1:8511`，重新加载页面即可读取新资源。动态效果仅影响 Studio，自带完整数据工具仍采用现有原生界面。新效果已在 Chromium 验证，未声称完成所有浏览器认证。
 
-GitHub 提交和云端回归结果在推送后补记；浏览器验收为本地执行。
+代码已推送 `main`：`e054940db24cbcc0cc5193fe22927cd724d30715`，提交说明为 `feat: polish Studio hover previews and page transitions`。
+
+[GitHub Actions 38539319837](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38539319837) 已完成且成功。下载真实 `offline-regression` 产物并核对：25/25 组、178 个单元测试通过。云端原始报告保存在 `artifacts/studio-polish-ci-e054940/`，运行状态在 `artifacts/studio-polish-cloud-run-e054940.json`。21 项浏览器验收在本地执行，未标记为云端浏览器测试。CI 成功后用 `[skip ci]` 文档提交保存本记录与云端产物，不修改已验证代码。
