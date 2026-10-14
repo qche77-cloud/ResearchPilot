@@ -1,0 +1,11 @@
+{
+  "mode": "production_readonly_interaction_smoke",
+  "url": "http://127.0.0.1:8511",
+  "checks": [
+    "new_motion_assets_loaded",
+    "hover_tooltip_displayed",
+    "navigation_completed"
+  ],
+  "paid_commands": 0,
+  "page_errors": []
+}

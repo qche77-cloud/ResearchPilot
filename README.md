@@ -34,6 +34,13 @@ checks** at 1440, 1024 and 390 pixels. All published screenshots use fictional d
 The [GitHub CI run](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38537194631)
 also passed 25/25 suites and 178 unit tests for code commit `0dc212b`.
 
+Studio now includes delayed hover tooltips, version-scoped citation previews,
+card/button feedback and short page/panel transitions. Polling does not replay
+animations, and reduced-motion preferences are respected. The layout is retained.
+[Interaction polish report](docs/STUDIO_INTERACTIONS_2026-10-14.md) ·
+[Citation hover preview](artifacts/studio-polish/citation-hover.png).
+The updated browser acceptance passes **21/21 checks**.
+
 ## Financial screening foundation — 2026-10-14
 
 The stock workspace now includes **财务质量体检** and **财务筛选**. Review

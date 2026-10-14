@@ -25,10 +25,23 @@ def main():
         frame = page.frame_locator('iframe')
         frame.locator('.home').wait_for()
         assert frame.locator('#preview-badge').is_visible(), 'Refuse screenshots of production research'
+        jsframe = next(f for f in page.frames if '/component/' in f.url)
+        jsframe.wait_for_function('StudioInteractions.activeCount() === 0')
+        frame.locator('.template').first.hover()
+        jsframe.wait_for_function("getComputedStyle(document.querySelector('.template')).transform !== 'none'")
+        page.screenshot(path=str(out / 'home-hover.png'))
+        checks.append('card_hover_depth_without_layout_shift')
+        frame.get_by_role('button', name='财务筛选', exact=True).hover()
+        frame.get_by_role('tooltip').wait_for(state='visible')
+        assert frame.get_by_role('tooltip').inner_text() == '财务筛选'
+        frame.get_by_role('button', name='财务筛选', exact=True).press('Escape')
+        frame.get_by_role('tooltip').wait_for(state='hidden')
+        checks.append('delayed_navigation_tooltip_escape_dismissal')
         frame.locator('#home-draft').fill('界面验收草稿：核查现金流')
         page.screenshot(path=str(out / 'home-desktop.png'))
         frame.get_by_role('button', name='自选档案', exact=True).click()
         frame.locator('.stock-card').first.wait_for()
+        jsframe.wait_for_function('StudioInteractions.activeCount() === 0')
         frame.get_by_role('button', name='研究空间', exact=True).click()
         frame.locator('#home-draft').wait_for()
         assert frame.locator('#home-draft').input_value() == '界面验收草稿：核查现金流'
@@ -41,12 +54,32 @@ def main():
         # A background poll must not reset the draft, text cursor or document position.
         frame.locator('#document-scroll').evaluate('(n)=>n.scrollTo({top:180,behavior:"instant"})')
         before = frame.locator('#document-scroll').evaluate('(n)=>n.scrollTop')
+        jsframe.wait_for_function('StudioInteractions.activeCount() === 0')
+        # Count actual browser Animation objects, including completed ones. An
+        # unchanged background packet must not restart entrance transitions.
+        jsframe.evaluate("() => {window.pollAnimations=0; window.savedAnimate=Element.prototype.animate; Element.prototype.animate=function(...args){window.pollAnimations++;return window.savedAnimate.apply(this,args)}}")
+        frame.locator('#chat-draft').focus()
         page.wait_for_timeout(4600)
+        assert jsframe.evaluate('window.pollAnimations') == 0
+        jsframe.evaluate('() => {Element.prototype.animate=window.savedAnimate}')
         assert frame.locator('#chat-draft').input_value() == '草稿：请找反面证据'
         assert abs(frame.locator('#document-scroll').evaluate('(n)=>n.scrollTop') - before) < 2
         checks.append('poll_preserves_draft_and_report_scroll')
+        checks.append('poll_does_not_replay_page_motion')
         frame.locator('#document-scroll').evaluate('(n)=>n.scrollTo({top:0,behavior:"instant"})')
         page.screenshot(path=str(out / 'research-desktop.png'))
+        frame.locator('.report-section .citation').filter(has_text='E2').first.hover()
+        frame.get_by_role('tooltip').wait_for(state='visible')
+        assert '营运资金' in frame.get_by_role('tooltip').inner_text()
+        assert frame.locator('.inspector-tab.selected').inner_text() == '对话'
+        page.screenshot(path=str(out / 'citation-hover.png'))
+        # A hover preview should remain readable when the pointer enters it.
+        frame.get_by_role('tooltip').hover()
+        page.wait_for_timeout(250)
+        assert frame.get_by_role('tooltip').is_visible()
+        frame.locator('.report-title').hover()
+        frame.get_by_role('tooltip').wait_for(state='hidden')
+        checks.append('citation_hover_preview_without_switching_panel')
         frame.locator('.report-section .citation').filter(has_text='E2').first.click()
         frame.locator('#evidence-E2.focused').wait_for()
         assert '营运资金' in frame.locator('#evidence-E2').inner_text()
@@ -54,6 +87,12 @@ def main():
         page.screenshot(path=str(out / 'evidence-desktop.png'))
         checks.append('report_citation_opens_matching_saved_evidence')
         frame.locator('#report-version').select_option('demo-version-01')
+        frame.locator('.report-section .citation').filter(has_text='E1').first.focus()
+        frame.get_by_role('tooltip').wait_for(state='visible')
+        assert '归母净利润同比下降' in frame.get_by_role('tooltip').inner_text(), frame.get_by_role('tooltip').inner_text()
+        frame.locator('.report-section .citation').filter(has_text='E1').first.press('Escape')
+        frame.get_by_role('tooltip').wait_for(state='hidden')
+        checks.append('keyboard_citation_preview_respects_saved_version')
         assert frame.locator('.report-section').count() == 2
         assert frame.locator('.evidence-card').count() == 2
         assert frame.locator('#evidence-E3').count() == 0
@@ -165,6 +204,21 @@ def main():
             assert not view.get_by_test_id('stException').count()
             checks.append(f'{name}_report_evidence_no_overflow_and_navigation')
             responsive.close()
+        reduced = browser.new_context(viewport=dict(width=1440, height=1000), reduced_motion='reduce')
+        reduced_page = reduced.new_page()
+        reduced_page.on('pageerror', lambda e: errors.append(str(e)))
+        reduced_page.goto(args.url)
+        reduced_frame = reduced_page.frame_locator('iframe')
+        reduced_frame.locator('.home').wait_for()
+        reduced_js = next(f for f in reduced_page.frames if '/component/' in f.url)
+        assert reduced_js.evaluate('StudioInteractions.activeCount()') == 0
+        reduced_frame.get_by_role('button', name='自选档案', exact=True).click()
+        reduced_frame.locator('.stock-card').first.wait_for()
+        assert reduced_js.evaluate('StudioInteractions.activeCount()') == 0
+        reduced_frame.locator('.stock-card').first.hover()
+        assert reduced_frame.locator('.stock-card').first.evaluate("n=>getComputedStyle(n).transform") == 'none'
+        checks.append('reduced_motion_disables_entrance_and_hover_transforms')
+        reduced.close()
         assert not errors, errors
         context.close()
         browser.close()

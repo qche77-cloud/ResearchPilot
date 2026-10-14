@@ -11,6 +11,8 @@ const formatFactor=value=>Number.isFinite(Number(value))?Number(value).toLocaleS
 const empty=(title,text,wide=false)=>`<div class="empty${wide?' wide':''}">${svg('file')}<h3>${esc(title)}</h3><p>${esc(text)}</p></div>`;
 const $=selector=>document.querySelector(selector);
 let data=null,lastSignature='',currentRun=null,version=null,inspector='chat',focusedEvidence=null,mobileInspector=false,pendingEvent=null,paletteIndex=0;
+const interactions=window.StudioInteractions;
+interactions.setEvidenceProvider(button=>(data?.run?.versions?.[button.dataset.citeVersion]?.cards||[]).find(card=>card.eid===button.dataset.cite));
 const drafts=new Map();
 function getSaved(key,fallback=''){try{return sessionStorage.getItem('rp-studio-'+key)??fallback;}catch{return drafts.get(key)??fallback;}}
 function save(key,value){drafts.set(key,value);try{sessionStorage.setItem('rp-studio-'+key,value);}catch{/* In-memory draft fallback for privacy browsers. */}}
@@ -66,7 +68,8 @@ function emit(action,extra={}){
   if(pendingEvent){notify('正在处理上一条请求，请稍候');return;}
   const id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
   pendingEvent={id,action,...extra};post('streamlit:setComponentValue',{value:pendingEvent,dataType:'json'});
-  clearTimeout(emit.timer);emit.timer=setTimeout(()=>{pendingEvent=null;notify('暂未收到服务响应，请检查本地连接后重试');},25000);
+  interactions.busy(true);
+  clearTimeout(emit.timer);emit.timer=setTimeout(()=>{pendingEvent=null;interactions.busy(false);notify('暂未收到服务响应，请检查本地连接后重试');},25000);
 }
 function renderHistory(){
   $('#history-count').textContent=data.history_count;
@@ -133,17 +136,19 @@ function screening(){
   <div class="block-heading"><h2>${result?.matched_count??0} / ${result?.stock_count??0} 家满足条件</h2><button class="button quiet" data-action="download-screen">${svg('download')}导出筛选依据</button></div>${result?.missing_symbols?.length?`<div class="subtle-box">${result.missing_symbols.length} 家自选缺少本地财务输入：${result.missing_symbols.map(esc).join('、')}。请导入有来源的数据。</div>`:''}
   <div class="screen-table">${rows.length?`<table><thead><tr><th>公司</th><th>财报期</th><th>营收同比</th><th>归母利润同比</th><th>毛利率</th><th>净利率</th><th>现金兑现 TTM</th><th>结果</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${esc(r.symbol)}</td><td>${esc(r.quality.period_end||'未知')}</td>${fields.map(key=>{const f=r.quality.factors.find(f=>f.key===key);return `<td><button class="factor-value ${f?.status==='ok'?'':'unavailable'}" data-factor="${key}" data-row="${i}" title="${esc(f?.value??f?.reason??'不可计算')}">${f?.status==='ok'?esc(formatFactor(f.value))+(f.unit==='percent'?'%':'×'):'—'}</button></td>`;}).join('')}<td><span class="tag ${r.matched?'green':'amber'}" title="${esc(r.reasons.join('；'))}">${r.matched?'符合':'未满足'}</span></td></tr>`).join('')}</tbody></table>`:empty('没有可筛选的本地财务数据','筛选不会自动抓取数据；在完整数据工具中导入后再试。',true)}</div><div id="factor-lineage"></div><p class="footer-note">表格显示两位小数，导出保留计算精度。仅覆盖本地自选池，最多 50 家；缺失指标不补零。筛选不调用模型，无收益回测、综合排名或交易信号。</p></div>`;
 }
-function renderMain(preserve=true){
+function renderMain(preserve=true,reason='none'){
+  interactions.beforeRender();
   const positions={};if(preserve)document.querySelectorAll('[id$="-scroll"]').forEach(n=>positions[n.id]=n.scrollTop);
   const focused=document.activeElement,focusId=focused?.id,start=focused?.selectionStart,end=focused?.selectionEnd;
   $('#main').innerHTML=data.view==='watchlist'?watchlist():data.view==='screening'?screening():data.run?research():home();
   for(const [id,top] of Object.entries(positions)){const node=document.getElementById(id);if(node)node.scrollTo({top,behavior:'instant'});}
   const target=focusId&&document.getElementById(focusId);if(target){target.focus({preventScroll:true});if(target.setSelectionRange&&start!=null&&target.type!=='number')target.setSelectionRange(start,end);}
   wireResize();
+  interactions.transition(reason);
 }
-function selectVersion(v){if(!data.run.versions[v])return;version=v;save('version-'+data.run.id,v);focusedEvidence=null;renderMain(false);}
+function selectVersion(v){if(!data.run.versions[v])return;version=v;save('version-'+data.run.id,v);focusedEvidence=null;renderMain(false,'version');}
 function paletteResults(){const q=$('#palette-query').value.toLowerCase(),rows=data.history.filter(r=>r.topic.toLowerCase().includes(q));paletteIndex=Math.min(paletteIndex,Math.max(0,rows.length-1));$('#palette-results').innerHTML=rows.length?rows.map((r,i)=>`<button class="palette-result${i===paletteIndex?' selected':''}" data-run="${esc(r.id)}"><span>${esc(r.topic)}</span><small>${labelStatus(r.status)} · ${dateText(r.updated_at)}</small></button>`).join(''):empty('没有匹配的研究','尝试公司代码或研究主题。');}
-function openPalette(q=''){const dialog=$('#palette');$('#palette-query').value=q;paletteIndex=0;paletteResults();if(!dialog.open)dialog.showModal();$('#palette-query').focus();}
+function openPalette(q=''){interactions.beforeRender();const dialog=$('#palette');$('#palette-query').value=q;paletteIndex=0;paletteResults();if(!dialog.open){dialog.showModal();interactions.openPalette();}$('#palette-query').focus();}
 function download(name,content,type='text/markdown'){const url=URL.createObjectURL(new Blob([content],{type:type+';charset=utf-8'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function factorLineage(row,key){
   const r=data.screening.rows[row],f=r.quality.factors.find(f=>f.key===key);if(!f)return;
@@ -162,12 +167,12 @@ document.addEventListener('click',e=>{
   if(b.dataset.prompt){$('#home-draft').value=b.dataset.prompt;save('home',b.dataset.prompt);$('#home-draft').focus();return;}
   if(b.dataset.followup){$('#chat-draft').value=b.dataset.followup;save('draft-'+data.run.id,b.dataset.followup);$('#chat-draft').focus();return;}
   if(b.dataset.section){document.getElementById('section-'+b.dataset.section)?.scrollIntoView({behavior:'smooth',block:'start'});return;}
-  if(b.dataset.cite){if(!b.dataset.citeVersion){notify('这条回答未关联可核对的报告版本，无法重建引用来源');return;}version=b.dataset.citeVersion;save('version-'+data.run.id,version);inspector='evidence';focusedEvidence=b.dataset.cite;if(window.innerWidth<=660)mobileInspector=true;renderMain();document.getElementById('evidence-'+focusedEvidence)?.scrollIntoView({behavior:'smooth',block:'nearest'});return;}
-  if(b.dataset.inspector){inspector=b.dataset.inspector;renderMain();return;}
-  if(b.dataset.focus){mobileInspector=b.dataset.focus==='inspector';renderMain();return;}
+  if(b.dataset.cite){if(!b.dataset.citeVersion){notify('这条回答未关联可核对的报告版本，无法重建引用来源');return;}version=b.dataset.citeVersion;save('version-'+data.run.id,version);inspector='evidence';focusedEvidence=b.dataset.cite;if(window.innerWidth<=660)mobileInspector=true;renderMain(true,'panel');const card=document.getElementById('evidence-'+focusedEvidence);card?.scrollIntoView({behavior:'smooth',block:'nearest'});interactions.spotlight(card);return;}
+  if(b.dataset.inspector){inspector=b.dataset.inspector;renderMain(true,'panel');return;}
+  if(b.dataset.focus){mobileInspector=b.dataset.focus==='inspector';renderMain(true,'panel');return;}
   if(b.dataset.version){selectVersion(b.dataset.version);return;}
   if(b.dataset.command){emit(b.dataset.command,{run_id:data.run.id});return;}
-  if(b.dataset.factor){factorLineage(Number(b.dataset.row),b.dataset.factor);return;}
+  if(b.dataset.factor){factorLineage(Number(b.dataset.row),b.dataset.factor);interactions.showLineage();return;}
   switch(b.dataset.action){
     case 'new':case 'home':emit('new');break;
     case 'menu':$('#library').classList.toggle('open');break;
@@ -196,14 +201,14 @@ document.addEventListener('keydown',e=>{
 window.addEventListener('message',event=>{
   if(event.source!==window.parent||event.data.type!=='streamlit:render')return;
   const next=event.data.args.data;if(!next)return;
-  if(pendingEvent&&next.ack===pendingEvent.id){const action=pendingEvent.action;if(!next.notice?.startsWith('操作未执行')){if(action==='chat')save('draft-'+pendingEvent.run_id,'');if(action==='start')save('home','');}pendingEvent=null;clearTimeout(emit.timer);if(next.notice)notify(next.notice);}
+  if(pendingEvent&&next.ack===pendingEvent.id){const action=pendingEvent.action;if(!next.notice?.startsWith('操作未执行')){if(action==='chat')save('draft-'+pendingEvent.run_id,'');if(action==='start')save('home','');}pendingEvent=null;interactions.busy(false);clearTimeout(emit.timer);if(next.notice)notify(next.notice);}
   const signature=JSON.stringify(next);if(signature===lastSignature){resize();return;}lastSignature=signature;
   const oldView=data?.view,oldLatest=Object.keys(data?.run?.versions||{}).at(-1),changed=currentRun!==next.run?.id;
   if(!changed&&version===oldLatest)version=Object.keys(next.run?.versions||{}).at(-1);
   data=next;
   if(changed){currentRun=data.run?.id;version=getSaved('version-'+currentRun,Object.keys(data.run?.versions||{}).at(-1));inspector='chat';focusedEvidence=null;mobileInspector=false;}
   if(data.run&&!data.run.versions[version])version=Object.keys(data.run.versions).at(-1);
-  renderHistory();renderMain(!changed&&oldView===data.view);resize();
+  renderHistory();renderMain(!changed&&oldView===data.view,changed||oldView!==data.view?'page':'none');resize();
 });
 for(const node of document.querySelectorAll('[data-icon]'))node.innerHTML=svg(node.dataset.icon);
 const width=Number(getSaved('panel-width'));if(width>=280&&width<=550)document.documentElement.style.setProperty('--side',width+'px');
