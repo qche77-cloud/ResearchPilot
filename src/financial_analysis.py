@@ -516,9 +516,9 @@ def agent_financial_summary(analysis):
             'sources': analysis['sources'], 'policy': analysis['calculation_policy']}
 
 
-def attach_financial_analysis(state, payload):
+def attach_financial_analysis(state, payload, *, as_of=None):
     from src.models import Source, EvidenceDocument
-    analysis = analyze_financials(payload)
+    analysis = analyze_financials(payload, as_of=as_of)
     state.diagnostics['financial_analysis'] = analysis
     groups = {}
     for row in analysis['records'] + analysis['quarter_records']:
@@ -555,7 +555,7 @@ def attach_financial_analysis(state, payload):
         state.documents.append(EvidenceDocument(source, text, len(text.split()), 'success', extraction_status='FULL_TEXT'))
     from src.financial_quality import financial_quality
     if availability_date(payload.get('fetched_at')):
-        quality = financial_quality(payload)
+        quality = financial_quality(payload, as_of=as_of)
         state.diagnostics['financial_quality'] = quality
         analysis['quality'] = {k: quality[k] for k in ('as_of', 'period_end', 'factors', 'flags', 'available_factors', 'policy')}
         if quality['available_factors']:

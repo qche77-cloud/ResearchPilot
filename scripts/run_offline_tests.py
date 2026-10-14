@@ -16,6 +16,8 @@ UNIT_MODULES = [
     'scripts.test_judgments', 'scripts.test_stock_presentation',
     'scripts.test_ui_workspace',
     'scripts.test_studio',
+    'scripts.test_worker_reliability',
+    'scripts.test_cockpit',
     'scripts.test_offline_guard',
     'scripts.test_quant_foundation',
 ]

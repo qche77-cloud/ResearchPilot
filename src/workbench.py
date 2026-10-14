@@ -34,6 +34,10 @@ class Workbench:
                 CREATE TABLE IF NOT EXISTS financial_inputs (id TEXT PRIMARY KEY, symbol TEXT NOT NULL, created TEXT NOT NULL, payload TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS monitor_settings (symbol TEXT PRIMARY KEY, interval_seconds INTEGER NOT NULL, source_mode TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS monitor_events (id INTEGER PRIMARY KEY, symbol TEXT NOT NULL, created TEXT NOT NULL, status TEXT NOT NULL, source TEXT NOT NULL, detail TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS worker_attempts (id TEXT PRIMARY KEY, run_id TEXT NOT NULL, pid INTEGER NOT NULL, started TEXT NOT NULL, finished TEXT, status TEXT NOT NULL, error_type TEXT);
+                CREATE INDEX IF NOT EXISTS worker_attempts_run ON worker_attempts(run_id,started);
+                CREATE TABLE IF NOT EXISTS screening_presets (id TEXT PRIMARY KEY, name TEXT NOT NULL, created TEXT NOT NULL, updated TEXT NOT NULL, revision INTEGER NOT NULL, criteria TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS screening_executions (id TEXT PRIMARY KEY, preset_id TEXT, preset_revision INTEGER, created TEXT NOT NULL, criteria TEXT NOT NULL, input_ids TEXT NOT NULL, result TEXT NOT NULL);
             ''')
 
     @contextmanager
@@ -106,6 +110,47 @@ class Workbench:
             row = db.execute('SELECT * FROM financial_inputs WHERE symbol=? ORDER BY created DESC,rowid DESC LIMIT 1', (symbol,)).fetchone()
         return dict(row, payload=json.loads(row['payload'])) if row else None
 
+    def financial_versions(self, symbol, limit=30):
+        with self.connect() as db:
+            return [dict(r, payload=json.loads(r['payload'])) for r in db.execute(
+                'SELECT * FROM financial_inputs WHERE symbol=? ORDER BY created DESC,rowid DESC LIMIT ?', (symbol, limit))]
+
+    def financial_version(self, symbol, dataset_id):
+        with self.connect() as db:
+            row = db.execute('SELECT * FROM financial_inputs WHERE symbol=? AND id=?', (symbol,dataset_id)).fetchone()
+        return dict(row,payload=json.loads(row['payload'])) if row else None
+
+    def save_screening_preset(self, name, criteria, preset_id=None):
+        from src.financial_screening import screen_financials
+        if not isinstance(name, str) or not name.strip() or len(name) > 80:
+            raise ValueError('方案名称须为 1–80 字')
+        screen_financials({}, **criteria)
+        preset_id = preset_id or uuid.uuid4().hex
+        with self.connect() as db:
+            previous = db.execute('SELECT * FROM screening_presets WHERE id=?', (preset_id,)).fetchone()
+            revision = previous['revision'] + 1 if previous else 1
+            db.execute('INSERT INTO screening_presets VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,updated=excluded.updated,revision=excluded.revision,criteria=excluded.criteria',
+                       (preset_id, name.strip(), previous['created'] if previous else now(), now(), revision, json.dumps(criteria, ensure_ascii=False, allow_nan=False)))
+        return preset_id
+
+    def screening_presets(self):
+        with self.connect() as db:
+            return [dict(r, criteria=json.loads(r['criteria'])) for r in db.execute('SELECT * FROM screening_presets ORDER BY updated DESC')]
+
+    def save_screening_execution(self, result, input_ids, preset=None):
+        execution = uuid.uuid4().hex
+        with self.connect() as db:
+            db.execute('INSERT INTO screening_executions VALUES (?,?,?,?,?,?,?)',
+                       (execution, preset['id'] if preset else None, preset['revision'] if preset else None, now(),
+                        json.dumps(result['parameters'], ensure_ascii=False), json.dumps(input_ids, ensure_ascii=False),
+                        json.dumps(result, ensure_ascii=False, allow_nan=False)))
+        return execution
+
+    def screening_executions(self, limit=30):
+        with self.connect() as db:
+            return [dict(r, criteria=json.loads(r['criteria']), input_ids=json.loads(r['input_ids']), result=json.loads(r['result']))
+                    for r in db.execute('SELECT * FROM screening_executions ORDER BY created DESC,rowid DESC LIMIT ?', (limit,))]
+
     def watch(self, symbol, name):
         with self.connect() as db:
             db.execute('INSERT OR REPLACE INTO watchlist VALUES (?,?,?)', (symbol, name, now()))
@@ -137,12 +182,14 @@ class Workbench:
         with self.connect() as db:
             return [dict(r) for r in db.execute('SELECT * FROM theses WHERE symbol=? ORDER BY created DESC', (symbol,))]
 
-    def review(self, thesis_id, content, status):
+    def review(self, thesis_id, content, status, expected=None):
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
             before = db.execute('SELECT * FROM theses WHERE id=?', (thesis_id,)).fetchone()
             if before is None:
                 raise ValueError('投资假设不存在')
+            if expected is not None and expected != {'review':before['review'],'status':before['status']}:
+                raise ValueError('复盘已变更，请刷新后再保存')
             db.execute('UPDATE theses SET review=?,status=? WHERE id=?', (content, status, thesis_id))
             after = dict(before, review=content, status=status)
             db.execute('INSERT INTO thesis_history(thesis_id,created,before_json,after_json) VALUES (?,?,?,?)',
@@ -205,6 +252,21 @@ class Workbench:
     def ack(self, command_id):
         with self.connect() as db:
             db.execute("UPDATE commands SET status='done' WHERE id=?", (command_id,))
+
+    def begin_worker(self, run_id, pid):
+        attempt = uuid.uuid4().hex
+        with self.connect() as db:
+            db.execute("UPDATE worker_attempts SET status='interrupted',finished=? WHERE run_id=? AND status='running'", (now(), run_id))
+            db.execute('INSERT INTO worker_attempts VALUES (?,?,?,?,?,?,?)', (attempt, run_id, pid, now(), None, 'running', None))
+        return attempt
+
+    def finish_worker(self, attempt, status, error_type=None):
+        with self.connect() as db:
+            db.execute('UPDATE worker_attempts SET finished=?,status=?,error_type=? WHERE id=?', (now(), status, error_type, attempt))
+
+    def worker_attempts(self, run_id, limit=10):
+        with self.connect() as db:
+            return [dict(r) for r in db.execute('SELECT * FROM worker_attempts WHERE run_id=? ORDER BY started DESC,rowid DESC LIMIT ?', (run_id, limit))]
 
     def set_monitor(self, symbol, enabled):
         with self.connect() as db:

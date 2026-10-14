@@ -7,6 +7,7 @@ import threading
 import re
 import time
 import logging
+import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -16,19 +17,21 @@ from src.report_links import normalize_history, snapshot_report
 from src.storage import ResearchRunRepository
 from src.workbench import Workbench
 from src.stock_research import followup_scope
+from src.worker_lock import WorkerLock
 
 logger = logging.getLogger(__name__)
 
 
 class Runner:
-    def __init__(self):
-        self.repo = ResearchRunRepository()
+    def __init__(self, repo=None, store=None):
+        self.repo = repo if repo is not None else ResearchRunRepository()
         self.repo.initialize()
-        self.store = Workbench()
+        self.store = store if store is not None else Workbench()
         self.threads = {}
         self.lock = threading.Lock()
         self.monitor_thread = None
         self.worker_errors = {}
+        self.worker_error_types = {}
 
     def start_monitors(self):
         if self.monitor_thread and self.monitor_thread.is_alive():
@@ -46,6 +49,15 @@ class Runner:
             time.sleep(30)
 
     def monitor_once(self):
+        guard = WorkerLock(self.store.path, 'monitor_scheduler')
+        if not guard.acquire():
+            return
+        try:
+            self._monitor_once()
+        finally:
+            guard.release()
+
+    def _monitor_once(self):
         from src.stock_data import fetch_stock, changes
         from src.research_memory import snapshot_changes
         local = datetime.now(ZoneInfo('Asia/Shanghai'))
@@ -72,6 +84,8 @@ class Runner:
                 self.store.record_monitor_event(symbol, 'failed', 'AKShare / 东方财富 / 新浪', {'error_type': type(exc).__name__})
 
     def active(self, run_id):
+        if WorkerLock.held(self.repo.db_path, run_id):
+            return True
         with self.lock:
             thread = self.threads.get(run_id)
             return bool(thread and thread.is_alive())
@@ -80,17 +94,30 @@ class Runner:
         with self.lock:
             state = self.repo.get_state(run_id)
             thread = self.threads.get(run_id)
-            active = bool(thread and thread.is_alive())
+            active = bool(thread and thread.is_alive()) or WorkerLock.held(self.repo.db_path, run_id)
             if state and not active and run_id in self.worker_errors:
                 state.mark_failed(self.worker_errors[run_id], state.current_stage)
                 return state, active
-            if state and not active and normalize_history(state):
-                self.repo.save_state(state)
+            if state and not active:
+                guard = WorkerLock(self.repo.db_path, run_id)
+                if not guard.acquire():
+                    return self.repo.get_state(run_id), True
+                try:
+                    state = self.repo.get_state(run_id)
+                    if state and normalize_history(state):
+                        self.repo.save_state(state)
+                finally:
+                    guard.release()
             return state, active
 
     def submit(self, run_id, kind, content=''):
+        if kind not in {'pause', 'resume', 'budget', 'chat'}:
+            raise ValueError('未知任务命令')
+        if not self.repo.exists(run_id):
+            raise ValueError('研究任务不存在')
         with self.lock:
             self.worker_errors.pop(run_id, None)
+            self.worker_error_types.pop(run_id, None)
             self.store.enqueue(run_id, kind, content)
             thread = self.threads.get(run_id)
             if thread and thread.is_alive():
@@ -100,6 +127,36 @@ class Runner:
             thread.start()
 
     def _run(self, run_id):
+        guard = WorkerLock(self.repo.db_path, run_id)
+        attempt = None
+        try:
+            # A process that submits just as another exits keeps trying until
+            # the durable command is drained or it can become the next writer.
+            deadline = time.monotonic() + 300
+            while not guard.acquire():
+                if not self.store.pending(run_id) or time.monotonic() >= deadline:
+                    return
+                time.sleep(.2)
+            attempt = self.store.begin_worker(run_id, os.getpid())
+            self._run_owned(run_id)
+            state = self.repo.get_state(run_id)
+            result = 'failed' if run_id in self.worker_errors else ('completed' if state and state.status == 'completed' else 'paused')
+            self.store.finish_worker(attempt, result, self.worker_error_types.get(run_id) if result == 'failed' else None)
+        except Exception as exc:
+            with self.lock:
+                self.worker_errors[run_id] = f'任务启动或收尾失败：{type(exc).__name__}。命令保留，可手动重试。'
+            if attempt:
+                try:
+                    self.store.finish_worker(attempt, 'failed', type(exc).__name__)
+                except Exception:
+                    logger.error('Worker attempt persistence failed')
+        finally:
+            guard.release()
+            with self.lock:
+                if self.threads.get(run_id) is threading.current_thread():
+                    self.threads.pop(run_id, None)
+
+    def _run_owned(self, run_id):
         state = None
         try:
             state = self.repo.get_state(run_id)
@@ -128,7 +185,9 @@ class Runner:
                         message = cmd['content']
                         a['preferences'] = self.store.preferences()
                         scope_warning = followup_scope(state, message, self.store)
-                        a.setdefault('messages', []).append({'role': 'user', 'content': message})
+                        messages = a.setdefault('messages', [])
+                        if not any(m.get('command_id') == cmd['id'] and m.get('role') == 'user' for m in messages):
+                            messages.append({'role': 'user', 'content': message, 'command_id': cmd['id']})
                         reply = {'action': 'answer', 'answer': scope_warning} if scope_warning else respond(state, message)
                         answer = {'role': 'assistant', 'content': reply['answer']}
                         if reply.get('citation_check'):
@@ -170,10 +229,5 @@ class Runner:
                     message = f'状态保存失败：{type(save_error).__name__}。本次进度可能未落盘，持久化命令未确认时将保留待处理。'
             with self.lock:
                 self.worker_errors[run_id] = message
+                self.worker_error_types[run_id] = type(exc).__name__
             logger.error('Research worker failed: %s', type(exc).__name__)
-        finally:
-            # Never remove a replacement thread submitted after the old worker
-            # already left its normal exit section under the submit lock.
-            with self.lock:
-                if self.threads.get(run_id) is threading.current_thread():
-                    self.threads.pop(run_id, None)

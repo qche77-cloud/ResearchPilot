@@ -46,7 +46,7 @@ def main():
         frame.locator('#home-draft').wait_for()
         assert frame.locator('#home-draft').input_value() == '界面验收草稿：核查现金流'
         checks.append('home_draft_survives_navigation')
-        frame.locator('.history-item').filter(has_text='离线演示公司 A').click()
+        frame.locator('.history-item').filter(has_text='增长是否转化为现金流').click()
         frame.locator('.report-title').wait_for()
         assert frame.locator('.canvas').is_visible() and frame.locator('.inspector').is_visible()
         assert frame.locator('.report-section').count() == 4
@@ -126,7 +126,7 @@ def main():
         checks.append('download_matches_selected_version')
         page.reload()
         frame.locator('.home').wait_for()
-        frame.locator('.history-item').filter(has_text='离线演示公司 A').click()
+        frame.locator('.history-item').filter(has_text='增长是否转化为现金流').click()
         frame.locator('#report-version').wait_for()
         assert frame.locator('#report-version').input_value() == 'demo-version-01'
         assert frame.locator('#chat-draft').input_value() == '草稿：请找反面证据'
@@ -182,7 +182,7 @@ def main():
             assert not rjs.evaluate('document.documentElement.scrollWidth > innerWidth')
             if name == 'mobile':
                 rf.get_by_role('button', name='打开任务列表', exact=True).click()
-            rf.locator('.history-item').filter(has_text='离线演示公司 A').click()
+            rf.locator('.history-item').filter(has_text='增长是否转化为现金流').click()
             rf.locator('.report-title').wait_for()
             rf.locator('.report-section .citation').first.click()
             rf.locator('.evidence-card.focused').wait_for()

@@ -1,5 +1,10 @@
 # ResearchPilot Architecture
 
+The current Studio includes the company finance/memory/review cockpit and
+version-bound screening replay. Background workers now hold OS-backed task locks
+through model/tool calls and persist execution attempts. See the
+[October 15 delivery](COMPANY_COCKPIT_2026-10-15.md) for the protocol and limits.
+
 ResearchPilot is an **AI research agent workflow** for China A-share industry and company research — not a one-shot report generator.
 
 ## Core philosophy

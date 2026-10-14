@@ -12,6 +12,7 @@ from src.evidence_cards import cards
 from src.financial_screening import screen_financials
 from src.research_state import _to_jsonable as to_json_safe
 from src.stock_research import attach_research, symbols_in
+from src.worker_lock import WorkerLock
 
 
 def run_view(state, active=False):
@@ -74,20 +75,55 @@ def packet(service, session):
     state = service.repo.get_state(selected) if selected else None
     criteria = session.get('studio_criteria', dict(as_of=date.today().isoformat(), minimums={}))
     view = session.get('studio_view', 'research')
-    return dict(
+    from src.studio_company import company_view
+    current_screen = session.get('studio_screen_result')
+    result = dict(
         view=view, preview=bool(getattr(service, '_studio_preview', False)),
+        fixture_writes=bool(getattr(service, '_studio_fixture_writes', False) is True),
         history=[dict(id=r.run_id, topic=r.topic, status=r.status, updated_at=r.updated_at)
                  for r in service.repo.list_runs(limit=100)],
         history_count=service.repo.count_runs(),
         run=run_view(state, service.active(selected)) if state else None,
         watches=service.store.watches(), criteria=criteria,
-        screening=screening_view(service.store, criteria) if view == 'screening' else None,
+        screening=(current_screen or screening_view(service.store, criteria)) if view == 'screening' else None,
+        company=company_view(service, session) if view == 'company' else None,
+        directory=service.store.directory() if view == 'watchlist' else [],
+        presets=service.store.screening_presets() if view == 'screening' else [],
+        executions=service.store.screening_executions() if view == 'screening' else [],
+        worker=dict(locked=WorkerLock.held(service.repo.db_path, selected), attempts=service.store.worker_attempts(selected)) if state else None,
         notice=session.get('studio_notice'), ack=session.get('studio_event'),
         pending=[dict(kind=c['kind'], content=c['content']) for c in service.store.pending(selected)] if state else [],
     )
+    return to_json_safe(result)
 
 
-def start_run(service, session, topic, budget=2, symbol=None, update=False):
+def execute_screen(service, session, criteria, preset=None, archived=None):
+    payloads, bindings, missing = {}, {}, []
+    if archived is not None:
+        for symbol, binding in archived.items():
+            row = service.store.financial_version(symbol,binding['dataset_id'])
+            if not row:
+                raise ValueError('历史筛选输入版本缺失，不能用最新数据替代')
+            payloads[symbol], bindings[symbol] = row['payload'], binding
+    else:
+        for stock in service.store.watches()[:50]:
+            row = service.store.financial_dataset(stock['symbol'])
+            if row:
+                payloads[stock['symbol']] = row['payload']
+                bindings[stock['symbol']] = {'dataset_id': row['id']}
+            else:
+                missing.append(stock['symbol'])
+    result = screen_financials(payloads, **criteria)
+    result['missing_symbols'] = missing
+    # The fixture may calculate screens, but synthetic executions aren't persisted.
+    if not getattr(service, '_studio_preview', False) or getattr(service, '_studio_fixture_writes', False) is True:
+        result['execution_id'] = service.store.save_screening_execution(result, bindings, preset)
+    session['studio_screen_result'] = result
+    session['studio_criteria'] = criteria
+    return result
+
+
+def start_run(service, session, topic, budget=2, symbol=None, update=False, financial_context=None):
     if getattr(service, '_studio_preview', False):
         raise ValueError('离线预览不启动真实研究，请使用正式工作区')
     if not isinstance(topic, str) or not topic.strip() or len(topic) > 6000:
@@ -102,6 +138,15 @@ def start_run(service, session, topic, budget=2, symbol=None, update=False):
     state = create_agent(topic, budget)
     if symbol:
         attach_research(state, service.store, service.repo, symbol, update)
+    if financial_context:
+        from src.financial_analysis import attach_financial_analysis
+        payload,dataset_id,cutoff=financial_context
+        if payload.get('symbol')!=symbol:
+            raise ValueError('财务输入与研究公司不匹配')
+        attach_financial_analysis(state,payload,as_of=cutoff)
+        state.diagnostics['agent']['market_checked']=True
+        state.diagnostics['agent']['financial_input_context']=dict(dataset_id=dataset_id,as_of=cutoff)
+        state.diagnostics['agent']['instructions'].append(f'本轮财务证据固定为输入版本 {dataset_id}，仅采用截至 {cutoff} 可用的记录。未自动采集最新行情；公开资料可能来自其他时点，必须明确标识，不宣称这是完整历史回测。')
     state.diagnostics['agent']['preferences'] = service.store.preferences()
     state.diagnostics['agent']['messages'] = [
         {'role': 'user', 'content': topic},
@@ -153,9 +198,106 @@ def consume_event(event, service, session):
                             basis=event.get('basis', 'cumulative'),
                             currency=event.get('currency', 'CNY'), scope=event.get('scope', 'consolidated'))
             date.fromisoformat(criteria['as_of'])
-            screening_view(service.store, criteria)  # Validate before persisting UI criteria.
-            session['studio_criteria'] = criteria
+            screening_view(service.store, criteria)
+            execute_screen(service, session, criteria)
             session['studio_view'] = 'screening'
+        elif action in {'company', 'finance_options', 'finance_import', 'valuation', 'save_profile', 'add_thesis', 'review_thesis', 'watch', 'save_preferences', 'company_research'}:
+            from src.stock_data import normalize_symbol
+            from src.studio_company import financial_payload, import_financial
+            symbol = event.get('symbol')
+            normalize_symbol(symbol)
+            if action != 'company' and symbol != session.get('studio_company'):
+                raise ValueError('公司已切换，请在当前公司重试')
+            mutations = {'finance_import','save_profile','add_thesis','review_thesis','watch','save_preferences','company_research'}
+            if action in mutations and getattr(service, '_studio_preview', False) and (getattr(service, '_studio_fixture_writes', False) is not True or action=='company_research'):
+                raise ValueError('离线预览不保存或启动真实研究')
+            if action == 'company':
+                session['studio_company'] = symbol
+                session.pop('studio_dataset', None)
+                session['studio_view'] = 'company'
+            elif action == 'finance_options':
+                cutoff = event.get('as_of')
+                date.fromisoformat(cutoff)
+                if event.get('dataset_id'):
+                    financial_payload(service.store, symbol, event['dataset_id'])
+                session['studio_finance_asof'] = cutoff
+                session['studio_dataset'] = event.get('dataset_id') or None
+            elif action == 'finance_import':
+                session['studio_dataset'] = import_financial(service.store, symbol, event.get('content'))
+                session['studio_notice'] = '财务输入已保存为新版本；来源真实性仍需核对'
+            elif action == 'valuation':
+                from src.financial_analysis import analyze_financials, identity, number
+                from urllib.parse import urlsplit
+                if number(event.get('value')) is None or number(event.get('value'))<=0 or event.get('currency') not in {'CNY','USD','HKD','EUR'}:
+                    raise ValueError('市值须为正数，并明确币种')
+                date.fromisoformat(event.get('as_of'))
+                if urlsplit(event.get('source_url','')).scheme not in {'http','https'}:
+                    raise ValueError('请提供有效的市值来源链接')
+                payload, dataset_id, _ = financial_payload(service.store, symbol, session.get('studio_dataset'))
+                market = dict(symbol=symbol,value=event.get('value'),unit='元',currency=event.get('currency'),as_of=event.get('as_of'),source_url=event.get('source_url'))
+                market['id'] = identity(market,'M')
+                analysis = analyze_financials(dict(payload,market_valuation=market))
+                session['studio_valuation'] = dict(symbol=symbol,dataset_id=dataset_id,market=market,results=analysis['valuations'])
+                session['studio_notice'] = '估值结果已计算；缺少合格分母时不输出数值'
+            elif action == 'save_profile':
+                values = [event.get(k,'') for k in ('focus','supporting','contrary','questions')]
+                if any(not isinstance(v,str) or len(v)>6000 for v in values):
+                    raise ValueError('档案字段须为不超过 6000 字的文本')
+                service.store.save_profile(symbol,*values)
+                session['studio_notice'] = '研究档案已保存'
+            elif action == 'add_thesis':
+                values = [event.get(k,'') for k in ('thesis','catalyst','invalidation')]
+                if not all(isinstance(v,str) and len(v)<=6000 for v in values) or not values[0].strip():
+                    raise ValueError('请填写有效的投资假设')
+                service.store.add_thesis(symbol,*values)
+                session['studio_notice'] = '投资假设已保存'
+            elif action == 'review_thesis':
+                thesis = next((t for t in service.store.theses(symbol) if t['id']==event.get('thesis_id')),None)
+                if not thesis or event.get('status') not in {'观察中','得到支持','被推翻','已结束'}:
+                    raise ValueError('投资假设或状态无效')
+                review = event.get('review')
+                if not isinstance(review,str) or len(review)>6000:
+                    raise ValueError('复盘须为不超过 6000 字的文本')
+                if event.get('before') != {'review':thesis['review'],'status':thesis['status']}:
+                    raise ValueError('复盘已变更，请刷新后再保存')
+                service.store.review(thesis['id'],review,event['status'],expected=event['before'])
+                session['studio_notice'] = '复盘及变更历史已保存'
+            elif action == 'watch':
+                service.store.watch(symbol,event.get('name') or symbol)
+                session['studio_notice'] = '已加入自选'
+            elif action == 'save_preferences':
+                content = event.get('content','')
+                if not isinstance(content,str) or len(content)>6000:
+                    raise ValueError('偏好须为不超过 6000 字的文本')
+                service.store.save_preferences(content)
+                session['studio_notice'] = '长期研究偏好已保存'
+            elif action == 'company_research':
+                payload,dataset_id,_=financial_payload(service.store,symbol,session.get('studio_dataset'))
+                context=(payload,dataset_id,session.get('studio_finance_asof',date.today().isoformat())) if dataset_id else None
+                start_run(service,session,event.get('topic') or f'研究 A 股 {symbol} 的经营质量、现金流与反面证据。',event.get('budget',2),symbol,bool(event.get('update')),financial_context=context)
+        elif action in {'save_preset','run_preset','open_screen_execution','replay_screen_execution'}:
+            if getattr(service,'_studio_preview',False) and getattr(service,'_studio_fixture_writes',False) is not True and action!='open_screen_execution':
+                raise ValueError('离线预览不保存真实筛选方案或执行历史')
+            if action=='save_preset':
+                criteria=session.get('studio_criteria',dict(as_of=date.today().isoformat(),minimums={}))
+                screening_view(service.store,criteria)
+                service.store.save_screening_preset(event.get('name'),criteria)
+                session['studio_notice']='筛选方案已保存，包含固定截止日与阈值'
+            elif action=='run_preset':
+                preset=next((p for p in service.store.screening_presets() if p['id']==event.get('preset_id')),None)
+                if not preset: raise ValueError('筛选方案不存在')
+                execute_screen(service,session,preset['criteria'],preset)
+                session['studio_notice']='按保存方案运行完成，已记录本次输入版本'
+            else:
+                execution=next((e for e in service.store.screening_executions(100) if e['id']==event.get('execution_id')),None)
+                if not execution: raise ValueError('筛选执行记录不存在')
+                if action=='open_screen_execution':
+                    session['studio_screen_result']=dict(execution['result'],execution_id=execution['id'])
+                    session['studio_criteria']=execution['criteria']
+                else:
+                    execute_screen(service,session,execution['criteria'],archived=execution['input_ids'])
+                    session['studio_notice']='已使用历史输入版本重新计算'
+            session['studio_view']='screening'
         elif action in {'chat', 'pause', 'resume', 'budget', 'update'}:
             run_id = event.get('run_id')
             # An old iframe event cannot steer the newly selected task.

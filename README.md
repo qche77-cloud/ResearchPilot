@@ -1,5 +1,43 @@
 # ResearchPilot
 
+## Company research cockpit — 2026-10-15
+
+Studio now integrates **财务分析、研究时间轴、研究档案、投资复盘**. Open a
+company from **自选档案**, or enter its six-digit code. Financial JSON imports are
+versioned; chart points expose exact inputs, units, disclosure dates and sources.
+The finance panel supports cumulative/single-quarter/TTM views, YoY/QoQ, margins,
+quality checks and deterministic PE/PB with eligible disclosed denominators.
+
+Company research can pin the selected financial version and cutoff as structured
+Agent evidence. The timeline compares saved conclusions, hypotheses, financial
+revisions and actual report text. Profiles, preferences and manual review versions
+persist in the existing workbench database.
+
+Financial screening supports saved fixed-date criteria, durable execution results
+and replay using the original financial input versions, even after new imports.
+Updated workers use OS-backed locks across processes, durable attempts and safe
+checkpoint replay; a crashed process releases its lock without a time-based lease.
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run studio_app.py --server.address 127.0.0.1 --server.port 8521
+```
+
+Current full local entry: **http://127.0.0.1:8521**. Isolated writable fictional
+acceptance preview: **http://127.0.0.1:8520**. Earlier services remain untouched.
+Use updated workers for task execution; unupdated running services cannot follow
+the new lock protocol. Studio still does not automatically resume old jobs or
+start another monitor scheduler.
+
+Validation: **27/27 offline suites, 197 unit tests**, **14/14 cockpit browser
+checks**, plus **21/21 existing UI checks**. No paid API calls during acceptance.
+[Delivery report](docs/COMPANY_COCKPIT_2026-10-15.md) ·
+[Finance view](artifacts/cockpit-browser/finance-desktop.png) ·
+[Research timeline](artifacts/cockpit-browser/timeline-desktop.png) ·
+[Mobile finance](artifacts/cockpit-browser/finance-mobile.png)
+
+All published screenshots use isolated fictional inputs. Stock quotes, monitor
+configuration and AI judgment-proposal confirmation remain in **完整数据工具**.
+
 ## ResearchPilot Studio — 2026-10-14
 
 The new `studio_app.py` entry point replaces the research page layout with a
@@ -19,7 +57,7 @@ The original `agent_app.py` remains available.
 .\.venv\Scripts\python.exe -m streamlit run studio_app.py --server.address 127.0.0.1 --server.port 8511
 ```
 
-Fresh local Studio: `http://127.0.0.1:8511`. Isolated fictional preview:
+The October 14 Studio entry was verified at `http://127.0.0.1:8511`. Its fictional preview:
 `http://127.0.0.1:8510`. These are local links, not public hosting.
 Studio does not automatically resume historical jobs or start a second monitor
 scheduler. Avoid executing the same task from multiple application processes.

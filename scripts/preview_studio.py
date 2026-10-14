@@ -15,7 +15,7 @@ from src.workbench import Workbench
 
 
 @st.cache_resource
-def preview_service():
+def preview_service(cache_scope='default'):
     tmp = tempfile.TemporaryDirectory(prefix='researchpilot-studio-')
     repo = ResearchRunRepository(Path(tmp.name) / 'research.db')
     repo.initialize()

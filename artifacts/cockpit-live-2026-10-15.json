@@ -1,0 +1,15 @@
+{
+  "mode": "production_readonly_cockpit_smoke",
+  "url": "http://127.0.0.1:8521",
+  "history_count": 14,
+  "checks": [
+    "production_fixture_flags_off",
+    "company_finance_loaded",
+    "research_timeline_loaded",
+    "profile_and_review_loaded",
+    "saved_screening_controls_loaded"
+  ],
+  "paid_commands": 0,
+  "page_errors": [],
+  "screenshots": "none; protect user data"
+}

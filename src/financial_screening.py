@@ -1,5 +1,5 @@
 """Bounded financial filtering over supplied stock datasets; no data fetching."""
-from src.financial_analysis import identity, number, numeric_string
+from src.financial_analysis import identity, number, numeric_string, availability_date
 from src.financial_quality import financial_quality
 from src.stock_data import normalize_symbol
 
@@ -7,9 +7,15 @@ KEYS = {'revenue_yoy', 'attributable_profit_yoy', 'gross_margin', 'net_margin', 
 
 
 def screen_financials(payloads, *, as_of, minimums=None, basis='cumulative', currency='CNY', scope='consolidated'):
+    if availability_date(as_of) is None:
+        raise ValueError('筛选需要有效的数据截止日')
+    if basis not in {'cumulative', 'single_quarter'} or currency not in {'CNY', 'USD', 'HKD', 'EUR'} or scope not in {'consolidated', 'parent_company'}:
+        raise ValueError('筛选币种、范围或期间口径无效')
     if len(payloads) > 50:
         raise ValueError('一次最多筛选 50 家公司')
     minimums = minimums or {}
+    if not isinstance(minimums, dict):
+        raise ValueError('筛选条件必须为指标与数值的映射')
     if not set(minimums) <= KEYS or any(number(v) is None for v in minimums.values()):
         raise ValueError('筛选条件必须是支持指标的有限数值')
     thresholds = {k: numeric_string(number(v)) for k, v in minimums.items()}

@@ -2,6 +2,8 @@
 
 ## Contents
 
+- [Company cockpit delivery](COMPANY_COCKPIT_2026-10-15.md) — finance imports, timeline, reviews, screening replay and cross-process workers
+
 - [Architecture overview](architecture.md) — research workflow, V1 component status, design rules
 - [v2 architecture](V2_ARCHITECTURE.md) — financial tools, hypotheses, verification and persistence
 - [Studio interface delivery](STUDIO_INTERFACE_2026-10-14.md) — workspace redesign, browser tests and limitations

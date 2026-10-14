@@ -41,6 +41,7 @@ data/*.db
 data/*.db-shm
 data/*.db-wal
 data/*.sqlite
+data/*.locks/
 
 # Dev / test artifacts
 scripts/_*.json

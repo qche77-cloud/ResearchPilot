@@ -80,7 +80,7 @@ window.StudioInteractions = (() => {
   }
 
   function candidate(target) {
-    const button = target.closest?.('.rail-item,.icon-button,.citation,.history-item');
+    const button = target.closest?.('.rail-item,.icon-button,.citation,.history-item,.chart-point');
     if (!button || button.disabled) return null;
     // Replace browser-native tips only where our accessible tooltip is available.
     if (button.hasAttribute('title')) {
