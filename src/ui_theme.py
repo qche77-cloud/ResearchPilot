@@ -26,7 +26,7 @@ def welcome():
 <div class="rp-welcome-copy"><div class="rp-eyebrow">RESEARCH, WITH A CLEARER VIEW</div>
 <h1>让每一次判断，<br>都有<em>据可循。</em></h1>
 <p>从一个问题出发，穿过数据与线索。<br>核查事实、寻找反例，建立可以持续追踪的研究。</p>
-<div class="rp-tags"><span>原始来源追溯</span><span>财务确定性计算</span><span>持续研究记录</span></div></div>
+<div class="rp-tags"><span>查看原始来源</span><span>财务数据与计算</span><span>保留历次研究</span></div></div>
 <div class="rp-research-map" aria-label="研究流程：问题、证据、假设、判断">
 <div class="rp-map-label">THE RESEARCH LOOP <span>↗</span></div>
 <div class="rp-map-node"><span>01</span><b>提出问题</b><small>明确研究对象与关注点</small></div>

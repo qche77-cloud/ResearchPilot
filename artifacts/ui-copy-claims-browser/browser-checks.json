@@ -1,0 +1,16 @@
+{
+  "fixture": "synthetic_offline_fixture",
+  "checks": [
+    "current_version_three_distinct_verdicts",
+    "conflicting_excerpt_and_original_offsets_visible",
+    "claim_citation_opens_same_version_document",
+    "download_contains_current_verdicts_and_semantic_limit",
+    "historical_verification_uses_historical_evidence",
+    "historical_export_matches_selected_version",
+    "legacy_version_never_inherits_latest_verdicts",
+    "claim_text_and_raw_markup_are_escaped",
+    "mobile_claims_readable_without_horizontal_overflow"
+  ],
+  "passed": 9,
+  "browser_errors": []
+}

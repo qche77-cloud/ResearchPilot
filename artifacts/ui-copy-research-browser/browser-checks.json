@@ -1,0 +1,18 @@
+{
+  "fixture": "synthetic_offline_fixture",
+  "checks": [
+    "seven_financial_signals_and_explicit_scope",
+    "older_backend_packets_keep_manual_review_accessible",
+    "waterfall_keyboard_selection_resolves_exact_inputs",
+    "downloaded_profit_ledger_reconciles_and_has_source_inputs",
+    "missing_currency_stays_unavailable_without_synthetic_values",
+    "criterion_draft_survives_packet_rerender",
+    "criterion_met_and_manual_investment_status_preserved",
+    "revised_financials_change_criterion_and_keep_previous_evidence",
+    "before_deadline_and_disclosure_no_premature_judgment",
+    "mobile_diagnostics_and_tracking_no_page_overflow",
+    "tablet_diagnostics_and_tracking_no_page_overflow"
+  ],
+  "passed": 11,
+  "page_errors": []
+}

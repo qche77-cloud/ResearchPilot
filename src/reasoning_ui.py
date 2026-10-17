@@ -10,11 +10,11 @@ def render_reasoning(state):
     hypotheses = state.diagnostics.get('hypotheses', [])
     with st.expander('研究假设：支持、反例与待验证问题'):
         if not hypotheses:
-            st.caption('此历史记录尚未生成结构化假设。')
+            st.caption('这份历史研究未保存研究假设记录。')
         for h in hypotheses:
             st.write(h['content'])
             st.caption(JUDGMENTS.get(h['judgment'], h['judgment']) + ' · 不确定性 ' + h['uncertainty'])
-            st.caption('判据：' + h['criterion'])
+            st.caption('验证依据：' + h['criterion'])
             for side, label in [('supporting', '支持数据'), ('contrary', '反面数据')]:
                 if h[side]:
                     st.write(label)
@@ -59,13 +59,13 @@ def render_reasoning(state):
     critic = state.diagnostics.get('critic')
     if critic:
         with st.expander('结论验证与遗漏检查'):
-            st.caption('完整性检查：' + ('通过' if critic['passed'] else '未通过') + '；一般语义支持仍待核验。')
+            st.caption('完整性检查：' + ('通过' if critic['passed'] else '未通过') + '；资料是否足以支持结论，仍需核对。')
             for warning in critic['warnings']:
                 if warning['code'] == 'counterevidence_not_in_report_citations':
                     st.warning('反面证据可能未进入报告引用：' + warning['hypothesis_id'])
                 else:
                     st.warning(('结论与来源存在冲突：' if warning['code'] == 'claim_source_conflict' else
-                                '结论支持仍待核验：') + str(len(warning.get('claim_ids', []))) + ' 条')
+                                '结论依据仍需核对：') + str(len(warning.get('claim_ids', []))) + ' 条')
             for claim in critic['report_check'].get('claims', []):
                 st.write(claim['label'] + '：' + claim['text'])
                 for reference in claim['references']:
@@ -82,4 +82,4 @@ def render_reasoning(state):
             st.markdown(diff_markdown(diff))
             st.caption('同一链接采集文本发生变化：' + '、'.join(diff['changed_source_urls']))
             st.download_button('下载新旧研究差异', diff_markdown(diff), 'research-diff.md', key='diff_dl_' + state.run_id)
-            st.download_button('下载结构化差异', json.dumps(diff, ensure_ascii=False, indent=2), 'research-diff.json', key='diff_json_' + state.run_id)
+            st.download_button('下载详细差异数据', json.dumps(diff, ensure_ascii=False, indent=2), 'research-diff.json', key='diff_json_' + state.run_id)

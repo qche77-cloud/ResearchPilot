@@ -1,8 +1,15 @@
 # ResearchPilot
 
+## Interface wording — 2026-10-18
+
+The interface now uses **公司研究、自选公司、财务检查、验证条件** throughout
+navigation and forms. Search limits, source checks and financial results use
+clearer Chinese explanations. Existing reports and saved user text are preserved.
+[Changes and acceptance evidence](docs/UI_COPY_2026-10-18.md).
+
 ## Financial research tools — 2026-10-18
 
-Open **公司驾驶舱 → 财报侦察** to inspect seven deterministic financial signals:
+Open **公司研究 → 财务检查** to inspect seven deterministic financial signals:
 revenue/profit divergence, cash below profit, inventory/receivables growing faster
 than revenue, falling gross margin, lower expensed R&D, and a high gap between
 attributable and adjusted attributable profit. Every signal exposes its threshold,
@@ -37,7 +44,7 @@ returned 200/ok; starting it submitted no research/model tasks and preserved the
 existing services. This health check is not a live financial-provider acceptance.
 
 Isolated fictional preview while running: **http://127.0.0.1:8524**.
-Open **自选档案 → 公司 A → 财报侦察 / 投资复盘**. Original production services
+Open **自选公司 → 公司 A → 财务检查 / 投资复盘**. Original production services
 were not restarted. Use a fresh updated backend for the new storage features.
 
 ## Claim verification — 2026-10-18
@@ -76,10 +83,10 @@ running. It deliberately includes a conflicting saved report to exercise the UI;
 normal report generation rejects that direct conflict. Existing production
 services were not restarted; use a fresh updated Studio process to load backend changes.
 
-## Company research cockpit — 2026-10-15
+## Company research — 2026-10-15
 
 Studio now integrates **财务分析、研究时间轴、研究档案、投资复盘**. Open a
-company from **自选档案**, or enter its six-digit code. Financial JSON imports are
+company from **自选公司**, or enter its six-digit code. Financial JSON imports are
 versioned; chart points expose exact inputs, units, disclosure dates and sources.
 The finance panel supports cumulative/single-quarter/TTM views, YoY/QoQ, margins,
 quality checks and deterministic PE/PB with eligible disclosed denominators.

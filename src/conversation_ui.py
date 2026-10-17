@@ -17,7 +17,7 @@ def render_conversation(state, active, service, store, start_research, show_snap
     # Keep live headers static: polling must not replay the page entrance animation.
     page_intro(state.topic, '以原始资料为依据，保留反例与尚待验证的问题。', animate=False)
     summary_tiles([('研究状态', label, '后台任务与对话独立运行'),
-                   ('检索预算', f'{a.get("searches", 0)} / {a.get("budget", 2)}', '已成功检索 / 本轮上限'),
+                   ('搜索次数上限', f'{a.get("searches", 0)} / {a.get("budget", 2)}', '已成功检索 / 本轮上限'),
                    ('来源记录', len(state.sources), '来源数量不等于有效证据数量')])
     if active:
         status_strip('正在核查资料 · 可以继续追问，也可以切换到个股工作台')
@@ -37,7 +37,7 @@ def render_conversation(state, active, service, store, start_research, show_snap
                     if st.button('恢复研究', key='resume', use_container_width=True):
                         service.submit(run_id, 'resume')
             with controls[1]:
-                if st.button('增加 3 次搜索预算', key='more', use_container_width=True):
+                if st.button('增加 3 次搜索', key='more', use_container_width=True):
                     service.submit(run_id, 'budget')
             with controls[2]:
                 if a.get('stock_symbol') and st.button('基于档案更新研究', key='update_bound_stock', disabled=active, use_container_width=True):

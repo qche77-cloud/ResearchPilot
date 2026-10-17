@@ -1,0 +1,30 @@
+{
+  "mode": "isolated_writable_cockpit_fixture",
+  "checks": [
+    "multi_period_chart_and_original_record_lineage",
+    "single_quarter_chart_has_cumulative_input_lineage",
+    "disclosure_cutoff_blocks_future_financial_records",
+    "financial_import_creates_version_and_old_inputs_remain_available",
+    "financial_export_contains_exact_inputs_and_computations",
+    "pe_valuation_uses_valid_disclosed_attributable_profit",
+    "company_timeline_exposes_report_and_hypothesis_changes",
+    "company_drafts_profile_and_long_term_preferences_save",
+    "investment_thesis_review_and_previous_versions_saved",
+    "saved_screening_preset_reruns_with_fixed_criteria",
+    "historical_screen_replay_ignores_new_financial_import",
+    "preset_history_survives_browser_session_reload",
+    "tablet_finance_timeline_review_no_overflow",
+    "mobile_finance_timeline_review_no_overflow"
+  ],
+  "page_errors": [],
+  "paid_commands": 0,
+  "screenshots": [
+    "chart-lineage.png",
+    "finance-desktop.png",
+    "finance-mobile.png",
+    "finance-tablet.png",
+    "review-desktop.png",
+    "screening-history.png",
+    "timeline-desktop.png"
+  ]
+}

@@ -68,7 +68,7 @@ window.StudioInteractions = (() => {
       quote.textContent = excerpt ? String(excerpt).slice(0, 180) : '未保存可核对的采集文本。';
       const hint = document.createElement('span');
       hint.className = 'tooltip-hint';
-      hint.textContent = '点击引用，打开完整证据 · 摘录溯源不代表独立语义验证';
+      hint.textContent = '点击查看完整原文；结论是否成立仍需结合资料判断';
       tooltip.append(meta, quote, hint);
     }
     if (!title.textContent) { hideTip(); return; }

@@ -116,7 +116,7 @@ def render_workbench(store, start_research, repo=None):
                         if st.form_submit_button('保存档案'):
                             store.save_profile(code, focus, supporting, contrary, questions)
                             st.success('已保存；Agent 只提供建议，不自动覆盖你的判断。')
-                    st.caption('投资假设在「投资复盘」页管理。上述内容是用户记录，不等于已核实事实。')
+                    st.caption('投资观点在「投资复盘」页管理。上述内容是用户记录，不等于已核实事实。')
                     if repo is not None:
                         history = stock_history(store, repo, code)
                         if st.button('更新这家公司', key='refresh_research_' + code, type='primary'):
@@ -129,12 +129,12 @@ def render_workbench(store, start_research, repo=None):
                                     st.session_state.page = '研究对话'
                                     st.rerun()
                         else:
-                            st.caption('尚无关联研究；首次更新将建立基线，不声称已经发生判断变化。')
+                            st.caption('尚无关联研究；首次研究将作为后续比较的起点。')
             with thesis_tab:
-                st.subheader('投资假设与复盘')
+                st.subheader('投资观点与复盘')
                 with st.form('thesis'):
                     thesis = st.text_area('为什么关注？')
-                    catalyst = st.text_input('期待的催化')
+                    catalyst = st.text_input('关注的事件')
                     invalidation = st.text_input('什么证据会推翻判断？')
                     if st.form_submit_button('保存假设') and thesis.strip():
                         store.add_thesis(code, thesis, catalyst, invalidation)
@@ -143,7 +143,7 @@ def render_workbench(store, start_research, repo=None):
                     with st.expander(item['status'] + ' · ' + item['thesis'][:40]):
                         st.write(item['thesis'])
                         st.write('催化：' + item['catalyst'])
-                        st.write('证伪条件：' + item['invalidation'])
+                        st.write('什么情况会改变判断：' + item['invalidation'])
                         with st.form(item['id']):
                             review = st.text_area('复盘记录', item['review'])
                             options = ['观察中', '得到支持', '被推翻', '已结束']
@@ -151,8 +151,8 @@ def render_workbench(store, start_research, repo=None):
                             if st.form_submit_button('保存复盘'):
                                 store.review(item['id'], review, status)
                                 st.rerun()
-                        if st.button('Agent 核查假设', key='verify_' + item['id']):
-                            start_research(f"核查 A 股 {code} 的假设：{item['thesis']}；催化：{item['catalyst']}；证伪条件：{item['invalidation']}。搜索公告和反例，不预设结论。")
+                        if st.button('核查投资观点', key='verify_' + item['id']):
+                            start_research(f"核查 A 股 {code} 的假设：{item['thesis']}；催化：{item['catalyst']}；什么情况会改变判断：{item['invalidation']}。搜索公告和反例，不预设结论。")
                         if repo is not None:
                             render_judgment(store, repo, code, item)
     with watch:
@@ -174,7 +174,7 @@ def render_workbench(store, start_research, repo=None):
                     if st.form_submit_button('保存监控设置'):
                         store.configure_monitor(code, int(hours) * 3600, mode)
                         st.success('已保存；仍只在本地服务运行且满足盘后时段时执行。')
-                st.caption('日线来源：AKShare/东方财富；财务来源：新浪。源值变化不是已核实的新公告，不自动消耗模型或检索预算。')
+                st.caption('日线来源：AKShare/东方财富；财务来源：新浪。源值变化不是已核实的新公告，不会自动调用模型或搜索。')
                 events = store.monitor_events(code)
                 if events:
                     st.dataframe([{'时间': e['created'], '状态': e['status'], '来源': e['source'], '明细': json.dumps(e['detail'], ensure_ascii=False)} for e in events], hide_index=True)
@@ -221,7 +221,7 @@ def render_workbench(store, start_research, repo=None):
                 st.caption('单位待核对的指标不可直接比较；同报告期也需核对会计口径。')
             else:
                 st.info('缺少共同财报期间，暂不比较财务指标。')
-            if st.button('Agent 深入比较'):
+            if st.button('深入研究比较'):
                 start_research('比较 A 股 ' + '、'.join(selected) + ' 的业务壁垒、现金流及业绩兑现；统一财务期间和单位，缺少可比数据时明确说明。')
     with screening:
         from src.financial_screening_ui import render_financial_screening

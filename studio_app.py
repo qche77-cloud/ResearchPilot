@@ -52,13 +52,13 @@ if st.session_state.get('studio_view') == 'workbench':
     apply_theme()
     with st.container():
         st.markdown('<style>.block-container{padding:1.5rem 2rem!important}</style>', unsafe_allow_html=True)
-        if st.button('← 返回 Studio', key='studio_return'):
+        if st.button('← 返回研究页面', key='studio_return'):
             st.session_state['studio_view'] = 'research'
             st.rerun()
-        st.caption('完整数据工具 · 财务导入、行情、自选、监控配置与投资复盘')
+        st.caption('数据工具 · 财务导入、行情、自选公司、自动更新设置与投资复盘')
         if getattr(service, '_studio_preview', False):
             st.warning('隔离的离线预览 · 所有公司与数据均为虚构，不保存到真实研究数据库。')
-        st.info('Studio 不自动启动监控调度器；监控执行由已有的 agent_app 服务负责。')
+        st.info('此页面不会自动检查新数据。自动更新需要原版研究服务保持运行。')
         render_workbench(service.store, start_research, repo=service.repo)
 else:
     @st.fragment(run_every='4s')

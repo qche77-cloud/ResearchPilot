@@ -39,7 +39,7 @@ def main():
         checks.append('delayed_navigation_tooltip_escape_dismissal')
         frame.locator('#home-draft').fill('界面验收草稿：核查现金流')
         page.screenshot(path=str(out / 'home-desktop.png'))
-        frame.get_by_role('button', name='自选档案', exact=True).click()
+        frame.get_by_role('button', name='自选公司', exact=True).click()
         frame.locator('.stock-card').first.wait_for()
         jsframe.wait_for_function('StudioInteractions.activeCount() === 0')
         frame.get_by_role('button', name='研究空间', exact=True).click()
@@ -162,11 +162,11 @@ def main():
         rendered = jsframe.evaluate("markdown('<img src=x onerror=alert(1)> [bad](javascript:alert)')")
         assert '<img' not in rendered and 'href="javascript:' not in rendered
         checks.append('unsafe_html_and_link_schemes_rejected')
-        frame.get_by_role('button', name='完整数据工具', exact=True).click()
-        page.get_by_role('button', name='← 返回 Studio', exact=True).wait_for()
+        frame.get_by_role('button', name='数据工具', exact=True).click()
+        page.get_by_role('button', name='← 返回研究页面', exact=True).wait_for()
         assert page.get_by_role('tab', name='财务分析', exact=True).count() == 1
         assert not page.get_by_test_id('stException').count()
-        page.get_by_role('button', name='← 返回 Studio', exact=True).click()
+        page.get_by_role('button', name='← 返回研究页面', exact=True).click()
         frame.locator('.research').wait_for()
         checks.append('legacy_financial_and_review_tools_remain_accessible')
         # Independent contexts exercise responsive reading, citation and draft paths.
@@ -212,7 +212,7 @@ def main():
         reduced_frame.locator('.home').wait_for()
         reduced_js = next(f for f in reduced_page.frames if '/component/' in f.url)
         assert reduced_js.evaluate('StudioInteractions.activeCount()') == 0
-        reduced_frame.get_by_role('button', name='自选档案', exact=True).click()
+        reduced_frame.get_by_role('button', name='自选公司', exact=True).click()
         reduced_frame.locator('.stock-card').first.wait_for()
         assert reduced_js.evaluate('StudioInteractions.activeCount()') == 0
         reduced_frame.locator('.stock-card').first.hover()

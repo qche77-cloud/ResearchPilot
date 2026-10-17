@@ -25,17 +25,17 @@ def main():
         js=next(f for f in page.frames if '/component/' in f.url)
         def idle():js.wait_for_function('pendingEvent===null')
         assert frame.locator('#preview-badge').is_visible(),'Refuse non-fictional preview'
-        frame.get_by_role('button',name='自选档案',exact=True).click()
+        frame.get_by_role('button',name='自选公司',exact=True).click()
         frame.locator('[data-company="002837"]').click()
         frame.locator('#finance-asof').fill('2026-04-01')
-        frame.get_by_role('button',name='应用数据时点',exact=True).click()
+        frame.get_by_role('button',name='应用日期与版本',exact=True).click()
         idle()
-        frame.get_by_role('button',name='财报侦察',exact=True).click()
+        frame.get_by_role('button',name='财务检查',exact=True).click()
         frame.locator('.research-signal.triggered').first.wait_for()
         assert frame.locator('.research-signal.triggered').count()==7
         checks.append('seven_financial_signals_and_explicit_scope')
         compatibility=js.evaluate("() => {const saved=data;try{data={...data,company:{...data.company,research:undefined}};return StudioResearchTools.diagnostics()+StudioResearchTools.tracking();}finally{data=saved;}}")
-        assert '等待服务更新' in compatibility and '原有投资观点' in compatibility
+        assert '暂不可用' in compatibility and '已有投资观点' in compatibility
         checks.append('older_backend_packets_keep_manual_review_accessible')
         assert frame.get_by_role('img',name='利润变化瀑布图',exact=True).is_visible()
         frame.get_by_role('button',name='收入变化贡献 80',exact=True).press('Enter')
@@ -44,7 +44,7 @@ def main():
         assert '披露 2026-03-30' in frame.locator('.research-lineage').inner_text()
         checks.append('waterfall_keyboard_selection_resolves_exact_inputs')
         with page.expect_download() as download:
-            frame.get_by_role('button',name='下载研究计算证据',exact=True).click()
+            frame.get_by_role('button',name='下载分析结果与原始数据',exact=True).click()
         evidence=json.loads(Path(download.value.path()).read_text(encoding='utf-8'))
         b=evidence['research']['profit_bridge']
         assert b['reconciled'] and b['change']=='-40'
@@ -53,16 +53,16 @@ def main():
         checks.append('downloaded_profit_ledger_reconciles_and_has_source_inputs')
         frame.locator('#main').evaluate('(n)=>n.scrollTo({top:0,behavior:"instant"})')
         page.screenshot(path=str(out/'financial-detective-desktop.png'))
-        frame.get_by_role('heading',name='利润变化归因',exact=True).scroll_into_view_if_needed()
+        frame.get_by_role('heading',name='利润变化分解',exact=True).scroll_into_view_if_needed()
         page.screenshot(path=str(out/'profit-bridge-desktop.png'))
         frame.locator('#research-options select[name="currency"]').select_option('USD')
-        frame.get_by_role('button',name='应用研究口径',exact=True).click()
+        frame.get_by_role('button',name='应用分析条件',exact=True).click()
         idle()
         frame.get_by_role('heading',name='暂不能完成利润分解',exact=True).wait_for()
         assert frame.locator('.research-signal.unavailable').count()==7
         checks.append('missing_currency_stays_unavailable_without_synthetic_values')
         frame.locator('#research-options select[name="currency"]').select_option('CNY')
-        frame.get_by_role('button',name='应用研究口径',exact=True).click()
+        frame.get_by_role('button',name='应用分析条件',exact=True).click()
         idle()
         frame.get_by_role('button',name='投资复盘',exact=True).click()
         form=frame.locator('.thesis-test-form').first
@@ -72,16 +72,16 @@ def main():
         js.evaluate("renderMain(true,'none')")
         assert form.locator('[name="threshold"]').input_value()=='15'
         checks.append('criterion_draft_survives_packet_rerender')
-        form.get_by_role('button',name='保存判据新版本',exact=True).click()
+        form.get_by_role('button',name='保存验证条件',exact=True).click()
         try:
-            frame.get_by_role('button',name='按当前财务检查判据',exact=True).wait_for(timeout=10000)
+            frame.get_by_role('button',name='用当前数据检查条件',exact=True).wait_for(timeout=10000)
         except Exception:
             page.screenshot(path=str(out/'save-criterion-failure.png'))
             print('Criterion save notice:',frame.locator('#notice').inner_text())
             print('Criterion fields:',form.locator('input').evaluate_all('(nodes)=>nodes.map(n=>[n.name,n.value,n.validationMessage])'))
             raise
-        frame.get_by_role('button',name='按当前财务检查判据',exact=True).click()
-        frame.locator('.thesis-test-result').filter(has_text='财务判据满足').wait_for()
+        frame.get_by_role('button',name='用当前数据检查条件',exact=True).click()
+        frame.locator('.thesis-test-result').filter(has_text='财务条件已满足').wait_for()
         assert frame.locator('.review-form select[name="status"]').input_value()=='观察中'
         checks.append('criterion_met_and_manual_investment_status_preserved')
         frame.locator('.thesis-test-result').scroll_into_view_if_needed()
@@ -94,11 +94,11 @@ def main():
         js.wait_for_function("data.company.dataset_id !== 'fictional-research-v1'")
         idle()
         frame.get_by_role('button',name='投资复盘',exact=True).click()
-        frame.get_by_role('button',name='按当前财务检查判据',exact=True).click()
-        frame.locator('.thesis-test-result').filter(has_text='财务判据未满足').wait_for()
-        assert '出现修订' in frame.locator('.thesis-test-result').inner_text()
+        frame.get_by_role('button',name='用当前数据检查条件',exact=True).click()
+        frame.locator('.thesis-test-result').filter(has_text='财务条件未满足').wait_for()
+        assert '有修订' in frame.locator('.thesis-test-result').inner_text()
         with page.expect_download() as download:
-            frame.get_by_role('button',name='下载判据与检查历史',exact=True).click()
+            frame.get_by_role('button',name='下载验证条件与检查记录',exact=True).click()
         history=json.loads(Path(download.value.path()).read_text(encoding='utf-8'))
         assert len(history['runs'])==2 and len(history['versions'])==1
         assert history['runs'][0]['payload']['status']=='criterion_not_met'
@@ -106,11 +106,11 @@ def main():
         checks.append('revised_financials_change_criterion_and_keep_previous_evidence')
         frame.get_by_role('button',name='财务分析',exact=True).click()
         frame.locator('#finance-asof').fill('2026-03-01')
-        frame.get_by_role('button',name='应用数据时点',exact=True).click()
+        frame.get_by_role('button',name='应用日期与版本',exact=True).click()
         idle()
         frame.get_by_role('button',name='投资复盘',exact=True).click()
-        frame.get_by_role('button',name='按当前财务检查判据',exact=True).click()
-        frame.locator('.thesis-test-result').filter(has_text='未到复盘日').wait_for()
+        frame.get_by_role('button',name='用当前数据检查条件',exact=True).click()
+        frame.locator('.thesis-test-result').filter(has_text='未到复盘日期').wait_for()
         assert '无可比数据' in frame.locator('.thesis-test-result').inner_text()
         checks.append('before_deadline_and_disclosure_no_premature_judgment')
         js=next(f for f in page.frames if '/component/' in f.url)
@@ -120,9 +120,9 @@ def main():
             mobile.on('pageerror',lambda error:errors.append(str(error)))
             mobile.goto(url)
             mf=mobile.frame_locator('iframe');mf.locator('.home').wait_for()
-            mf.get_by_role('button',name='自选档案',exact=True).click()
+            mf.get_by_role('button',name='自选公司',exact=True).click()
             mf.locator('[data-company="002837"]').click()
-            mf.get_by_role('button',name='财报侦察',exact=True).click()
+            mf.get_by_role('button',name='财务检查',exact=True).click()
             mf.locator('.research-signal').first.wait_for()
             mj=next(f for f in mobile.frames if '/component/' in f.url)
             assert not mj.evaluate('document.documentElement.scrollWidth>innerWidth')

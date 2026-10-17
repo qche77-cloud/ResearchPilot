@@ -63,14 +63,14 @@ def render_analysis(analysis, *, key):
             'encoding': {'x': {'field': 'period', 'type': 'ordinal', 'sort': 'ascending', 'title': '财报期末'},
                          'y': {'field': 'chart_value', 'type': 'quantitative', 'title': f'{chosen[0]} {selected[0]["unit"]}'},
                          'tooltip': [{'field': f, 'type': 'nominal'} for f in ('period', 'value', 'currency', 'basis', 'record_id', 'source_url', 'fetched_at')]} })
-        st.caption('图表仅将确定性计算结果转换为绘图坐标；精确值、原始记录 ID 与来源可在下表和下载文件中核对。')
+        st.caption('点击图表或查看下表，核对原始数据、计算结果和来源。下载文件保留完整精度。')
         with st.expander('图表精确值与来源'):
             st.dataframe(selected, hide_index=True, use_container_width=True)
     else:
         st.info('此口径没有通过校验的图表数据；未知值不会画成零。')
     with st.expander('原始记录与数据质量'):
         st.dataframe(record_table, hide_index=True, use_container_width=True)
-    with st.expander('计算结果与输入记录'):
+    with st.expander('计算结果与原始数据'):
         st.dataframe([{'指标': METRICS.get(c['metric'], c['metric']), '期间': c['period_end'], '口径': c['basis'],
                       '计算': c['kind'], '结果': c['value'], '单位': c['unit'], '状态': c['status'],
                       '说明': REASONS.get(c.get('reason'), c.get('reason')), '输入记录': ', '.join(c['input_ids'])}
@@ -87,9 +87,9 @@ def render_financial_tools(store, symbol, snapshot=None):
     imported = store.financial_dataset(symbol)
     payload = imported['payload'] if imported else snapshot or {'symbol': symbol}
     if imported:
-        st.caption('当前分析输入：你导入的财务数据 · 保存时间 ' + imported['created'])
+        st.caption('当前分析数据：你导入的财务数据 · 保存时间 ' + imported['created'])
     else:
-        st.caption('当前分析输入：行情快照中的财务源值；未知单位或期间口径会阻止计算。')
+        st.caption('当前分析数据：行情快照中的财务源值；未知单位或期间口径会阻止计算。')
     render_analysis(analyze_financials(payload), key='fin_' + symbol)
     from src.financial_quality_ui import render_financial_quality
     render_financial_quality(payload, key='quality_' + symbol)
@@ -104,7 +104,7 @@ def render_financial_tools(store, symbol, snapshot=None):
                                      format_func=lambda s: '合并报表' if s == 'consolidated' else '母公司报表')
                 evidence = st.text_input('核对依据（原财报链接或数据口径说明）')
                 confirmed = st.checkbox('我已核对上述单位、币种和报表口径')
-                if st.form_submit_button('保存核对后的分析输入'):
+                if st.form_submit_button('保存核对后的财务数据'):
                     if not confirmed or not evidence.strip():
                         st.warning('填写核对依据并勾选确认后才能启用计算。')
                     else:

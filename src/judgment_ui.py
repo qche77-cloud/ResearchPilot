@@ -5,11 +5,11 @@ from src.stock_research import stock_history
 
 
 def render_judgment(store, repo, code, thesis):
-    st.caption('核查建议：仅使用已有报告；生成一次会调用模型，不追加搜索。')
+    st.caption('根据已有研究报告核查观点。生成建议会调用模型，不会追加搜索。')
     history = [s for s in stock_history(store, repo, code) if s.report and s.status == 'completed']
     if history:
         chosen = st.selectbox('选择核查报告', history, format_func=lambda s: s.created_at[:10] + ' · ' + s.topic[:40], key='judge_report_' + thesis['id'])
-        if st.button('生成假设核查建议', key='judge_' + thesis['id']):
+        if st.button('生成观点核查建议', key='judge_' + thesis['id']):
             try:
                 with st.spinner('核对已有证据，生成待确认建议…'):
                     version, payload = propose(chosen, thesis)
@@ -28,7 +28,7 @@ def render_judgment(store, repo, code, thesis):
                 quotes = [q for q in p['quotes'] if q['side'] == side]
                 st.markdown('**' + label + '**')
                 if not quotes:
-                    st.caption('未找到可校验摘录；不能解释为不存在。')
+                    st.caption('未找到可核对的原文摘录，暂时无法判断。')
                 for q in quotes:
                     st.caption(f'[{q["eid"]}] {q["title"]} · 日期 {q["date"] or "未知"}')
                     st.text(q['quote'])
