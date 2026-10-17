@@ -61,7 +61,17 @@ def render_reasoning(state):
         with st.expander('结论验证与遗漏检查'):
             st.caption('完整性检查：' + ('通过' if critic['passed'] else '未通过') + '；一般语义支持仍待核验。')
             for warning in critic['warnings']:
-                st.warning('反面证据可能未进入报告引用：' + warning['hypothesis_id'])
+                if warning['code'] == 'counterevidence_not_in_report_citations':
+                    st.warning('反面证据可能未进入报告引用：' + warning['hypothesis_id'])
+                else:
+                    st.warning(('结论与来源存在冲突：' if warning['code'] == 'claim_source_conflict' else
+                                '结论支持仍待核验：') + str(len(warning.get('claim_ids', []))) + ' 条')
+            for claim in critic['report_check'].get('claims', []):
+                st.write(claim['label'] + '：' + claim['text'])
+                for reference in claim['references']:
+                    st.caption(reference['evidence_id'] + ' · ' + reference.get('title', '引用不存在'))
+                    for excerpt in reference['excerpts']:
+                        st.text(excerpt['text'])
             st.json(critic)
     diff = state.diagnostics.get('research_diff')
     if diff:

@@ -225,6 +225,15 @@ def build_evidence_graph(state):
                             numeric_ids = [cid for side in ('supporting', 'contrary') for o in h[side] for cid in o['evidence_ids']]
                             if h.get('task') == task or any(cid in state.synthesis.evidence_index[eid].document.extracted_text for cid in numeric_ids):
                                 edge(cid, prefix + 'hypothesis:' + h['id'], 'addresses')
+    if state.report and state.synthesis:
+        for claim in verify_report(state.report, state.synthesis)['claims']:
+            cid = node('report_claim', claim['id'], text=claim['text'], section=claim['section'],
+                       status=claim['status'], semantic_support=claim['semantic_support'])
+            for reference in claim['references']:
+                relation = {'supports': 'matches_statement', 'contradicts': 'conflicts_with',
+                            'mixed': 'conflicting_statements'}.get(reference['status'], 'cites_unverified')
+                edge(cid, prefix + 'evidence:' + reference['evidence_id'], relation,
+                     excerpts=reference['excerpts'])
     # Missing IDs are visible diagnostics, not invented source nodes.
     dangling = [e for e in edges if e['source'] not in nodes or e['target'] not in nodes]
     graph = {'run_id': state.run_id, 'nodes': list(nodes.values()), 'edges': edges, 'dangling_edges': dangling}
@@ -243,8 +252,14 @@ def critic_review(state):
     for h in state.diagnostics.get('hypotheses', []):
         if h['contrary'] and not all(eid in cited_text for o in h['contrary'] for eid in o['evidence_ids']):
             warnings.append({'code': 'counterevidence_not_in_report_citations', 'hypothesis_id': h['id']})
+    for code, statuses in [('claim_source_conflict', {'contradicted', 'mixed'}),
+                           ('claim_support_unresolved', {'insufficient_evidence'})]:
+        ids = [c['id'] for c in report_check.get('claims', []) if c['status'] in statuses]
+        if ids:
+            warnings.append({'code': code, 'claim_ids': ids})
     review = {'role': 'deterministic_critic', 'passed': report_check['passed'], 'report_check': report_check,
               'warnings': warnings, 'semantic_support': 'unknown',
+              'claim_summary': report_check.get('claim_summary'),
               'limitations': '编号、摘录、有限方向/数值规则可验证；一般语义、因果和证据穷尽性未被证明。'}
     state.diagnostics['critic'] = review
     return review

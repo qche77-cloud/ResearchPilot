@@ -1,0 +1,2413 @@
+{
+  "mode": "offline",
+  "provenance": "synthetic_offline_fixture",
+  "dataset_sha256": "1647e4ab507912e448d8447af3adbf198daf704a7afdf06d873549f0d2de52cd",
+  "cases": 32,
+  "matched_cases": 32,
+  "false_supports": 0,
+  "splits": {
+    "development": {
+      "cases": 16,
+      "matched": 16
+    },
+    "heldout": {
+      "cases": 16,
+      "matched": 16
+    }
+  },
+  "statuses": {
+    "supported": 9,
+    "contradicted": 4,
+    "insufficient_evidence": 18,
+    "mixed": 2
+  },
+  "limitations": [
+    "Synthetic labels authored with the implementation; heldout is not an independent human benchmark.",
+    "Rule agreement and quote lineage only; not live research accuracy or general entailment.",
+    "No API calls, measured model costs, historical returns or search-policy evaluation."
+  ],
+  "results": [
+    {
+      "id": "exact-cn",
+      "split": "development",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "exact-en",
+      "split": "development",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C1aefab6ea0d82d98",
+            "section": "结论",
+            "section_index": 0,
+            "text": "Revenue increased 10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "Revenue increased 10% [E1].",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "Revenue increased 10%.",
+                    "start": 0,
+                    "end": 22,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "direction",
+      "split": "development",
+      "expected": [
+        "contradicted"
+      ],
+      "actual": [
+        "contradicted"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "contradicted",
+            "label": "发现直接冲突",
+            "issues": [
+              "direct_source_conflict"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "contradicts",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比下降10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "contradicts",
+                    "reason": "direction_conflict"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 1,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "percentage",
+      "split": "development",
+      "expected": [
+        "contradicted"
+      ],
+      "actual": [
+        "contradicted"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C34acf77490372bcc",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长20%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长20% [E1]。",
+            "status": "contradicted",
+            "label": "发现直接冲突",
+            "issues": [
+              "direct_source_conflict"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "contradicts",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "contradicts",
+                    "reason": "numeric_mismatch"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 1,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "different-year",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2024年甲公司营收同比下降10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "different-quarter",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cbc552d21f0390ad6",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025Q1甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025Q1甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025Q2甲公司营收同比下降10%。",
+                    "start": 0,
+                    "end": 19,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "different-entity",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年乙公司营收同比下降10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "missing-citation",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C0c847043d8970586",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [],
+            "raw": "2025年甲公司营收同比增长10%。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "missing_citation",
+              "no_deterministic_support"
+            ],
+            "references": [],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "missing-source",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cf2de38d7f730e04b",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E99"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E99]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "invalid_citation",
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E99",
+                "status": "unresolved",
+                "reason": "invalid_citation",
+                "excerpts": []
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "fallback",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "fallback",
+                "eligible": false,
+                "status": "unknown",
+                "reason": "source_not_eligible",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "contrary-citations",
+      "split": "development",
+      "expected": [
+        "mixed"
+      ],
+      "actual": [
+        "mixed"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C5320ab770b89fdd3",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1",
+              "E2"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1][E2]。",
+            "status": "mixed",
+            "label": "引用间存在冲突",
+            "issues": [
+              "direct_source_conflict"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              },
+              {
+                "evidence_id": "E2",
+                "source_id": "S2",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "contradicts",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比下降10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "contradicts",
+                    "reason": "direction_conflict"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 1,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "multi-statement-source",
+      "split": "development",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 5,
+                    "end": 23,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "causal-leap",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C22d7eb7f0edf195a",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%，因此竞争优势持续增强",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10%，因此竞争优势持续增强 [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "forecast-qualifier-dropped",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "预计2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 20,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "negation-dropped",
+      "split": "development",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "不能确认2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 22,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "citation-after-period",
+      "split": "development",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cac5b387ae4126e43",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10%[E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "decimal-percent",
+      "split": "heldout",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C9377e93522378fbb",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2026年甲公司净利润同比增长12.5%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2026年甲公司净利润同比增长12.5% [E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2026年甲公司净利润同比增长12.5%。",
+                    "start": 0,
+                    "end": 21,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "decimal-conflict",
+      "split": "heldout",
+      "expected": [
+        "contradicted"
+      ],
+      "actual": [
+        "contradicted"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C9f432a96ddef02fb",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2026年甲公司净利润同比增长12.6%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2026年甲公司净利润同比增长12.6% [E1]。",
+            "status": "contradicted",
+            "label": "发现直接冲突",
+            "issues": [
+              "direct_source_conflict"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "contradicts",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2026年甲公司净利润同比增长12.5%。",
+                    "start": 0,
+                    "end": 21,
+                    "relation": "contradicts",
+                    "reason": "numeric_mismatch"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 1,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "unit-mismatch",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ca4e54995e95a5ed8",
+            "section": "结论",
+            "section_index": 0,
+            "text": "甲公司2025年营收为100亿元",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "甲公司2025年营收为100亿元 [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "甲公司2025年营收为100万元。",
+                    "start": 0,
+                    "end": 17,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "currency-mismatch",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cdb607e30bc8f9948",
+            "section": "结论",
+            "section_index": 0,
+            "text": "甲公司2025年营收为100亿美元",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "甲公司2025年营收为100亿美元 [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "甲公司2025年营收为100亿元人民币。",
+                    "start": 0,
+                    "end": 20,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "scope-mismatch",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cc99683b09aaf7f59",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司合并营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司合并营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司母公司营收同比下降10%。",
+                    "start": 0,
+                    "end": 21,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "basis-mismatch",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C0f0738bc5bf1053c",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司单季营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司单季营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司累计营收同比下降10%。",
+                    "start": 0,
+                    "end": 20,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "yoy-qoq",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cbc552d21f0390ad6",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025Q1甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025Q1甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025Q1甲公司营收环比下降10%。",
+                    "start": 0,
+                    "end": 19,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "paraphrase-abstains",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cd346cf46ed1f1fbc",
+            "section": "结论",
+            "section_index": 0,
+            "text": "甲公司2025年收入较上年有所改善",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "甲公司2025年收入较上年有所改善 [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "unknown",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "甲公司2025年营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "snippet-flag",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": false,
+                "status": "unknown",
+                "reason": "source_not_eligible",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "rejected-source",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "no_deterministic_support"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": false,
+                "status": "unknown",
+                "reason": "source_not_eligible",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "unknown",
+                    "reason": "no_deterministic_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "one-doc-conflict",
+      "split": "heldout",
+      "expected": [
+        "mixed"
+      ],
+      "actual": [
+        "mixed"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "mixed",
+            "label": "引用间存在冲突",
+            "issues": [
+              "direct_source_conflict"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "mixed",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  },
+                  {
+                    "text": "2025年甲公司营收同比下降10%。",
+                    "start": 18,
+                    "end": 36,
+                    "relation": "contradicts",
+                    "reason": "direction_conflict"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 1,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "two-claims",
+      "split": "heldout",
+      "expected": [
+        "supported",
+        "contradicted"
+      ],
+      "actual": [
+        "supported",
+        "contradicted"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C807e8ae41cf8463d",
+            "section": "结论",
+            "section_index": 0,
+            "text": "甲公司2025年营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "甲公司2025年营收同比增长10% [E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "甲公司2025年营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          },
+          {
+            "id": "C7fd1303ee3e8ea35",
+            "section": "结论",
+            "section_index": 0,
+            "text": "甲公司2025年净利润同比增长20%",
+            "citation_ids": [
+              "E2"
+            ],
+            "raw": "甲公司2025年净利润同比增长20% [E2]。",
+            "status": "contradicted",
+            "label": "发现直接冲突",
+            "issues": [
+              "direct_source_conflict"
+            ],
+            "references": [
+              {
+                "evidence_id": "E2",
+                "source_id": "S2",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "contradicts",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "甲公司2025年净利润同比下降20%。",
+                    "start": 0,
+                    "end": 19,
+                    "relation": "contradicts",
+                    "reason": "direction_conflict"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 2,
+          "supported": 1,
+          "contradicted": 1,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 0.5
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "list-formatting",
+      "split": "heldout",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Cb804b98f1ca4f96e",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "**2025年甲公司营收同比增长10%** [E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "repeated-news",
+      "split": "heldout",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C5320ab770b89fdd3",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1",
+              "E2"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1][E2]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/same",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              },
+              {
+                "evidence_id": "E2",
+                "source_id": "S2",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/same",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "old-source-not-freshness-proof",
+      "split": "heldout",
+      "expected": [
+        "supported"
+      ],
+      "actual": [
+        "supported"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "Ce853578bed9bd680",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1]。",
+            "status": "supported",
+            "label": "原文陈述匹配",
+            "issues": [],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2020-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "verbatim_only"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 1,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 0,
+          "statement_match_rate": 1.0
+        },
+        "all_claims_matched": true,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    },
+    {
+      "id": "valid-plus-invalid-reference",
+      "split": "heldout",
+      "expected": [
+        "insufficient_evidence"
+      ],
+      "actual": [
+        "insufficient_evidence"
+      ],
+      "matched": true,
+      "excerpt_offsets_valid": true,
+      "verification": {
+        "method": "claim_source_rules_v1",
+        "claims": [
+          {
+            "id": "C394800927c08947c",
+            "section": "结论",
+            "section_index": 0,
+            "text": "2025年甲公司营收同比增长10%",
+            "citation_ids": [
+              "E1",
+              "E99"
+            ],
+            "raw": "2025年甲公司营收同比增长10% [E1][E99]。",
+            "status": "insufficient_evidence",
+            "label": "证据不足",
+            "issues": [
+              "invalid_citation"
+            ],
+            "references": [
+              {
+                "evidence_id": "E1",
+                "source_id": "S1",
+                "title": "Synthetic fixture",
+                "url": "https://example.invalid/filing",
+                "published_at": "2026-01-01",
+                "date_source": "none",
+                "date_confidence": "none",
+                "read_status": "success",
+                "eligible": true,
+                "status": "supports",
+                "reason": "checked_saved_document",
+                "excerpts": [
+                  {
+                    "text": "2025年甲公司营收同比增长10%。",
+                    "start": 0,
+                    "end": 18,
+                    "relation": "supports",
+                    "reason": "complete_statement_match"
+                  }
+                ]
+              },
+              {
+                "evidence_id": "E99",
+                "status": "unresolved",
+                "reason": "invalid_citation",
+                "excerpts": []
+              }
+            ],
+            "method": "claim_source_rules_v1",
+            "semantic_support": "unknown"
+          }
+        ],
+        "claim_summary": {
+          "total": 1,
+          "supported": 0,
+          "contradicted": 0,
+          "mixed": 0,
+          "insufficient_evidence": 1,
+          "statement_match_rate": 0.0
+        },
+        "all_claims_matched": false,
+        "limitations": [
+          "Complete-statement matches establish attribution to saved text, not source truth.",
+          "Paraphrases, causality, freshness and unstated context require independent review.",
+          "Conflicts require matching entity/period/unit text apart from direction and percentages.",
+          "Only cited documents are checked; uncited counterevidence may remain undiscovered."
+        ]
+      }
+    }
+  ]
+}

@@ -20,6 +20,7 @@ UNIT_MODULES = [
     'scripts.test_cockpit',
     'scripts.test_offline_guard',
     'scripts.test_quant_foundation',
+    'scripts.test_claim_verification',
 ]
 SCRIPT_MODULES = [
     'scripts.test_research_health', 'scripts.test_v112_reader_reliability',
@@ -134,6 +135,7 @@ def main(argv=None):
             modules.append(('unit', 'scripts.' + name))
     if (ROOT / 'evals' / 'agent_cases.json').is_file():
         modules.append(('script', 'scripts.evaluate_agent'))
+    modules.append(('script', 'scripts.evaluate_claims'))
     rows = []
     for kind, module in modules:
         start = time.perf_counter()

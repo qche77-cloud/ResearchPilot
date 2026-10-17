@@ -1,5 +1,17 @@
 # v2.0 开发版本架构
 
+2026-10-18 增加逐句报告验证：`verify_report → claim_verification.verify_claims`
+从具体报告句子关联其引用文档，保存完整原文片段与 Python 字符偏移、来源、日期及读取状态。
+`supported` 仅指完整原文陈述匹配；一般语义仍 unknown。同文本主体/期间/单位的方向或百分比冲突
+才参与报告阻断，避免整篇文档中其他公司数据造成误判。混合证据和未解决支持进入 Critic warnings，
+由既有 Agent outcome 机制标为 partial。结构化财务数值继续由原 Decimal 工具处理。
+
+`report_versions.verification` 与具体报告、证据一起哈希和保存；新增验证不回填已存旧版本。
+展示层只读所选版本的检查，旧版本缺少检查时明确显示未保存。派生图新增 `report_claim` 节点及
+`matches_statement / conflicts_with / conflicting_statements / cites_unverified` 边，
+不把引用或文本匹配当作一般语义证明。复用 ResearchState diagnostics 和 SQLite JSON，未迁移数据库。
+详见 [本轮交付及测试限制](CLAIM_VERIFICATION_2026-10-18.md)。
+
 2026-10-15 公司驾驶舱复用原财务和记忆模块，新增本机跨进程 `WorkerLock`、持久化执行记录、筛选方案与固定输入执行快照。财务导入/版本、时间轴、档案/复盘在 Studio 内完成；所选财务版本和截止日作为结构化证据绑定新公司研究。详见 [完整交付与测试证据](COMPANY_COCKPIT_2026-10-15.md)。
 
 沿用 Python、Streamlit、SQLite、OpenAI Chat Completions 与现有数据适配器。没有整体迁移框架。Studio、自主对话与原顺序流水线入口继续共用组件：

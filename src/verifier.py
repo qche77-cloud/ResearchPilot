@@ -99,15 +99,30 @@ def validate_answer(data, evidence):
 
 
 def verify_report(report, synthesis):
+    from src.claim_verification import verify_claims
+    claim_check = verify_claims(report, synthesis)
     evidence = {eid: {'text': item.document.extracted_text} for eid, item in synthesis.evidence_index.items()}
     results = []
-    for section in report.sections:
+    for index, section in enumerate(report.sections):
         if section.title in {'Sources', '证据缺口', '研究健康度', 'Research Health'} or '健康' in section.title:
             continue
         supports = {eid: evidence[eid]['text'] for eid in citation_ids(section.content) if eid in evidence}
         result = validate_answer({'action': 'answer', 'answer': section.content, 'supports': supports}, evidence)
+        # A whole document can mention other entities/periods. Its aggregate
+        # direction is not a valid local contradiction. Only complete matching
+        # claim templates can block a report for a numeric/directional conflict.
+        result['issues'] = [i for i in result['issues'] if i['code'] not in {'direction_conflict', 'numeric_mismatch'}]
+        for claim in claim_check['claims']:
+            if claim['section_index'] == index and claim['status'] == 'contradicted':
+                for reference in claim['references']:
+                    for excerpt in reference['excerpts']:
+                        if excerpt['relation'] == 'contradicts':
+                            result['issues'].extend({'code': code, 'evidence_id': reference['evidence_id'],
+                                                     'claim_id': claim['id']} for code in excerpt['reason'].split(','))
+        result['passed'] = not result['issues']
         results.append({'section': section.title, **result})
-    return {'passed': all(r['passed'] for r in results), 'sections': results, 'semantic_support': 'unknown'}
+    return {'passed': all(r['passed'] for r in results), 'sections': results, 'semantic_support': 'unknown',
+            'passed_scope': 'citation_integrity_and_narrow_conflicts', **claim_check}
 
 
 def compare_observations(claim, fact):

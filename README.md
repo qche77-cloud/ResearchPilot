@@ -1,5 +1,37 @@
 # ResearchPilot
 
+## Claim verification — 2026-10-18
+
+New reports save sentence-level claim checks alongside their exact report and
+evidence versions. In Studio, open **过程 → 此版本的结论验证** to inspect complete
+source-statement matches, direct conflicts, unresolved claims, original excerpts
+and source dates; download the selected version's verification JSON.
+
+`supported` means a complete saved source statement matches (formatting and case
+normalized), **not independent factual or semantic verification**. Paraphrases,
+causal claims and unmatched scopes remain unresolved. Direct conflicts require
+the same statement template apart from direction/percentages. Conflicting or
+unresolved claims become Critic warnings; direct unopposed conflicts block normal
+report generation. Existing historical versions are not backfilled with newer checks.
+
+Validation: **29/29 offline suites, 215 unit tests**, **32/32 synthetic claim
+fixtures**, **9 new + 21 existing Studio browser checks**. No new dependencies,
+database migrations or model API calls for these checks.
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.evaluate_claims
+.\.venv\Scripts\python.exe -m scripts.run_offline_tests
+```
+
+[Delivery report and limits](docs/CLAIM_VERIFICATION_2026-10-18.md) ·
+[Desktop](artifacts/claim-browser/claims-desktop.png) ·
+[Mobile](artifacts/claim-browser/claims-mobile.png)
+
+The isolated fictional preview is **http://127.0.0.1:8522** while its process is
+running. It deliberately includes a conflicting saved report to exercise the UI;
+normal report generation rejects that direct conflict. Existing production
+services were not restarted; use a fresh updated Studio process to load backend changes.
+
 ## Company research cockpit — 2026-10-15
 
 Studio now integrates **财务分析、研究时间轴、研究档案、投资复盘**. Open a

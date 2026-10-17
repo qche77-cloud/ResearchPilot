@@ -25,6 +25,11 @@ def snapshot_report(state):
                                  'excerpts': [{'evidence_id': q.evidence_id, 'text': q.excerpt} for q in f.supporting_excerpts]})
     payload = {'sections': [{'title': s.title, 'content': s.content} for s in state.report.sections],
                'evidence': evidence, 'findings': findings}
+    # Recompute from this exact report/evidence pair; never copy a stale verdict
+    # from diagnostics or fill historical versions with the latest verification.
+    if state.synthesis:
+        from src.verifier import verify_report
+        payload['verification'] = verify_report(state.report, state.synthesis)
     if state.diagnostics.get('hypotheses'):
         payload['hypotheses'] = copy.deepcopy(state.diagnostics['hypotheses'])
     if state.diagnostics.get('financial_analysis'):
