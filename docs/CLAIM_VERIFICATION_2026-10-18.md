@@ -17,7 +17,8 @@
    来源日期/日期可信度和读取状态。偏移是 Python 字符索引，满足 `text[start:end] == excerpt`。
 3. 四种状态：`supported`（完整原文陈述匹配）、`contradicted`（直接冲突）、
    `mixed`（来源内或引用间既有匹配又有冲突）、`insufficient_evidence`（未能确定支持）。
-   只规范化格式、空白和大小写，不移除预计、否定、主体、财报期或单位。
+   只规范化格式、空白和大小写，不移除预计、否定、主体、财报期或单位；保留问号，
+   避免把来源疑问句误当作肯定陈述。
 4. 只有读取成功、未回退搜索摘要、未被剔除、非列表页的证据可触发支持/冲突规则。
    方向/百分比冲突还要求其余完整句子模板相同。不同主体、季度、币种、单位、合并范围、
    累计/单季或同比/环比，不被强行认作同一口径。
@@ -37,8 +38,8 @@
 | 检查 | 实际结果 | 记录 |
 | --- | --- | --- |
 | 修改前完整基线 | 27/27 套件；197 单元测试 | `artifacts/claim-baseline-2026-10-18.json` |
-| 修改后完整回归 | 29/29 套件；215 单元测试 | `artifacts/claim-final-2026-10-18.json` |
-| 新增单元测试 | 18/18 | 完整回归中的 `scripts.test_claim_verification` |
+| 修改后完整回归 | 29/29 套件；216 单元测试 | `artifacts/claim-final-2026-10-18.json` |
+| 新增单元测试 | 19/19 | 完整回归中的 `scripts.test_claim_verification` |
 | 新增固定材料评测 | 32/32；用例内 false_supports=0 | `artifacts/claim-evaluation.json` |
 | 新功能浏览器验收 | 9/9；无页面错误 | `artifacts/claim-browser/browser-checks.json` |
 | 原 Studio 浏览器回归 | 21/21；无页面错误 | `artifacts/claim-existing-ui/browser-checks.json` |

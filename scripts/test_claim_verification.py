@@ -106,6 +106,12 @@ class ClaimTests(unittest.TestCase):
         for prefix in ('预计', '不能确认', '并非'):
             self.assertFalse(verify_claims(*fixture(text=prefix+'2025年甲公司营收同比增长10%。'))['all_claims_matched'])
 
+    def test_source_question_is_not_support_for_assertion(self):
+        for question in ('2025年甲公司营收同比增长10%？', 'Revenue increased 10%?'):
+            claim = question.rstrip('？?') + ' [E1]。'
+            self.assertEqual(verify_claims(*fixture(text=question, report=claim))['claims'][0]['status'],
+                             'insufficient_evidence')
+
     def test_snapshot_recomputes_exact_version_and_preserves_old_verdict(self):
         state = state_fixture()
         state.diagnostics['verification'] = {'claims': ['stale unrelated verification']}

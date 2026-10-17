@@ -36,7 +36,9 @@ def _clean(text):
     text = CITATION.sub('', text).strip()
     text = re.sub(r'^\s*(?:[-*>]\s+|\d+[.)]\s+|#{1,6}\s+)', '', text)
     # Formatting markers only; qualifiers, entity, period and units are preserved.
-    return text.replace('**', '').strip().strip('。！？!?；;. \t\r\n')
+    # Keep question marks: a source asking whether X happened cannot support an
+    # assertion that X happened merely by stripping its interrogative punctuation.
+    return text.replace('**', '').strip().strip('。！!；;. \t\r\n')
 
 
 def _canonical(text):

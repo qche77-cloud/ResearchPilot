@@ -14,7 +14,7 @@ the same statement template apart from direction/percentages. Conflicting or
 unresolved claims become Critic warnings; direct unopposed conflicts block normal
 report generation. Existing historical versions are not backfilled with newer checks.
 
-Validation: **29/29 offline suites, 215 unit tests**, **32/32 synthetic claim
+Validation: **29/29 offline suites, 216 unit tests**, **32/32 synthetic claim
 fixtures**, **9 new + 21 existing Studio browser checks**. No new dependencies,
 database migrations or model API calls for these checks.
 
