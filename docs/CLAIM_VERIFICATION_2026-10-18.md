@@ -110,4 +110,18 @@ $env:PYTHONUTF8='1'
 - 下一轮优先加入有标注的真实冻结材料，再评测语义审阅与证据驱动的搜索/停止策略。
   货币硬预算、通用假设推理、量化历史检验继续单独实施，当前不标为完成。
 
-GitHub 提交与云端 CI 状态在实际运行结束后补录，不以本地结果代替云端通过。
+## GitHub 与云端验收
+
+- 主体实现：`acc278c`，云端 [39051212402](https://github.com/qche77-cloud/ResearchPilot/actions/runs/39051212402) 通过。
+- 最终代码：`fc577f22581e4ea951df7c0541cbbcf791498949`，保留问号，加入来源疑问句不能支持肯定句的回归测试。
+- 最终 [CI 39051470907](https://github.com/qche77-cloud/ResearchPilot/actions/runs/39051470907) **success**。
+  原始云端产物已下载至 `artifacts/claim-ci-fc577f2/`，确认 **29/29 套件、216 单元测试、32/32 新用例**；
+  结构化完成记录为 `artifacts/claim-cloud-fc577f2.json`。
+- 本地数据集文件 SHA256 为 `1647e4ab507912e448d8447af3adbf198daf704a7afdf06d873549f0d2de52cd`；
+  云端为 `ae52ab1053c0f21390d9ecbbf219d19f5a5878491ef57524e2185ee238bd8aa9`。
+  当前评测器哈希的是原始文件字节。实际核对将 LF 转为 CRLF 后恰好得到云端哈希，
+  且解析后的 JSON 完全相同；差异来自 Git 的 Windows 换行转换，不是测试材料变化。
+- Actions 有 Node 20 action 被运行器强制使用 Node 24 的弃用提示，但任务成功。
+  本轮未顺带升级 Actions 版本；后续可单独验证升级。
+- 已核实并重启本轮端口 8522 的隔离预览以加载最终代码，没有停止既有生产进程。
+- 最后补录仅更新文档和验收产物，使用 `[skip ci]` 提交，避免为记录 CI 状态无限触发下一轮 CI。

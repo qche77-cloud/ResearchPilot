@@ -27,6 +27,10 @@ database migrations or model API calls for these checks.
 [Desktop](artifacts/claim-browser/claims-desktop.png) ·
 [Mobile](artifacts/claim-browser/claims-mobile.png)
 
+[GitHub CI for final code `fc577f2`](https://github.com/qche77-cloud/ResearchPilot/actions/runs/39051470907)
+passed; downloaded cloud artifacts confirm **29/29 suites, 216 unit tests and
+32/32 claim fixtures**.
+
 The isolated fictional preview is **http://127.0.0.1:8522** while its process is
 running. It deliberately includes a conflicting saved report to exercise the UI;
 normal report generation rejects that direct conflict. Existing production

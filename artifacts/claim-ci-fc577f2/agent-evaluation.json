@@ -1,0 +1,506 @@
+{
+  "evaluated_at": "2026-10-17T16:56:59.286168+00:00",
+  "mode": "offline",
+  "provenance": "synthetic_offline_fixture",
+  "dataset_sha256": "0a700ab69042a2f4ca2ef870a0e02ef998217ed4fb653dfbc36036b8769d9c63",
+  "dataset_as_of": "2026-10-12",
+  "cases": 16,
+  "matched_cases": 16,
+  "scenarios": {
+    "industry": 4,
+    "company": 4,
+    "finance": 4,
+    "conflict": 4
+  },
+  "citation_integrity_decision_accuracy": 1.0,
+  "typed_numeric_decision_accuracy": 1.0,
+  "typed_numeric_pairs": 4,
+  "coverage_by_case": {
+    "industry-valid": 1.0,
+    "industry-missing-task": 0.5,
+    "industry-fallback-is-not-coverage": 0.0,
+    "industry-invalid-reference": 1.0,
+    "company-valid": 1.0,
+    "company-uncited-fact": 1.0,
+    "company-fabricated-quote": 1.0,
+    "company-listing-is-not-coverage": 0.0,
+    "finance-decimal-equality": 1.0,
+    "finance-number-conflict": 1.0,
+    "finance-unit-mismatch": 1.0,
+    "finance-missing-value": 1.0,
+    "conflict-opposite-direction": 1.0,
+    "conflict-percentage-mismatch": 1.0,
+    "conflict-different-period-is-unknown": 1.0,
+    "conflict-omitted-opposing-evidence": 1.0
+  },
+  "conflict_detection": {
+    "tp": 3,
+    "fp": 0,
+    "fn": 0,
+    "tn": 13,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "semantic_support_unknown_cases": 16,
+  "limitations": [
+    "Synthetic fixtures measure deterministic checks, not live research quality.",
+    "Text conflict checks cover narrow same-metric direction/percentage patterns.",
+    "Counterevidence checks require explicit relation metadata.",
+    "No verified semantic entailment or real API/cost measurements."
+  ],
+  "results": [
+    {
+      "id": "industry-valid",
+      "scenario": "industry",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "industry-missing-task",
+      "scenario": "industry",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 0.5,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 0.5,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "industry-fallback-is-not-coverage",
+      "scenario": "industry",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 0.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 0.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "industry-invalid-reference",
+      "scenario": "industry",
+      "matched": true,
+      "expected": {
+        "passed": false,
+        "issues": [
+          "invalid_citation"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": false,
+        "issues": [
+          {
+            "code": "invalid_citation",
+            "evidence_id": "E99"
+          }
+        ],
+        "cited_ids": [
+          "E99"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "company-valid",
+      "scenario": "company",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "company-uncited-fact",
+      "scenario": "company",
+      "matched": true,
+      "expected": {
+        "passed": false,
+        "issues": [
+          "missing_citation"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": false,
+        "issues": [
+          {
+            "code": "missing_citation"
+          }
+        ],
+        "cited_ids": [],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "company-fabricated-quote",
+      "scenario": "company",
+      "matched": true,
+      "expected": {
+        "passed": false,
+        "issues": [
+          "quote_mismatch"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": false,
+        "issues": [
+          {
+            "code": "quote_mismatch",
+            "evidence_id": "E1"
+          }
+        ],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "company-listing-is-not-coverage",
+      "scenario": "company",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 0.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 0.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "finance-decimal-equality",
+      "scenario": "finance",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": [
+          "consistent"
+        ]
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [
+          {
+            "status": "consistent",
+            "reason": "exact_decimal_comparison"
+          }
+        ],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "finance-number-conflict",
+      "scenario": "finance",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": true,
+        "observations": [
+          "conflict"
+        ]
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [
+          {
+            "status": "conflict",
+            "reason": "exact_decimal_comparison"
+          }
+        ],
+        "conflict_detected": true
+      }
+    },
+    {
+      "id": "finance-unit-mismatch",
+      "scenario": "finance",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": [
+          "unknown"
+        ]
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [
+          {
+            "status": "unknown",
+            "reason": "incomparable_scope"
+          }
+        ],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "finance-missing-value",
+      "scenario": "finance",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": [
+          "unknown"
+        ]
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [
+          {
+            "status": "unknown",
+            "reason": "missing_or_invalid_value"
+          }
+        ],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "conflict-opposite-direction",
+      "scenario": "conflict",
+      "matched": true,
+      "expected": {
+        "passed": false,
+        "issues": [
+          "direction_conflict"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": true,
+        "observations": []
+      },
+      "actual": {
+        "passed": false,
+        "issues": [
+          {
+            "code": "direction_conflict",
+            "evidence_id": "E1"
+          }
+        ],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": true
+      }
+    },
+    {
+      "id": "conflict-percentage-mismatch",
+      "scenario": "conflict",
+      "matched": true,
+      "expected": {
+        "passed": false,
+        "issues": [
+          "numeric_mismatch"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": true,
+        "observations": []
+      },
+      "actual": {
+        "passed": false,
+        "issues": [
+          {
+            "code": "numeric_mismatch",
+            "evidence_id": "E1"
+          }
+        ],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": true
+      }
+    },
+    {
+      "id": "conflict-different-period-is-unknown",
+      "scenario": "conflict",
+      "matched": true,
+      "expected": {
+        "passed": true,
+        "issues": [],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": true,
+        "issues": [],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    },
+    {
+      "id": "conflict-omitted-opposing-evidence",
+      "scenario": "conflict",
+      "matched": true,
+      "expected": {
+        "passed": false,
+        "issues": [
+          "omitted_counterevidence"
+        ],
+        "coverage": 1.0,
+        "conflict_detected": false,
+        "observations": []
+      },
+      "actual": {
+        "passed": false,
+        "issues": [
+          {
+            "code": "omitted_counterevidence",
+            "evidence_ids": [
+              "E2"
+            ]
+          }
+        ],
+        "cited_ids": [
+          "E1"
+        ],
+        "semantic_support": "unknown",
+        "method": "deterministic_integrity_v1",
+        "coverage": 1.0,
+        "observations": [],
+        "conflict_detected": false
+      }
+    }
+  ]
+}
