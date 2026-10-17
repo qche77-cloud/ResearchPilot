@@ -1,5 +1,37 @@
 # ResearchPilot
 
+## Financial research tools — 2026-10-18
+
+Open **公司驾驶舱 → 财报侦察** to inspect seven deterministic financial signals:
+revenue/profit divergence, cash below profit, inventory/receivables growing faster
+than revenue, falling gross margin, lower expensed R&D, and a high gap between
+attributable and adjusted attributable profit. Every signal exposes its threshold,
+reporting period and original inputs. Missing data remains explicitly unresolved.
+
+The profit waterfall decomposes the change in same-scope net profit into revenue,
+gross margin, available aggregate period expenses and an unexplained remainder.
+Click bars to inspect exact inputs; export the reconciled accounting ledger.
+This is an arithmetic decomposition, not proof of business causality.
+
+In **投资复盘**, set a financial criterion, target reporting period and review date.
+Explicit checks use the selected saved financial version and cutoff, preserving
+criterion versions, actual observations, original inputs and later revisions.
+Results never overwrite manual investment judgments. Checks are user-triggered;
+this release does not add a background scheduler or declare a full thesis true.
+
+Validation: **31/31 offline suites, 236 unit tests**, **12/12 new synthetic
+evaluation cases**, **46 browser checks** (11 new + 14 cockpit + 21 Studio).
+No new production dependencies or paid API calls during acceptance. Existing
+tables remain; two additive tables store criterion versions and check runs.
+
+[Delivery report, formulas and limits](docs/FINANCIAL_RESEARCH_2026-10-18.md) ·
+[Profit waterfall](artifacts/research-tools-browser/profit-bridge-desktop.png) ·
+[Criterion tracking](artifacts/research-tools-browser/thesis-tracking-desktop.png)
+
+Isolated fictional preview while running: **http://127.0.0.1:8524**.
+Open **自选档案 → 公司 A → 财报侦察 / 投资复盘**. Original production services
+were not restarted. Use a fresh updated backend for the new storage features.
+
 ## Claim verification — 2026-10-18
 
 New reports save sentence-level claim checks alongside their exact report and

@@ -38,6 +38,8 @@ class Workbench:
                 CREATE INDEX IF NOT EXISTS worker_attempts_run ON worker_attempts(run_id,started);
                 CREATE TABLE IF NOT EXISTS screening_presets (id TEXT PRIMARY KEY, name TEXT NOT NULL, created TEXT NOT NULL, updated TEXT NOT NULL, revision INTEGER NOT NULL, criteria TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS screening_executions (id TEXT PRIMARY KEY, preset_id TEXT, preset_revision INTEGER, created TEXT NOT NULL, criteria TEXT NOT NULL, input_ids TEXT NOT NULL, result TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS thesis_tests (thesis_id TEXT NOT NULL, revision INTEGER NOT NULL, symbol TEXT NOT NULL, created TEXT NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(thesis_id,revision));
+                CREATE TABLE IF NOT EXISTS thesis_test_runs (id TEXT PRIMARY KEY, thesis_id TEXT NOT NULL, revision INTEGER NOT NULL, symbol TEXT NOT NULL, created TEXT NOT NULL, dataset_id TEXT NOT NULL, as_of TEXT NOT NULL, payload TEXT NOT NULL);
             ''')
 
     @contextmanager
@@ -181,6 +183,79 @@ class Workbench:
     def theses(self, symbol):
         with self.connect() as db:
             return [dict(r) for r in db.execute('SELECT * FROM theses WHERE symbol=? ORDER BY created DESC', (symbol,))]
+
+    def thesis_test(self, symbol, thesis_id):
+        with self.connect() as db:
+            row=db.execute('SELECT * FROM thesis_tests WHERE symbol=? AND thesis_id=? ORDER BY revision DESC LIMIT 1',(symbol,thesis_id)).fetchone()
+        return dict(row,payload=json.loads(row['payload'])) if row else None
+
+    def thesis_test_versions(self, symbol, thesis_id):
+        with self.connect() as db:
+            return [dict(r,payload=json.loads(r['payload'])) for r in db.execute(
+                'SELECT * FROM thesis_tests WHERE symbol=? AND thesis_id=? ORDER BY revision DESC',(symbol,thesis_id))]
+
+    def save_thesis_test(self,symbol,thesis_id,raw,*,expected_revision,baseline_dataset_id=None,baseline_as_of=None):
+        from src.thesis_tracking import validate_test
+        from src.financial_analysis import availability_date
+        payload=validate_test(raw)
+        if type(expected_revision) is not int or expected_revision < 0:
+            raise ValueError('判据版本无效，请刷新后重试')
+        if baseline_as_of is not None and availability_date(baseline_as_of) is None:
+            raise ValueError('判据基线日期无效')
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            thesis=db.execute('SELECT * FROM theses WHERE symbol=? AND id=?',(symbol,thesis_id)).fetchone()
+            if thesis is None:
+                raise ValueError('当前公司不存在此投资假设')
+            previous=db.execute('SELECT MAX(revision) FROM thesis_tests WHERE symbol=? AND thesis_id=?',(symbol,thesis_id)).fetchone()[0] or 0
+            if expected_revision != previous:
+                raise ValueError('判据已变更，请刷新后再保存')
+            if baseline_dataset_id and not db.execute('SELECT 1 FROM financial_inputs WHERE symbol=? AND id=?',(symbol,baseline_dataset_id)).fetchone():
+                raise ValueError('基线财务版本不属于当前公司')
+            # Snapshot the thesis and criterion; later manual reviews cannot
+            # rewrite what this financial test originally attempted to check.
+            payload.update(symbol=symbol,thesis_id=thesis_id,thesis_snapshot=dict(thesis),
+                           baseline_dataset_id=baseline_dataset_id,baseline_as_of=baseline_as_of)
+            db.execute('INSERT INTO thesis_tests VALUES (?,?,?,?,?)',(thesis_id,previous+1,symbol,now(),json.dumps(payload,ensure_ascii=False,allow_nan=False)))
+        return previous+1
+
+    def thesis_test_runs(self,symbol,thesis_id,limit=30):
+        with self.connect() as db:
+            return [dict(r,payload=json.loads(r['payload'])) for r in db.execute(
+                'SELECT * FROM thesis_test_runs WHERE symbol=? AND thesis_id=? ORDER BY created DESC,rowid DESC LIMIT ?',
+                (symbol,thesis_id,limit))]
+
+    def run_thesis_test(self,symbol,thesis_id,*,expected_revision,dataset_id,as_of):
+        from src.thesis_tracking import evaluate_test
+        from src.financial_analysis import identity
+        if type(expected_revision) is not int or expected_revision < 1:
+            raise ValueError('判据版本无效，请刷新后重试')
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row=db.execute('SELECT * FROM thesis_tests WHERE symbol=? AND thesis_id=? ORDER BY revision DESC LIMIT 1',(symbol,thesis_id)).fetchone()
+            source=db.execute('SELECT * FROM financial_inputs WHERE symbol=? AND id=?',(symbol,dataset_id)).fetchone()
+            if not row or row['revision'] != expected_revision:
+                raise ValueError('判据不存在或版本已变更，请刷新后再执行')
+            if not source:
+                raise ValueError('请先选择当前公司的已保存财务版本')
+            spec=json.loads(row['payload'])
+            result=evaluate_test(spec,json.loads(source['payload']),as_of=as_of)
+            previous=db.execute('SELECT payload FROM thesis_test_runs WHERE symbol=? AND thesis_id=? AND revision=? ORDER BY created DESC,rowid DESC LIMIT 1',
+                                (symbol,thesis_id,row['revision'])).fetchone()
+            previous=json.loads(previous['payload']) if previous else None
+            result.update(criteria_revision=row['revision'],dataset_id=dataset_id,criteria=spec,
+                          criteria_created_at=row['created'])
+            # Same target values revised in a different dataset are visible;
+            # a later cutoff merely making a value available is not a restatement.
+            result['revisions']=[]
+            if previous and previous.get('dataset_id') != dataset_id:
+                for before,after in zip(previous.get('observations',[]),result['observations']):
+                    if before.get('value') is not None and after.get('value') is not None and before['value'] != after['value']:
+                        result['revisions'].append({'criterion':after['criterion'],'before':before['value'],'after':after['value']})
+            result_id=identity([symbol,thesis_id,row['revision'],dataset_id,result['as_of']], 'TR')
+            db.execute('INSERT OR IGNORE INTO thesis_test_runs VALUES (?,?,?,?,?,?,?,?)',
+                       (result_id,thesis_id,row['revision'],symbol,now(),dataset_id,result['as_of'],json.dumps(result,ensure_ascii=False,allow_nan=False)))
+        return result_id
 
     def review(self, thesis_id, content, status, expected=None):
         with self.connect() as db:

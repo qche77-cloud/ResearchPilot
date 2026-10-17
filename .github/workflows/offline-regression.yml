@@ -24,3 +24,4 @@ jobs:
             artifacts/offline-tests.json
             artifacts/agent-evaluation.json
             artifacts/claim-evaluation.json
+            artifacts/research-tools-evaluation.json

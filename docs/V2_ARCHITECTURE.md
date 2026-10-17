@@ -1,5 +1,17 @@
 # v2.0 开发版本架构
 
+2026-10-18 财报研究工具复用 `financial_analysis` 的归一化、披露截止日和 Decimal 运算。
+新增 `financial_diagnostics` 生成七类规则线索与金额勾稽的利润变化桥；记录上下文、阈值、
+观察值、公式和 input_ids。`attach_financial_analysis` 将它们作为结构化证据接入原 Agent，
+并保存在 diagnostics。不以总营业成本代替营业成本，不以归母利润代替净利润分解。
+
+`thesis_tracking` 独立验证用户定义的数值判据；SQLite 新增 `thesis_tests`（不可变判据版本）
+及 `thesis_test_runs`（固定输入与日期的检查记录）。事务内校验当前判据版本并防止过期覆盖，
+同一判据/数据/日期的重复执行幂等。人工 theses/review/thesis_history 保持原有写入路径。
+展示只读，保存和执行均需显式白名单事件；前后端校验公司、输入版本、截止日和判据版本。
+Studio 新增“财报侦察”，投资复盘增加结构化判据；旧服务数据缺少新字段时显示兼容提示。
+详见 [本轮交付与评测](FINANCIAL_RESEARCH_2026-10-18.md)。
+
 2026-10-18 增加逐句报告验证：`verify_report → claim_verification.verify_claims`
 从具体报告句子关联其引用文档，保存完整原文片段与 Python 字符偏移、来源、日期及读取状态。
 `supported` 仅指完整原文陈述匹配；一般语义仍 unknown。同文本主体/期间/单位的方向或百分比冲突

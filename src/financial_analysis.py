@@ -16,6 +16,9 @@ METRICS = {
     'operating_cash_flow': '经营现金流', 'gross_margin': '毛利率',
     'net_assets': '净资产', 'attributable_net_assets': '归母净资产',
     'expense': '期间费用',
+    'inventory': '存货', 'accounts_receivable': '应收账款',
+    'rd_expense': '研发费用（费用化）',
+    'attributable_profit_excluding_nonrecurring': '扣非归母净利润',
 }
 SOURCE_FIELDS = {'BIZTOTINCO': 'total_revenue', 'BIZINCO': 'revenue',
                  'PARENETP': 'attributable_net_profit', 'NETPROFIT': 'net_profit',
@@ -27,10 +30,12 @@ LABELS = {'营业收入': 'revenue', '营业总收入': 'total_revenue', '净利
           '营业总成本': 'total_operating_cost', '经营现金流量净额': 'operating_cash_flow',
           '经营活动产生的现金流量净额': 'operating_cash_flow', '毛利率': 'gross_margin',
           '股东权益合计(净资产)': 'net_assets', '净资产': 'net_assets',
-          '归母净资产': 'attributable_net_assets', '期间费用': 'expense'}
+          '归母净资产': 'attributable_net_assets', '期间费用': 'expense',
+          '存货': 'inventory', '应收账款': 'accounts_receivable', '研发费用': 'rd_expense',
+          '扣非归母净利润': 'attributable_profit_excluding_nonrecurring'}
 MONEY_UNITS = {'元': Decimal(1), '万元': Decimal(10000), '亿元': Decimal(100000000),
                'yuan': Decimal(1), 'thousand': Decimal(1000), 'million': Decimal(1000000)}
-STOCK_METRICS = {'net_assets', 'attributable_net_assets'}
+STOCK_METRICS = {'net_assets', 'attributable_net_assets', 'inventory', 'accounts_receivable'}
 QUARTER_ENDS = {(3, 31): 1, (6, 30): 2, (9, 30): 3, (12, 31): 4}
 
 
@@ -211,7 +216,7 @@ def normalize_financials(payload, *, as_of=None):
                   'available_at': raw.get('available_at') or raw.get('published_at'),
                   'metadata_evidence': meta.get('basis_evidence') if verified else 'explicit_source_fields',
                   'status': 'ok' if not issues else 'blocked', 'issues': issues, 'input_ids': []}
-        if value is not None and metric in {'revenue', 'total_revenue', 'cost_of_revenue', 'total_operating_cost'} and value < 0:
+        if value is not None and metric in {'revenue', 'total_revenue', 'cost_of_revenue', 'total_operating_cost', 'inventory', 'accounts_receivable'} and value < 0:
             record['status'] = 'blocked'
             record['issues'].append('abnormal_negative_amount')
         records.append(record)
@@ -325,6 +330,7 @@ def growth(current, previous, mode='yoy'):
 def ratio(numerator, denominator, metric, subtract=False):
     result = {'id': identity([numerator['id'], denominator['id'], metric], 'C'), 'metric': metric,
               'symbol': denominator['symbol'], 'period_end': denominator['period_end'], 'basis': denominator['basis'],
+              'currency':denominator['currency'], 'scope':denominator['scope'],
               'kind': 'ratio', 'value': None, 'unit': 'percent', 'input_ids': [numerator['id'], denominator['id']],
               'formula': '(revenue - cost_of_revenue) / revenue * 100' if subtract else 'numerator / denominator * 100',
               'status': 'blocked', 'reason': 'incomparable_scope'}
@@ -415,7 +421,8 @@ def analyze_financials(payload, *, as_of=None):
             computations.append(growth(row, previous[0] if len(previous) == 1 else None, mode))
     for revenue in [r for r in candidates if r['metric'] == 'revenue' and r['status'] == 'ok']:
         for metric, result_metric, subtract in [('cost_of_revenue', 'gross_margin', True), ('expense', 'expense_ratio', False), ('net_profit', 'net_margin', False)]:
-            matches = [r for r in candidates if r['metric'] == metric and r['period_end'] == revenue['period_end'] and r['basis'] == revenue['basis'] and r['scope'] == revenue['scope']]
+            matches = [r for r in candidates if r['metric'] == metric and r['status']=='ok' and
+                       all(r[k]==revenue[k] for k in ('symbol','currency','scope','basis','period_start','period_end','unit'))]
             if len(matches) == 1:
                 computations.append(ratio(matches[0], revenue, result_metric, subtract))
     result = {'schema_version': 1, 'symbol': payload.get('symbol'), 'fetched_at': payload.get('fetched_at'),
@@ -513,6 +520,7 @@ def agent_financial_summary(analysis):
                                            key=lambda c: c['period_end'], reverse=True)[:16],
             'valuations': analysis.get('valuations', []),
             'quality': analysis.get('quality'),
+            'research_diagnostics': analysis.get('research_diagnostics'),
             'sources': analysis['sources'], 'policy': analysis['calculation_policy']}
 
 
@@ -564,6 +572,32 @@ def attach_financial_analysis(state, payload, *, as_of=None):
                             text[:300], 'financial_calculation', 1, source_id=f'S{len(state.sources)+1}', research_task='financial_data')
             state.sources.append(source)
             state.documents.append(EvidenceDocument(source, text, len(text.split()), 'success', extraction_status='FULL_TEXT'))
+    from src.financial_diagnostics import research_diagnostics
+    # Source-aware anomalies require an explicit observation cutoff, including
+    # ordinary research whose cutoff defaults to the saved acquisition timestamp.
+    cutoff=as_of or payload.get('fetched_at')
+    dated_analysis=analyze_financials(payload,as_of=cutoff) if availability_date(cutoff) else analysis
+    diagnostics=research_diagnostics(dated_analysis)
+    analysis['research_diagnostics']=diagnostics
+    state.diagnostics['financial_research']=diagnostics
+    if any(r['status']!='unavailable' for r in diagnostics['rules']) or diagnostics['profit_bridge']['status']=='ok':
+        corpus=financial_evidence(dated_analysis)['inputs']
+        ids={i for rule in diagnostics['rules'] for i in rule['input_ids']}
+        ids.update(diagnostics['profit_bridge'].get('input_ids',[]))
+        selected={}
+        def follow(key):
+            if key in selected or key not in corpus:
+                return
+            selected[key]=corpus[key]
+            for parent in corpus[key].get('input_ids',[]):
+                follow(parent)
+        for key in sorted(ids):
+            follow(key)
+        text=json.dumps(dict(label='财务异常与利润变化分解',diagnostics=diagnostics,inputs=selected),ensure_ascii=False)
+        source=Source(f'{payload["symbol"]} 财务异常与利润变化分解（确定性）',dated_analysis['sources'][0],text[:300],
+                      'financial_calculation',1,source_id=f'S{len(state.sources)+1}',research_task='financial_data')
+        state.sources.append(source)
+        state.documents.append(EvidenceDocument(source,text,len(text.split()),'success',extraction_status='FULL_TEXT'))
     return analysis
 
 

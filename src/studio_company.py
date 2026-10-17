@@ -8,6 +8,7 @@ from src.research_memory import compare_snapshots, diff_markdown
 from src.stock_research import stock_history
 from src.stock_data import normalize_symbol
 from src.studio_bridge import run_view
+from src.financial_diagnostics import research_diagnostics
 
 
 def financial_payload(store, symbol, dataset_id=None):
@@ -71,12 +72,19 @@ def company_view(service, session):
         if snapshot:
             previous = snapshot
     theses = service.store.theses(symbol)
+    tracking_ready=all(callable(getattr(service.store,name,None)) for name in
+                       ('thesis_test','thesis_test_versions','thesis_test_runs','save_thesis_test','run_thesis_test'))
+    research = research_diagnostics(analysis,**session.get('studio_research_options',{}))
     name = next((w['name'] for w in service.store.watches() if w['symbol'] == symbol), None)
     name = name or next((d['name'] for d in service.store.directory() if d['symbol'] == symbol), symbol)
     valuation = session.get('studio_valuation')
     return dict(symbol=symbol, name=name, as_of=cutoff, dataset_id=dataset_id, saved_at=saved,
         versions=versions, analysis=analysis, quality=quality, evidence=financial_evidence(analysis), metrics=METRICS,
-        profile=service.store.profile(symbol), theses=[dict(t, history=service.store.review_history(t['id'])) for t in theses],
+        research=research, tracking_ready=tracking_ready,
+        profile=service.store.profile(symbol), theses=[dict(t, history=service.store.review_history(t['id']),
+            test=service.store.thesis_test(symbol,t['id']) if tracking_ready else None,
+            test_versions=service.store.thesis_test_versions(symbol,t['id']) if tracking_ready else [],
+            test_runs=service.store.thesis_test_runs(symbol,t['id']) if tracking_ready else []) for t in theses],
         timeline=list(reversed(timeline)), watched=any(w['symbol'] == symbol for w in service.store.watches()),
         valuation=valuation if valuation and valuation['symbol'] == symbol and valuation['dataset_id'] == dataset_id else None,
         preferences=service.store.preferences())

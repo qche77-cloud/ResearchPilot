@@ -201,20 +201,48 @@ def consume_event(event, service, session):
             screening_view(service.store, criteria)
             execute_screen(service, session, criteria)
             session['studio_view'] = 'screening'
-        elif action in {'company', 'finance_options', 'finance_import', 'valuation', 'save_profile', 'add_thesis', 'review_thesis', 'watch', 'save_preferences', 'company_research'}:
+        elif action in {'company', 'finance_options', 'finance_import', 'valuation', 'save_profile', 'add_thesis', 'review_thesis', 'watch', 'save_preferences', 'company_research', 'research_options', 'save_thesis_test', 'run_thesis_test'}:
             from src.stock_data import normalize_symbol
             from src.studio_company import financial_payload, import_financial
             symbol = event.get('symbol')
             normalize_symbol(symbol)
             if action != 'company' and symbol != session.get('studio_company'):
                 raise ValueError('公司已切换，请在当前公司重试')
-            mutations = {'finance_import','save_profile','add_thesis','review_thesis','watch','save_preferences','company_research'}
+            mutations = {'finance_import','save_profile','add_thesis','review_thesis','watch','save_preferences','company_research','save_thesis_test','run_thesis_test'}
+            if action in {'save_thesis_test','run_thesis_test'} and not callable(getattr(service.store,action,None)):
+                raise ValueError('此后台进程尚未加载判据存储模块，请使用更新后的服务')
             if action in mutations and getattr(service, '_studio_preview', False) and (getattr(service, '_studio_fixture_writes', False) is not True or action=='company_research'):
                 raise ValueError('离线预览不保存或启动真实研究')
             if action == 'company':
                 session['studio_company'] = symbol
                 session.pop('studio_dataset', None)
+                session.pop('studio_research_options',None)
                 session['studio_view'] = 'company'
+            elif action == 'research_options':
+                from src.financial_analysis import analyze_financials
+                from src.financial_diagnostics import research_diagnostics
+                options={k:event.get(k) for k in ('basis','currency','scope')}
+                if event.get('period_end'):
+                    options['period_end']=event['period_end']
+                payload,_,_=financial_payload(service.store,symbol,session.get('studio_dataset'))
+                analysis=analyze_financials(payload,as_of=session.get('studio_finance_asof',date.today().isoformat()))
+                research_diagnostics(analysis,**options)
+                session['studio_research_options']=options
+            elif action == 'save_thesis_test':
+                _,dataset_id,_=financial_payload(service.store,symbol,session.get('studio_dataset'))
+                if event.get('dataset_id')!=dataset_id or event.get('as_of')!=session.get('studio_finance_asof',date.today().isoformat()):
+                    raise ValueError('财务输入或截止日已变化，请刷新判据表单')
+                service.store.save_thesis_test(symbol,event.get('thesis_id'),event.get('test'),
+                    expected_revision=event.get('revision'),baseline_dataset_id=dataset_id,
+                    baseline_as_of=session.get('studio_finance_asof',date.today().isoformat()))
+                session['studio_notice']='财务判据已保存新版本；人工投资判断保持原样'
+            elif action == 'run_thesis_test':
+                _,dataset_id,_=financial_payload(service.store,symbol,session.get('studio_dataset'))
+                if event.get('dataset_id')!=dataset_id or event.get('as_of')!=session.get('studio_finance_asof',date.today().isoformat()):
+                    raise ValueError('财务输入或截止日已变化，请刷新后再执行检查')
+                service.store.run_thesis_test(symbol,event.get('thesis_id'),expected_revision=event.get('revision'),
+                    dataset_id=dataset_id,as_of=session.get('studio_finance_asof',date.today().isoformat()))
+                session['studio_notice']='财务判据检查已保存，未自动修改人工复盘状态'
             elif action == 'finance_options':
                 cutoff = event.get('as_of')
                 date.fromisoformat(cutoff)
