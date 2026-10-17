@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:8526",
+  "health_status": 200,
+  "health_body": "ok",
+  "mode": "healthcheck_only_no_tasks_submitted",
+  "preserved_existing_services": true
+}

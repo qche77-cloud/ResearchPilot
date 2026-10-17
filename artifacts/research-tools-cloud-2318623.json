@@ -1,0 +1,15 @@
+{
+  "conclusion": "success",
+  "headSha": "2318623a43b917e74a3c4022f5d3aa27ccceb43a",
+  "status": "completed",
+  "url": "https://github.com/qche77-cloud/ResearchPilot/actions/runs/39054561276",
+  "cloud_artifacts": {
+    "suites": 31,
+    "passed_suites": 31,
+    "unit_tests": 236,
+    "research_cases": 12,
+    "matched_research_cases": 12,
+    "dataset_sha256": "21679e7d68dc72a243b10b16623562dfe0ce7f18a829e55d8bcae2b6e4eeb27f",
+    "matches_local_dataset": true
+  }
+}

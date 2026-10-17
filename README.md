@@ -28,6 +28,14 @@ tables remain; two additive tables store criterion versions and check runs.
 [Profit waterfall](artifacts/research-tools-browser/profit-bridge-desktop.png) ·
 [Criterion tracking](artifacts/research-tools-browser/thesis-tracking-desktop.png)
 
+[Final code `2318623` passed GitHub CI](https://github.com/qche77-cloud/ResearchPilot/actions/runs/39054561276).
+Downloaded cloud artifacts confirm 31/31 suites, 236 unit tests, 12/12 new cases,
+and an identical canonical evaluation dataset hash.
+
+Updated production entry while running: **http://127.0.0.1:8526**. Health check
+returned 200/ok; starting it submitted no research/model tasks and preserved the
+existing services. This health check is not a live financial-provider acceptance.
+
 Isolated fictional preview while running: **http://127.0.0.1:8524**.
 Open **自选档案 → 公司 A → 财报侦察 / 投资复盘**. Original production services
 were not restarted. Use a fresh updated backend for the new storage features.

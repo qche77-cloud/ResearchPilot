@@ -1,0 +1,4812 @@
+{
+  "mode": "offline",
+  "provenance": "synthetic_offline_fixture",
+  "dataset_sha256": "21679e7d68dc72a243b10b16623562dfe0ce7f18a829e55d8bcae2b6e4eeb27f",
+  "hash_policy": "canonical JSON, UTF-8, sorted keys, line-ending independent",
+  "cases": 12,
+  "matched_cases": 12,
+  "results": [
+    {
+      "id": "complete-accounting-bridge",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {}
+      },
+      "expected": {
+        "bridge": "ok",
+        "triggered": 7,
+        "unavailable": 0
+      },
+      "observed": {
+        "bridge": "ok",
+        "triggered": 7,
+        "unavailable": 0
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "consolidated",
+          "period_end": "2025-12-31",
+          "previous_period": "2024-12-31",
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA05db7bc14eb5c74cf1fb",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "attributable_net_profit_change": "-30"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fb764748c58e5a93a429e",
+              "F39683a273eb2118bdcd3"
+            ],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA1d814b7ce96516a2e0f1",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "triggered",
+            "observations": {
+              "cash_profit_ratio": "0.6666666666666666666666666666666666666667"
+            },
+            "input_ids": [
+              "F673c3638d4e8560ead1f",
+              "F86b96910a56978eb7b16"
+            ],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA53d761fc7f7784ed08d2",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "F6ade146b285550cb34fa",
+              "F3761c062546d48d12c40",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FAfb697959cd01aa93faea",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "Fefe5ef380c13e3812b32",
+              "Ffcbe8c1453b72052fbea",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA7f2ff9d18dc9295ad9cf",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "triggered",
+            "observations": {
+              "previous_margin_pct": "40",
+              "current_margin_pct": "30",
+              "drop_pp": "10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "F58cbb52e58c7fa21a5b9",
+              "F4e163bcd633470dfca9c"
+            ],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA6beb15872690bbee9cd8",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "rd_expense_change": "-10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fa990dcd6a3564bb1366c",
+              "F4fbae52b03b71ec404c8"
+            ],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA7befa96fa7f60fd52959",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "triggered",
+            "observations": {
+              "difference_share_pct": "70"
+            },
+            "input_ids": [
+              "F39683a273eb2118bdcd3",
+              "Fd01c89dc4f369486998d"
+            ],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": ""
+          }
+        ],
+        "triggered_count": 7,
+        "unavailable_count": 0,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "consolidated",
+            "period_end": "2025-12-31",
+            "previous_period": "2024-12-31",
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "ok",
+          "steps": [
+            {
+              "key": "opening",
+              "label": "上年同期净利润",
+              "value": "100",
+              "input_ids": [
+                "Fca6f4f45486040826059"
+              ],
+              "formula": "P0",
+              "start": "0",
+              "end": "100",
+              "id": "PB8d32290b626eee4ef975"
+            },
+            {
+              "key": "revenue",
+              "label": "收入变化贡献",
+              "value": "80",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9"
+              ],
+              "formula": "(R1-R0) × (R0-C0)/R0; ROUND_HALF_EVEN to 0.01",
+              "start": "100",
+              "end": "180",
+              "id": "PB9d57f3492888ad5dc8c4"
+            },
+            {
+              "key": "margin",
+              "label": "毛利率变化贡献",
+              "value": "-120",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c"
+              ],
+              "formula": "Δ(R-C) - revenue contribution",
+              "start": "180",
+              "end": "60",
+              "id": "PB78eb3590b0d8661e12fd"
+            },
+            {
+              "key": "expense",
+              "label": "期间费用变化贡献",
+              "value": "-50",
+              "input_ids": [
+                "Fab30d171ef87db6673ae",
+                "F35d1d675d1c43f2098e8"
+              ],
+              "formula": "-(E1-E0)",
+              "start": "60",
+              "end": "10",
+              "id": "PB7c20872095a5de38d9e6"
+            },
+            {
+              "key": "residual",
+              "label": "未解释差额",
+              "value": "50",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c",
+                "Fca6f4f45486040826059",
+                "F673c3638d4e8560ead1f",
+                "Fab30d171ef87db6673ae",
+                "F35d1d675d1c43f2098e8"
+              ],
+              "formula": "ΔP - revenue contribution - margin contribution - available expense contribution",
+              "start": "10",
+              "end": "60",
+              "id": "PB73ebd8188048145703fa"
+            },
+            {
+              "key": "closing",
+              "label": "本期净利润",
+              "value": "60",
+              "input_ids": [
+                "F673c3638d4e8560ead1f"
+              ],
+              "formula": "P1",
+              "start": "0",
+              "end": "60",
+              "id": "PBbbde78259e16cd947abf"
+            }
+          ],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "",
+          "input_ids": [
+            "F7b58bd7a4ba925fc1e2b",
+            "Fb18b9c52019e24d7ea25",
+            "F58cbb52e58c7fa21a5b9",
+            "F4e163bcd633470dfca9c",
+            "Fca6f4f45486040826059",
+            "F673c3638d4e8560ead1f",
+            "Fab30d171ef87db6673ae",
+            "F35d1d675d1c43f2098e8"
+          ],
+          "change": "-40",
+          "reconciled": true,
+          "missing_components": [],
+          "rounding": "Decimal precision=40, ROUND_HALF_EVEN; revenue contribution rounded to 0.01 currency unit",
+          "unexplained": "差额可能包含税费、减值、投资收益及其他项目，未据此自动判定任何原因。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "cannot-substitute-attributable-profit",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {}
+      },
+      "expected": {
+        "bridge": "unavailable",
+        "triggered": 6,
+        "unavailable": 1
+      },
+      "observed": {
+        "bridge": "unavailable",
+        "triggered": 6,
+        "unavailable": 1
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "consolidated",
+          "period_end": "2025-12-31",
+          "previous_period": "2024-12-31",
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA05db7bc14eb5c74cf1fb",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "attributable_net_profit_change": "-30"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fb764748c58e5a93a429e",
+              "F39683a273eb2118bdcd3"
+            ],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA1d814b7ce96516a2e0f1",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [
+              "F86b96910a56978eb7b16"
+            ],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA53d761fc7f7784ed08d2",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "F6ade146b285550cb34fa",
+              "F3761c062546d48d12c40",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FAfb697959cd01aa93faea",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "Fefe5ef380c13e3812b32",
+              "Ffcbe8c1453b72052fbea",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA7f2ff9d18dc9295ad9cf",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "triggered",
+            "observations": {
+              "previous_margin_pct": "40",
+              "current_margin_pct": "30",
+              "drop_pp": "10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "F58cbb52e58c7fa21a5b9",
+              "F4e163bcd633470dfca9c"
+            ],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA6beb15872690bbee9cd8",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "rd_expense_change": "-10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fa990dcd6a3564bb1366c",
+              "F4fbae52b03b71ec404c8"
+            ],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA7befa96fa7f60fd52959",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "triggered",
+            "observations": {
+              "difference_share_pct": "70"
+            },
+            "input_ids": [
+              "F39683a273eb2118bdcd3",
+              "Fd01c89dc4f369486998d"
+            ],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": ""
+          }
+        ],
+        "triggered_count": 6,
+        "unavailable_count": 1,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "consolidated",
+            "period_end": "2025-12-31",
+            "previous_period": "2024-12-31",
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "unavailable",
+          "steps": [],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "缺少唯一同口径的两期营业收入、营业成本或净利润；未用归母利润替代净利润。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "unexplained-expenses-stay-visible",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {}
+      },
+      "expected": {
+        "bridge": "ok",
+        "triggered": 7
+      },
+      "observed": {
+        "bridge": "ok",
+        "triggered": 7,
+        "unavailable": 0
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "consolidated",
+          "period_end": "2025-12-31",
+          "previous_period": "2024-12-31",
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA05db7bc14eb5c74cf1fb",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "attributable_net_profit_change": "-30"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fb764748c58e5a93a429e",
+              "F39683a273eb2118bdcd3"
+            ],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA1d814b7ce96516a2e0f1",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "triggered",
+            "observations": {
+              "cash_profit_ratio": "0.6666666666666666666666666666666666666667"
+            },
+            "input_ids": [
+              "F673c3638d4e8560ead1f",
+              "F86b96910a56978eb7b16"
+            ],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA53d761fc7f7784ed08d2",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "F6ade146b285550cb34fa",
+              "F3761c062546d48d12c40",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FAfb697959cd01aa93faea",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "Fefe5ef380c13e3812b32",
+              "Ffcbe8c1453b72052fbea",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA7f2ff9d18dc9295ad9cf",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "triggered",
+            "observations": {
+              "previous_margin_pct": "40",
+              "current_margin_pct": "30",
+              "drop_pp": "10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "F58cbb52e58c7fa21a5b9",
+              "F4e163bcd633470dfca9c"
+            ],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA6beb15872690bbee9cd8",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "rd_expense_change": "-10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fa990dcd6a3564bb1366c",
+              "F4fbae52b03b71ec404c8"
+            ],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA7befa96fa7f60fd52959",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "triggered",
+            "observations": {
+              "difference_share_pct": "70"
+            },
+            "input_ids": [
+              "F39683a273eb2118bdcd3",
+              "Fd01c89dc4f369486998d"
+            ],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": ""
+          }
+        ],
+        "triggered_count": 7,
+        "unavailable_count": 0,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "consolidated",
+            "period_end": "2025-12-31",
+            "previous_period": "2024-12-31",
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "ok",
+          "steps": [
+            {
+              "key": "opening",
+              "label": "上年同期净利润",
+              "value": "100",
+              "input_ids": [
+                "Fca6f4f45486040826059"
+              ],
+              "formula": "P0",
+              "start": "0",
+              "end": "100",
+              "id": "PB8d32290b626eee4ef975"
+            },
+            {
+              "key": "revenue",
+              "label": "收入变化贡献",
+              "value": "80",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9"
+              ],
+              "formula": "(R1-R0) × (R0-C0)/R0; ROUND_HALF_EVEN to 0.01",
+              "start": "100",
+              "end": "180",
+              "id": "PB9d57f3492888ad5dc8c4"
+            },
+            {
+              "key": "margin",
+              "label": "毛利率变化贡献",
+              "value": "-120",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c"
+              ],
+              "formula": "Δ(R-C) - revenue contribution",
+              "start": "180",
+              "end": "60",
+              "id": "PB78eb3590b0d8661e12fd"
+            },
+            {
+              "key": "residual",
+              "label": "未解释差额（含未拆费用）",
+              "value": "0",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c",
+                "Fca6f4f45486040826059",
+                "F673c3638d4e8560ead1f"
+              ],
+              "formula": "ΔP - revenue contribution - margin contribution - available expense contribution",
+              "start": "60",
+              "end": "60",
+              "id": "PB908e84a6f29a43e64079"
+            },
+            {
+              "key": "closing",
+              "label": "本期净利润",
+              "value": "60",
+              "input_ids": [
+                "F673c3638d4e8560ead1f"
+              ],
+              "formula": "P1",
+              "start": "0",
+              "end": "60",
+              "id": "PBbbde78259e16cd947abf"
+            }
+          ],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "",
+          "input_ids": [
+            "F7b58bd7a4ba925fc1e2b",
+            "Fb18b9c52019e24d7ea25",
+            "F58cbb52e58c7fa21a5b9",
+            "F4e163bcd633470dfca9c",
+            "Fca6f4f45486040826059",
+            "F673c3638d4e8560ead1f"
+          ],
+          "change": "-40",
+          "reconciled": true,
+          "missing_components": [
+            "两期期间费用"
+          ],
+          "rounding": "Decimal precision=40, ROUND_HALF_EVEN; revenue contribution rounded to 0.01 currency unit",
+          "unexplained": "差额可能包含税费、减值、投资收益及其他项目，未据此自动判定任何原因。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "no-usd-inputs",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {
+          "currency": "USD"
+        }
+      },
+      "expected": {
+        "bridge": "unavailable",
+        "triggered": 0,
+        "unavailable": 7
+      },
+      "observed": {
+        "bridge": "unavailable",
+        "triggered": 0,
+        "unavailable": 7
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "USD",
+          "scope": "consolidated",
+          "period_end": null,
+          "previous_period": null,
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA939c731d7d269ff24e02",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAa9da0c016b4ea1dcca7b",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAc45de03eb4fb8cd475bd",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA48c8509e9120dec02033",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA3342f60674b562f37380",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA3c5978f4e2588fe29e40",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAd25638cdee0f0403e703",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          }
+        ],
+        "triggered_count": 0,
+        "unavailable_count": 7,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "USD",
+            "scope": "consolidated",
+            "period_end": null,
+            "previous_period": null,
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "unavailable",
+          "steps": [],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "缺少唯一同口径的两期营业收入、营业成本或净利润；未用归母利润替代净利润。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "no-parent-company-inputs",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {
+          "scope": "parent_company"
+        }
+      },
+      "expected": {
+        "bridge": "unavailable",
+        "triggered": 0,
+        "unavailable": 7
+      },
+      "observed": {
+        "bridge": "unavailable",
+        "triggered": 0,
+        "unavailable": 7
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "parent_company",
+          "period_end": null,
+          "previous_period": null,
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA981ed12774f10b99615c",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAbfaec7c16eadeaeff154",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA6700804ad7b0bd9bc7b5",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAd8a09af91709f5b8ec9a",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAab49e658c59f7a6fd227",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAff0a3d95acb5a4e1a0ad",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA6501b66a5b968f0e569f",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          }
+        ],
+        "triggered_count": 0,
+        "unavailable_count": 7,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "parent_company",
+            "period_end": null,
+            "previous_period": null,
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "unavailable",
+          "steps": [],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "缺少唯一同口径的两期营业收入、营业成本或净利润；未用归母利润替代净利润。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "before-target-disclosure",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-03-01",
+        "options": {
+          "period_end": "2025-12-31"
+        }
+      },
+      "expected": {
+        "bridge": "unavailable",
+        "triggered": 0,
+        "unavailable": 7
+      },
+      "observed": {
+        "bridge": "unavailable",
+        "triggered": 0,
+        "unavailable": 7
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "consolidated",
+          "period_end": "2025-12-31",
+          "previous_period": "2024-12-31",
+          "as_of": "2026-03-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FAc3f1d7573fddeca11378",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fca6f4f45486040826059"
+            ],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA8a7b2c44a384b811a89b",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA57c0823b57909a85080d",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [
+              "F6ade146b285550cb34fa",
+              "F7b58bd7a4ba925fc1e2b"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAd806e7ac3c27e4667173",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [
+              "Fefe5ef380c13e3812b32",
+              "F7b58bd7a4ba925fc1e2b"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA171f30bc50eb864aa254",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "unavailable",
+            "observations": {
+              "previous_margin_pct": "40"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "F58cbb52e58c7fa21a5b9"
+            ],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAa8648335d5a75faef1be",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fa990dcd6a3564bb1366c"
+            ],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FA621c96397dbad1a8dc3c",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "unavailable",
+            "observations": {},
+            "input_ids": [],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          }
+        ],
+        "triggered_count": 0,
+        "unavailable_count": 7,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "consolidated",
+            "period_end": "2025-12-31",
+            "previous_period": "2024-12-31",
+            "as_of": "2026-03-01"
+          },
+          "unit": "currency_unit",
+          "status": "unavailable",
+          "steps": [],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "缺少唯一同口径的两期营业收入、营业成本或净利润；未用归母利润替代净利润。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "explicit-higher-margin-threshold",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {
+          "thresholds": {
+            "gross_margin_drop_pp": "20"
+          }
+        }
+      },
+      "expected": {
+        "bridge": "ok",
+        "triggered": 6,
+        "unavailable": 0
+      },
+      "observed": {
+        "bridge": "ok",
+        "triggered": 6,
+        "unavailable": 0
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "consolidated",
+          "period_end": "2025-12-31",
+          "previous_period": "2024-12-31",
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "20",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA1651e94ca221ba430ac5",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "attributable_net_profit_change": "-30"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fb764748c58e5a93a429e",
+              "F39683a273eb2118bdcd3"
+            ],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FAfe34cdc1bd313ee121ea",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "triggered",
+            "observations": {
+              "cash_profit_ratio": "0.6666666666666666666666666666666666666667"
+            },
+            "input_ids": [
+              "F673c3638d4e8560ead1f",
+              "F86b96910a56978eb7b16"
+            ],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA1aa1f17f9417f5e37668",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "F6ade146b285550cb34fa",
+              "F3761c062546d48d12c40",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FAf7ba5c0b76da899d15ad",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "Fefe5ef380c13e3812b32",
+              "Ffcbe8c1453b72052fbea",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA038a42a38346c2b965c7",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "clear",
+            "observations": {
+              "previous_margin_pct": "40",
+              "current_margin_pct": "30",
+              "drop_pp": "10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "F58cbb52e58c7fa21a5b9",
+              "F4e163bcd633470dfca9c"
+            ],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "20 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FAee1aea2aafe7f58aec95",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "rd_expense_change": "-10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fa990dcd6a3564bb1366c",
+              "F4fbae52b03b71ec404c8"
+            ],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA7c2e5252bb45fe421a3e",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "triggered",
+            "observations": {
+              "difference_share_pct": "70"
+            },
+            "input_ids": [
+              "F39683a273eb2118bdcd3",
+              "Fd01c89dc4f369486998d"
+            ],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": ""
+          }
+        ],
+        "triggered_count": 6,
+        "unavailable_count": 0,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "consolidated",
+            "period_end": "2025-12-31",
+            "previous_period": "2024-12-31",
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "ok",
+          "steps": [
+            {
+              "key": "opening",
+              "label": "上年同期净利润",
+              "value": "100",
+              "input_ids": [
+                "Fca6f4f45486040826059"
+              ],
+              "formula": "P0",
+              "start": "0",
+              "end": "100",
+              "id": "PB8d32290b626eee4ef975"
+            },
+            {
+              "key": "revenue",
+              "label": "收入变化贡献",
+              "value": "80",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9"
+              ],
+              "formula": "(R1-R0) × (R0-C0)/R0; ROUND_HALF_EVEN to 0.01",
+              "start": "100",
+              "end": "180",
+              "id": "PB9d57f3492888ad5dc8c4"
+            },
+            {
+              "key": "margin",
+              "label": "毛利率变化贡献",
+              "value": "-120",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c"
+              ],
+              "formula": "Δ(R-C) - revenue contribution",
+              "start": "180",
+              "end": "60",
+              "id": "PB78eb3590b0d8661e12fd"
+            },
+            {
+              "key": "expense",
+              "label": "期间费用变化贡献",
+              "value": "-50",
+              "input_ids": [
+                "Fab30d171ef87db6673ae",
+                "F35d1d675d1c43f2098e8"
+              ],
+              "formula": "-(E1-E0)",
+              "start": "60",
+              "end": "10",
+              "id": "PB7c20872095a5de38d9e6"
+            },
+            {
+              "key": "residual",
+              "label": "未解释差额",
+              "value": "50",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c",
+                "Fca6f4f45486040826059",
+                "F673c3638d4e8560ead1f",
+                "Fab30d171ef87db6673ae",
+                "F35d1d675d1c43f2098e8"
+              ],
+              "formula": "ΔP - revenue contribution - margin contribution - available expense contribution",
+              "start": "10",
+              "end": "60",
+              "id": "PB73ebd8188048145703fa"
+            },
+            {
+              "key": "closing",
+              "label": "本期净利润",
+              "value": "60",
+              "input_ids": [
+                "F673c3638d4e8560ead1f"
+              ],
+              "formula": "P1",
+              "start": "0",
+              "end": "60",
+              "id": "PBbbde78259e16cd947abf"
+            }
+          ],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "",
+          "input_ids": [
+            "F7b58bd7a4ba925fc1e2b",
+            "Fb18b9c52019e24d7ea25",
+            "F58cbb52e58c7fa21a5b9",
+            "F4e163bcd633470dfca9c",
+            "Fca6f4f45486040826059",
+            "F673c3638d4e8560ead1f",
+            "Fab30d171ef87db6673ae",
+            "F35d1d675d1c43f2098e8"
+          ],
+          "change": "-40",
+          "reconciled": true,
+          "missing_components": [],
+          "rounding": "Decimal precision=40, ROUND_HALF_EVEN; revenue contribution rounded to 0.01 currency unit",
+          "unexplained": "差额可能包含税费、减值、投资收益及其他项目，未据此自动判定任何原因。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "invalid-negative-inventory",
+      "type": "financial",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "-1",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "as_of": "2026-04-01",
+        "options": {}
+      },
+      "expected": {
+        "bridge": "ok",
+        "triggered": 6,
+        "unavailable": 1
+      },
+      "observed": {
+        "bridge": "ok",
+        "triggered": 6,
+        "unavailable": 1
+      },
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "context": {
+          "symbol": "002837",
+          "basis": "cumulative",
+          "currency": "CNY",
+          "scope": "consolidated",
+          "period_end": "2025-12-31",
+          "previous_period": "2024-12-31",
+          "as_of": "2026-04-01"
+        },
+        "thresholds": {
+          "working_capital_spread_pp": "10",
+          "gross_margin_drop_pp": "2",
+          "nonrecurring_share_pct": "50"
+        },
+        "rules": [
+          {
+            "id": "FA05db7bc14eb5c74cf1fb",
+            "code": "revenue_profit_divergence",
+            "label": "收入增加而利润减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "attributable_net_profit_change": "-30"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fb764748c58e5a93a429e",
+              "F39683a273eb2118bdcd3"
+            ],
+            "question": "毛利率、期间费用或业务结构能否解释利润变化？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA1d814b7ce96516a2e0f1",
+            "code": "cash_below_profit",
+            "label": "经营现金流低于同期正净利润",
+            "status": "triggered",
+            "observations": {
+              "cash_profit_ratio": "0.6666666666666666666666666666666666666667"
+            },
+            "input_ids": [
+              "F673c3638d4e8560ead1f",
+              "F86b96910a56978eb7b16"
+            ],
+            "question": "应收、存货和其他营运资金变化能否解释现金与利润差异？",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA53d761fc7f7784ed08d2",
+            "code": "inventory_outpaces_revenue",
+            "label": "存货余额增速高于收入增速",
+            "status": "unavailable",
+            "observations": {
+              "revenue_yoy_pct": "20"
+            },
+            "input_ids": [
+              "F3761c062546d48d12c40",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": "缺少唯一同口径输入，或分母不适合比较。"
+          },
+          {
+            "id": "FAfb697959cd01aa93faea",
+            "code": "accounts_receivable_outpaces_revenue",
+            "label": "应收账款余额增速高于收入增速",
+            "status": "triggered",
+            "observations": {
+              "balance_yoy_pct": "50",
+              "revenue_yoy_pct": "20",
+              "spread_pp": "30"
+            },
+            "input_ids": [
+              "Fefe5ef380c13e3812b32",
+              "Ffcbe8c1453b72052fbea",
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25"
+            ],
+            "question": "这是期末余额与同期收入增速的比较线索；需核对账龄、订单和备货季节性，不能据此断言积压或坏账。",
+            "threshold": "10 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA7f2ff9d18dc9295ad9cf",
+            "code": "gross_margin_drop",
+            "label": "毛利率较上年同期下降",
+            "status": "triggered",
+            "observations": {
+              "previous_margin_pct": "40",
+              "current_margin_pct": "30",
+              "drop_pp": "10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "F58cbb52e58c7fa21a5b9",
+              "F4e163bcd633470dfca9c"
+            ],
+            "question": "产品结构、定价或成本变化是否有原始披露支持？",
+            "threshold": "2 个百分点",
+            "reason": ""
+          },
+          {
+            "id": "FA6beb15872690bbee9cd8",
+            "code": "rd_expense_down",
+            "label": "收入增加但费用化研发费用减少",
+            "status": "triggered",
+            "observations": {
+              "revenue_change": "200",
+              "rd_expense_change": "-10"
+            },
+            "input_ids": [
+              "F7b58bd7a4ba925fc1e2b",
+              "Fb18b9c52019e24d7ea25",
+              "Fa990dcd6a3564bb1366c",
+              "F4fbae52b03b71ec404c8"
+            ],
+            "question": "是否存在研发资本化或项目周期变化？费用化研发下降不等于研发投入下降。",
+            "threshold": null,
+            "reason": ""
+          },
+          {
+            "id": "FA7befa96fa7f60fd52959",
+            "code": "nonrecurring_profit_share",
+            "label": "归母与扣非利润差额占比较高",
+            "status": "triggered",
+            "observations": {
+              "difference_share_pct": "70"
+            },
+            "input_ids": [
+              "F39683a273eb2118bdcd3",
+              "Fd01c89dc4f369486998d"
+            ],
+            "question": "差额具体包含哪些已披露项目？不能直接归因为资产处置。",
+            "threshold": "50%",
+            "reason": ""
+          }
+        ],
+        "triggered_count": 6,
+        "unavailable_count": 1,
+        "profit_bridge": {
+          "context": {
+            "symbol": "002837",
+            "basis": "cumulative",
+            "currency": "CNY",
+            "scope": "consolidated",
+            "period_end": "2025-12-31",
+            "previous_period": "2024-12-31",
+            "as_of": "2026-04-01"
+          },
+          "unit": "currency_unit",
+          "status": "ok",
+          "steps": [
+            {
+              "key": "opening",
+              "label": "上年同期净利润",
+              "value": "100",
+              "input_ids": [
+                "Fca6f4f45486040826059"
+              ],
+              "formula": "P0",
+              "start": "0",
+              "end": "100",
+              "id": "PB8d32290b626eee4ef975"
+            },
+            {
+              "key": "revenue",
+              "label": "收入变化贡献",
+              "value": "80",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9"
+              ],
+              "formula": "(R1-R0) × (R0-C0)/R0; ROUND_HALF_EVEN to 0.01",
+              "start": "100",
+              "end": "180",
+              "id": "PB9d57f3492888ad5dc8c4"
+            },
+            {
+              "key": "margin",
+              "label": "毛利率变化贡献",
+              "value": "-120",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c"
+              ],
+              "formula": "Δ(R-C) - revenue contribution",
+              "start": "180",
+              "end": "60",
+              "id": "PB78eb3590b0d8661e12fd"
+            },
+            {
+              "key": "expense",
+              "label": "期间费用变化贡献",
+              "value": "-50",
+              "input_ids": [
+                "Fab30d171ef87db6673ae",
+                "F35d1d675d1c43f2098e8"
+              ],
+              "formula": "-(E1-E0)",
+              "start": "60",
+              "end": "10",
+              "id": "PB7c20872095a5de38d9e6"
+            },
+            {
+              "key": "residual",
+              "label": "未解释差额",
+              "value": "50",
+              "input_ids": [
+                "F7b58bd7a4ba925fc1e2b",
+                "Fb18b9c52019e24d7ea25",
+                "F58cbb52e58c7fa21a5b9",
+                "F4e163bcd633470dfca9c",
+                "Fca6f4f45486040826059",
+                "F673c3638d4e8560ead1f",
+                "Fab30d171ef87db6673ae",
+                "F35d1d675d1c43f2098e8"
+              ],
+              "formula": "ΔP - revenue contribution - margin contribution - available expense contribution",
+              "start": "10",
+              "end": "60",
+              "id": "PB73ebd8188048145703fa"
+            },
+            {
+              "key": "closing",
+              "label": "本期净利润",
+              "value": "60",
+              "input_ids": [
+                "F673c3638d4e8560ead1f"
+              ],
+              "formula": "P1",
+              "start": "0",
+              "end": "60",
+              "id": "PBbbde78259e16cd947abf"
+            }
+          ],
+          "policy": "会计金额恒等分解，不证明业务因果；净利润为同范围净利润，不能以归母利润替代。",
+          "reason": "",
+          "input_ids": [
+            "F7b58bd7a4ba925fc1e2b",
+            "Fb18b9c52019e24d7ea25",
+            "F58cbb52e58c7fa21a5b9",
+            "F4e163bcd633470dfca9c",
+            "Fca6f4f45486040826059",
+            "F673c3638d4e8560ead1f",
+            "Fab30d171ef87db6673ae",
+            "F35d1d675d1c43f2098e8"
+          ],
+          "change": "-40",
+          "reconciled": true,
+          "missing_components": [],
+          "rounding": "Decimal precision=40, ROUND_HALF_EVEN; revenue contribution rounded to 0.01 currency unit",
+          "unexplained": "差额可能包含税费、减值、投资收益及其他项目，未据此自动判定任何原因。"
+        },
+        "policy": "异常是需要解释的研究线索，不是财务造假、经营因果或买卖判断。缺失数据不等于没有异常。"
+      }
+    },
+    {
+      "id": "criterion-met",
+      "type": "criterion",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "spec": {
+          "review_on": "2026-04-01",
+          "criteria": [
+            {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "threshold": "15",
+              "period_end": "2025-12-31",
+              "basis": "cumulative",
+              "currency": "CNY",
+              "scope": "consolidated"
+            }
+          ],
+          "symbol": "002837"
+        },
+        "as_of": "2026-04-01"
+      },
+      "expected": "criterion_met",
+      "observed": "criterion_met",
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "symbol": "002837",
+        "as_of": "2026-04-01",
+        "review_on": "2026-04-01",
+        "status": "criterion_met",
+        "label": "财务判据满足",
+        "observations": [
+          {
+            "criterion": {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "threshold": "15",
+              "period_end": "2025-12-31"
+            },
+            "label": "营业收入",
+            "value": "20",
+            "unit": "percent",
+            "met": true,
+            "reason": "",
+            "input_ids": [
+              "Fb18b9c52019e24d7ea25",
+              "F7b58bd7a4ba925fc1e2b"
+            ]
+          }
+        ],
+        "inputs": {
+          "Fb18b9c52019e24d7ea25": {
+            "id": "Fb18b9c52019e24d7ea25",
+            "symbol": "002837",
+            "metric": "revenue",
+            "label": "营业收入",
+            "value": "1200",
+            "unit": "currency_unit",
+            "raw_unit": "元",
+            "currency": "CNY",
+            "basis": "cumulative",
+            "scope": "consolidated",
+            "period_start": "2025-01-01",
+            "period_end": "2025-12-31",
+            "source_url": "https://example.invalid/fictional-filing",
+            "fetched_at": "2026-10-18T00:00:00Z",
+            "raw": {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            "published_at": "2026-03-30",
+            "available_at": "2026-03-30",
+            "metadata_evidence": "explicit_source_fields",
+            "status": "ok",
+            "issues": [],
+            "input_ids": []
+          },
+          "F7b58bd7a4ba925fc1e2b": {
+            "id": "F7b58bd7a4ba925fc1e2b",
+            "symbol": "002837",
+            "metric": "revenue",
+            "label": "营业收入",
+            "value": "1000",
+            "unit": "currency_unit",
+            "raw_unit": "元",
+            "currency": "CNY",
+            "basis": "cumulative",
+            "scope": "consolidated",
+            "period_start": "2024-01-01",
+            "period_end": "2024-12-31",
+            "source_url": "https://example.invalid/fictional-filing",
+            "fetched_at": "2026-10-18T00:00:00Z",
+            "raw": {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            "published_at": "2025-03-30",
+            "available_at": "2025-03-30",
+            "metadata_evidence": "explicit_source_fields",
+            "status": "ok",
+            "issues": [],
+            "input_ids": []
+          }
+        },
+        "all_data_available": true,
+        "policy": "全部判据满足才标记财务判据满足；不自动验证完整投资论点或改写人工状态。",
+        "limitations": "未检验股价收益、完整因果或投资论点；阈值由用户设置，事后设置判据不是事前预测。"
+      }
+    },
+    {
+      "id": "criterion-not-met",
+      "type": "criterion",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "spec": {
+          "review_on": "2026-04-01",
+          "criteria": [
+            {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "threshold": "30",
+              "period_end": "2025-12-31",
+              "basis": "cumulative",
+              "currency": "CNY",
+              "scope": "consolidated"
+            }
+          ],
+          "symbol": "002837"
+        },
+        "as_of": "2026-04-01"
+      },
+      "expected": "criterion_not_met",
+      "observed": "criterion_not_met",
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "symbol": "002837",
+        "as_of": "2026-04-01",
+        "review_on": "2026-04-01",
+        "status": "criterion_not_met",
+        "label": "财务判据未满足",
+        "observations": [
+          {
+            "criterion": {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "threshold": "30",
+              "period_end": "2025-12-31"
+            },
+            "label": "营业收入",
+            "value": "20",
+            "unit": "percent",
+            "met": false,
+            "reason": "",
+            "input_ids": [
+              "Fb18b9c52019e24d7ea25",
+              "F7b58bd7a4ba925fc1e2b"
+            ]
+          }
+        ],
+        "inputs": {
+          "Fb18b9c52019e24d7ea25": {
+            "id": "Fb18b9c52019e24d7ea25",
+            "symbol": "002837",
+            "metric": "revenue",
+            "label": "营业收入",
+            "value": "1200",
+            "unit": "currency_unit",
+            "raw_unit": "元",
+            "currency": "CNY",
+            "basis": "cumulative",
+            "scope": "consolidated",
+            "period_start": "2025-01-01",
+            "period_end": "2025-12-31",
+            "source_url": "https://example.invalid/fictional-filing",
+            "fetched_at": "2026-10-18T00:00:00Z",
+            "raw": {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            "published_at": "2026-03-30",
+            "available_at": "2026-03-30",
+            "metadata_evidence": "explicit_source_fields",
+            "status": "ok",
+            "issues": [],
+            "input_ids": []
+          },
+          "F7b58bd7a4ba925fc1e2b": {
+            "id": "F7b58bd7a4ba925fc1e2b",
+            "symbol": "002837",
+            "metric": "revenue",
+            "label": "营业收入",
+            "value": "1000",
+            "unit": "currency_unit",
+            "raw_unit": "元",
+            "currency": "CNY",
+            "basis": "cumulative",
+            "scope": "consolidated",
+            "period_start": "2024-01-01",
+            "period_end": "2024-12-31",
+            "source_url": "https://example.invalid/fictional-filing",
+            "fetched_at": "2026-10-18T00:00:00Z",
+            "raw": {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            "published_at": "2025-03-30",
+            "available_at": "2025-03-30",
+            "metadata_evidence": "explicit_source_fields",
+            "status": "ok",
+            "issues": [],
+            "input_ids": []
+          }
+        },
+        "all_data_available": true,
+        "policy": "全部判据满足才标记财务判据满足；不自动验证完整投资论点或改写人工状态。",
+        "limitations": "未检验股价收益、完整因果或投资论点；阈值由用户设置，事后设置判据不是事前预测。"
+      }
+    },
+    {
+      "id": "not-due",
+      "type": "criterion",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "spec": {
+          "review_on": "2026-04-01",
+          "criteria": [
+            {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "threshold": "15",
+              "period_end": "2025-12-31",
+              "basis": "cumulative",
+              "currency": "CNY",
+              "scope": "consolidated"
+            }
+          ],
+          "symbol": "002837"
+        },
+        "as_of": "2026-03-01"
+      },
+      "expected": "not_due",
+      "observed": "not_due",
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "symbol": "002837",
+        "as_of": "2026-03-01",
+        "review_on": "2026-04-01",
+        "status": "not_due",
+        "label": "未到复盘日",
+        "observations": [
+          {
+            "criterion": {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "threshold": "15",
+              "period_end": "2025-12-31"
+            },
+            "label": "营业收入",
+            "value": null,
+            "unit": "percent",
+            "met": null,
+            "reason": "缺少唯一、已披露且口径一致的目标期输入或有效对照期。",
+            "input_ids": []
+          }
+        ],
+        "inputs": {},
+        "all_data_available": false,
+        "policy": "全部判据满足才标记财务判据满足；不自动验证完整投资论点或改写人工状态。",
+        "limitations": "未检验股价收益、完整因果或投资论点；阈值由用户设置，事后设置判据不是事前预测。"
+      }
+    },
+    {
+      "id": "late-disclosure-stays-unknown",
+      "type": "criterion",
+      "input": {
+        "payload": {
+          "symbol": "002837",
+          "provenance": "offline_synthetic_test",
+          "fetched_at": "2026-10-18T00:00:00Z",
+          "financial_records": [
+            {
+              "metric": "revenue",
+              "value": "1000",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "600",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "250",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "80",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "70",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "120",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "100",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2024-12-31",
+              "published_at": "2025-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "revenue",
+              "value": "1200",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "cost_of_revenue",
+              "value": "840",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "net_profit",
+              "value": "60",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "expense",
+              "value": "300",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_net_profit",
+              "value": "50",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "attributable_profit_excluding_nonrecurring",
+              "value": "15",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "operating_cash_flow",
+              "value": "40",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "inventory",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "accounts_receivable",
+              "value": "150",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "instant",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            },
+            {
+              "metric": "rd_expense",
+              "value": "30",
+              "unit": "元",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "period_end": "2025-12-31",
+              "published_at": "2026-03-30",
+              "source_url": "https://example.invalid/fictional-filing"
+            }
+          ]
+        },
+        "spec": {
+          "review_on": "2026-02-01",
+          "criteria": [
+            {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "threshold": "15",
+              "period_end": "2025-12-31",
+              "basis": "cumulative",
+              "currency": "CNY",
+              "scope": "consolidated"
+            }
+          ],
+          "symbol": "002837"
+        },
+        "as_of": "2026-03-01"
+      },
+      "expected": "waiting_for_data",
+      "observed": "waiting_for_data",
+      "matched": true,
+      "result": {
+        "schema_version": 1,
+        "symbol": "002837",
+        "as_of": "2026-03-01",
+        "review_on": "2026-02-01",
+        "status": "waiting_for_data",
+        "label": "等待可比披露数据",
+        "observations": [
+          {
+            "criterion": {
+              "metric": "revenue",
+              "measure": "yoy",
+              "operator": ">=",
+              "currency": "CNY",
+              "scope": "consolidated",
+              "basis": "cumulative",
+              "threshold": "15",
+              "period_end": "2025-12-31"
+            },
+            "label": "营业收入",
+            "value": null,
+            "unit": "percent",
+            "met": null,
+            "reason": "缺少唯一、已披露且口径一致的目标期输入或有效对照期。",
+            "input_ids": []
+          }
+        ],
+        "inputs": {},
+        "all_data_available": false,
+        "policy": "全部判据满足才标记财务判据满足；不自动验证完整投资论点或改写人工状态。",
+        "limitations": "未检验股价收益、完整因果或投资论点；阈值由用户设置，事后设置判据不是事前预测。"
+      }
+    }
+  ],
+  "limitations": [
+    "Implementation-authored deterministic fixtures, not independent financial expert labels.",
+    "No real company validation, causal inference, trading returns or live API measurements."
+  ]
+}
