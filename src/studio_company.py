@@ -78,9 +78,10 @@ def company_view(service, session):
     name = next((w['name'] for w in service.store.watches() if w['symbol'] == symbol), None)
     name = name or next((d['name'] for d in service.store.directory() if d['symbol'] == symbol), symbol)
     valuation = session.get('studio_valuation')
+    from src.peer_workspace import workspace_view
     return dict(symbol=symbol, name=name, as_of=cutoff, dataset_id=dataset_id, saved_at=saved,
         versions=versions, analysis=analysis, quality=quality, evidence=financial_evidence(analysis), metrics=METRICS,
-        research=research, tracking_ready=tracking_ready,
+        research=research, tracking_ready=tracking_ready, peer_workspace=workspace_view(service.store,session,symbol),
         profile=service.store.profile(symbol), theses=[dict(t, history=service.store.review_history(t['id']),
             test=service.store.thesis_test(symbol,t['id']) if tracking_ready else None,
             test_versions=service.store.thesis_test_versions(symbol,t['id']) if tracking_ready else [],

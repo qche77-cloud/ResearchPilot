@@ -25,3 +25,4 @@ jobs:
             artifacts/agent-evaluation.json
             artifacts/claim-evaluation.json
             artifacts/research-tools-evaluation.json
+            artifacts/peer-research-evaluation.json

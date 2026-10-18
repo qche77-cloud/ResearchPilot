@@ -123,7 +123,7 @@ def execute_screen(service, session, criteria, preset=None, archived=None):
     return result
 
 
-def start_run(service, session, topic, budget=2, symbol=None, update=False, financial_context=None):
+def start_run(service, session, topic, budget=2, symbol=None, update=False, financial_context=None, peer_context=None):
     if getattr(service, '_studio_preview', False):
         raise ValueError('离线预览不启动真实研究，请使用正式工作区')
     if not isinstance(topic, str) or not topic.strip() or len(topic) > 6000:
@@ -147,6 +147,11 @@ def start_run(service, session, topic, budget=2, symbol=None, update=False, fina
         state.diagnostics['agent']['market_checked']=True
         state.diagnostics['agent']['financial_input_context']=dict(dataset_id=dataset_id,as_of=cutoff)
         state.diagnostics['agent']['instructions'].append(f'本轮财务证据固定为输入版本 {dataset_id}，仅采用截至 {cutoff} 可用的记录。未自动采集最新行情；公开资料可能来自其他时点，必须明确标识，不宣称这是完整历史回测。')
+    if peer_context:
+        from src.peer_research import attach_peer_evidence
+        row,lead=peer_context
+        attach_peer_evidence(state,row['result'],lead)
+        state.diagnostics['agent']['peer_input_context']=dict(run_id=row['id'],bindings=row['bindings'])
     state.diagnostics['agent']['preferences'] = service.store.preferences()
     state.diagnostics['agent']['messages'] = [
         {'role': 'user', 'content': topic},
@@ -172,7 +177,10 @@ def consume_event(event, service, session):
     session['studio_notice'] = None
     action = event.get('action')
     try:
-        if action == 'navigate':
+        if action in {'pdf_prepare','pdf_confirm','pdf_download','save_peer_group','compare_peers','open_peer_run','research_peer_lead'}:
+            from src.peer_workspace import handle
+            handle(event,service,session)
+        elif action == 'navigate':
             view = event.get('view')
             if view not in {'research', 'watchlist', 'screening', 'workbench'}:
                 raise ValueError('未知工作区')

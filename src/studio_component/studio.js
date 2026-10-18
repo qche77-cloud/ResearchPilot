@@ -77,7 +77,7 @@ function emit(action,extra={}){
   const id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
   pendingEvent={id,action,...extra};post('streamlit:setComponentValue',{value:pendingEvent,dataType:'json'});
   interactions.busy(true);
-  clearTimeout(emit.timer);emit.timer=setTimeout(()=>{pendingEvent=null;interactions.busy(false);notify('暂未收到服务响应，请检查本地连接后重试');},25000);
+  clearTimeout(emit.timer);emit.timer=setTimeout(()=>{pendingEvent=null;interactions.busy(false);notify('暂未收到服务响应，请检查本地连接后重试');},action==='pdf_prepare'?60000:25000);
 }
 function renderHistory(){
   $('#history-count').textContent=data.history_count;
@@ -152,6 +152,7 @@ function screening(){
   ${StudioCockpit.screeningExtras()}<div class="screen-table">${rows.length?`<table><thead><tr><th>公司</th><th>财报期</th><th>营收同比</th><th>归母利润同比</th><th>毛利率</th><th>净利率</th><th>现金兑现率（近12个月）</th><th>结果</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${esc(r.symbol)}</td><td>${esc(r.quality.period_end||'未知')}</td>${fields.map(key=>{const f=r.quality.factors.find(f=>f.key===key);return `<td><button class="factor-value ${f?.status==='ok'?'':'unavailable'}" data-factor="${key}" data-row="${i}" title="${esc(f?.value??f?.reason??'不可计算')}">${f?.status==='ok'?esc(formatFactor(f.value))+(f.unit==='percent'?'%':'×'):'—'}</button></td>`;}).join('')}<td><span class="tag ${r.matched?'green':'amber'}" title="${esc(r.reasons.join('；'))}">${r.matched?'符合':'未满足'}</span></td></tr>`).join('')}</tbody></table>`:empty('没有可筛选的本地财务数据','筛选不会自动抓取数据；在数据工具中导入后再试。',true)}</div><div id="factor-lineage"></div><p class="footer-note">表格显示两位小数，导出保留计算精度。仅覆盖本地自选池，最多 50 家；缺失指标不补零。筛选不调用模型，结果仅表示满足所设条件，不代表投资建议。</p></div>`;
 }
 function renderMain(preserve=true,reason='none'){
+  StudioPeerWorkspace.sync();
   interactions.beforeRender();
   const positions={};if(preserve)document.querySelectorAll('[id$="-scroll"]').forEach(n=>positions[n.id]=n.scrollTop);
   const focused=document.activeElement,focusId=focused?.id,start=focused?.selectionStart,end=focused?.selectionEnd;

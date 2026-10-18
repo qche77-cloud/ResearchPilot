@@ -22,6 +22,7 @@ UNIT_MODULES = [
     'scripts.test_quant_foundation',
     'scripts.test_claim_verification',
     'scripts.test_research_tools',
+    'scripts.test_peer_research',
 ]
 SCRIPT_MODULES = [
     'scripts.test_research_health', 'scripts.test_v112_reader_reliability',
@@ -138,6 +139,7 @@ def main(argv=None):
         modules.append(('script', 'scripts.evaluate_agent'))
     modules.append(('script', 'scripts.evaluate_claims'))
     modules.append(('script', 'scripts.evaluate_research_tools'))
+    modules.append(('script', 'scripts.evaluate_peer_research'))
     rows = []
     for kind, module in modules:
         start = time.perf_counter()

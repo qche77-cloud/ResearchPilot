@@ -40,6 +40,9 @@ class Workbench:
                 CREATE TABLE IF NOT EXISTS screening_executions (id TEXT PRIMARY KEY, preset_id TEXT, preset_revision INTEGER, created TEXT NOT NULL, criteria TEXT NOT NULL, input_ids TEXT NOT NULL, result TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS thesis_tests (thesis_id TEXT NOT NULL, revision INTEGER NOT NULL, symbol TEXT NOT NULL, created TEXT NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(thesis_id,revision));
                 CREATE TABLE IF NOT EXISTS thesis_test_runs (id TEXT PRIMARY KEY, thesis_id TEXT NOT NULL, revision INTEGER NOT NULL, symbol TEXT NOT NULL, created TEXT NOT NULL, dataset_id TEXT NOT NULL, as_of TEXT NOT NULL, payload TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS financial_documents (symbol TEXT NOT NULL, sha256 TEXT NOT NULL, created TEXT NOT NULL, metadata TEXT NOT NULL, content BLOB NOT NULL, PRIMARY KEY(symbol,sha256));
+                CREATE TABLE IF NOT EXISTS peer_groups (id TEXT PRIMARY KEY, created TEXT NOT NULL, name TEXT NOT NULL, symbols TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS peer_runs (id TEXT PRIMARY KEY, created TEXT NOT NULL, group_id TEXT NOT NULL, bindings TEXT NOT NULL, result TEXT NOT NULL);
             ''')
 
     @contextmanager
@@ -56,6 +59,87 @@ class Workbench:
         with self.connect() as db:
             row = db.execute('SELECT content FROM preferences WHERE id=1').fetchone()
             return row['content'] if row else ''
+
+    def save_pdf_import(self, payload, content, expected_dataset):
+        import hashlib
+        from src.financial_analysis import analyze_financials, identity
+        from src.stock_data import normalize_symbol
+        symbol=payload['symbol']
+        normalize_symbol(symbol)
+        if hashlib.sha256(content).hexdigest()!=payload['document']['sha256'] or payload.get('provenance')!='user_confirmed_pdf':
+            raise ValueError('原始 PDF 与已确认数据不一致')
+        # Preserve previous periods for YoY and version history. Replace only
+        # explicitly confirmed metric/period/scope combinations in a new version.
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            latest=db.execute('SELECT id,payload FROM financial_inputs WHERE symbol=? ORDER BY created DESC,rowid DESC LIMIT 1',(symbol,)).fetchone()
+            if (latest['id'] if latest else None)!=expected_dataset:
+                raise ValueError('财务版本已变化，请重新预览 PDF 后再确认')
+            previous=json.loads(latest['payload']) if latest else {}
+            old=previous.get('financial_records')
+            if old is None:
+                old=[]
+                for r in analyze_financials(previous)['records']:
+                    old.append(dict(r['raw'],metric=r['metric'],value=r['raw'].get('value',r['raw'].get('item_value')),
+                                    unit=r['raw_unit'],currency=r['currency'],basis=r['basis'],scope=r['scope'],
+                                    period_end=r['period_end'],source_url=r['source_url'],fetched_at=r['fetched_at'],
+                                    published_at=r['published_at'],available_at=r['available_at']))
+            keys=lambda r:tuple(r.get(k) for k in ('metric','period_end','basis','currency','scope'))
+            replaced={keys(r) for r in payload['financial_records']}
+            merged=dict(payload,financial_records=[r for r in old if keys(r) not in replaced]+payload['financial_records'])
+            if analyze_financials(payload)['blocked_records']:
+                raise ValueError('财务数据未通过校验')
+            dataset_id=identity(merged,'FD')
+            db.execute('INSERT OR IGNORE INTO financial_documents VALUES (?,?,?,?,?)',
+                       (symbol,payload['document']['sha256'],now(),json.dumps(payload['document'],ensure_ascii=False),content))
+            db.execute('INSERT OR IGNORE INTO financial_inputs VALUES (?,?,?,?)',
+                       (dataset_id,symbol,now(),json.dumps(merged,ensure_ascii=False,allow_nan=False)))
+        return dataset_id
+
+    def financial_documents(self,symbol):
+        with self.connect() as db:
+            return [dict(json.loads(r['metadata']),created=r['created']) for r in db.execute(
+                'SELECT sha256,created,metadata FROM financial_documents WHERE symbol=? ORDER BY created DESC',(symbol,))]
+
+    def financial_document(self,symbol,sha256):
+        with self.connect() as db:
+            row=db.execute('SELECT * FROM financial_documents WHERE symbol=? AND sha256=?',(symbol,sha256)).fetchone()
+        return dict(row) if row else None
+
+    def save_peer_group(self,name,symbols):
+        from src.peer_research import validate_group
+        from src.financial_analysis import identity
+        name,symbols=validate_group(name,symbols)
+        key=identity([name,symbols],'PG')
+        with self.connect() as db:
+            db.execute('INSERT OR IGNORE INTO peer_groups VALUES (?,?,?,?)',(key,now(),name,json.dumps(symbols)))
+        return key
+
+    def peer_groups(self):
+        with self.connect() as db:
+            return [dict(r,symbols=json.loads(r['symbols'])) for r in db.execute('SELECT * FROM peer_groups ORDER BY created DESC LIMIT 100')]
+
+    def save_peer_run(self,group_id,bindings,result):
+        key=uuid.uuid4().hex
+        with self.connect() as db:
+            db.execute('INSERT INTO peer_runs VALUES (?,?,?,?,?)',
+                       (key,now(),group_id,json.dumps(bindings),json.dumps(result,ensure_ascii=False,allow_nan=False)))
+        return key
+
+    def peer_run(self,key):
+        with self.connect() as db:
+            r=db.execute('SELECT * FROM peer_runs WHERE id=?',(key,)).fetchone()
+        return dict(r,bindings=json.loads(r['bindings']),result=json.loads(r['result'])) if r else None
+
+    def peer_history(self,symbol):
+        with self.connect() as db:
+            rows=list(db.execute('SELECT id,created,group_id,result FROM peer_runs ORDER BY created DESC LIMIT 100'))
+        result=[]
+        for row in rows:
+            params=json.loads(row['result'])['parameters']
+            if symbol in params['symbols']:
+                result.append(dict(id=row['id'],created=row['created'],group_id=row['group_id'],parameters=params))
+        return result[:30]
 
     def profile(self, symbol):
         with self.connect() as db:

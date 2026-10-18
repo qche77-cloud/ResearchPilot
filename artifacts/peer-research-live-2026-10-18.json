@@ -1,0 +1,9 @@
+{
+  "url": "http://127.0.0.1:8528",
+  "health_status": 200,
+  "health_body": "ok",
+  "production_home_loaded": true,
+  "peer_ui_loaded": true,
+  "page_errors": [],
+  "actions": "read_only_home_no_screenshots_no_research_commands"
+}

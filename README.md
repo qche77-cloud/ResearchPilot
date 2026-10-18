@@ -1,5 +1,26 @@
 # ResearchPilot
 
+## Financial PDF import and peer research — 2026-10-18
+
+In **公司研究 → 财报导入**, upload a text PDF, inspect proposed figures and
+original page excerpts, then explicitly confirm the period, units and scope.
+The original file and confirmed records are saved together as a new version.
+Limits: 12 MB / 400 pages; scanned documents and automatic OCR are not supported.
+
+In **同业比较**, save a manually chosen group of 2–50 companies and compare
+the same reporting period, currency, scope and cutoff. Python computes medians,
+coverage and differences; missing inputs remain missing. Results and input
+versions persist. Rule-triggered questions can start research with archived
+financial inputs and traceable comparison evidence.
+
+Acceptance: **33/33 offline suites, 252 unit tests**, **30/30 source amounts and
+6/6 reported YoY values** from three historical public annual reports; **42
+browser checks** (7 new + 14 company + 21 Studio) in temporary fictional data.
+The three reports are a small acceptance sample, not a general accuracy estimate.
+No new production dependencies or model calls during acceptance.
+
+[Delivery, sources and limitations](docs/PEER_RESEARCH_2026-10-18.md).
+
 ## Interface wording — 2026-10-18
 
 The interface now uses **公司研究、自选公司、财务检查、验证条件** throughout

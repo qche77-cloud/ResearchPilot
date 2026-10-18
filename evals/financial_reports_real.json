@@ -1,0 +1,203 @@
+{
+  "note": "Historical public annual reports; numeric table excerpts only. Golden values transcribed from source tables and checked against rendered pages. Not a representative accuracy benchmark.",
+  "reports": [
+    {
+      "symbol": "603288",
+      "name": "海天味业",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-03/1222994233.PDF",
+      "published_at": "2025-04-03",
+      "document_sha256": "5a97b13534438f5e85249752ef492fbd9e23af73e67845e47bad1ab7d92e20ee",
+      "pages": [
+        {
+          "page": 7,
+          "text": "单位：元 币种：人民币\n主要会计数据  \n单位：元  币种：人民币 \n主要会计数据 2024年 2023年 \n本期比上年同期\n增减（%） \n2022年 \n营业收入 26,900,977,516.70 24,559,312,356.59 9.53 25,609,651,543.29 \n归属于上市公司股东的净\n利润 \n6,344,125,969.00 5,626,626,091.97 12.75 6,197,716,943.78 \n归属于上市公司股东的扣\n除非经常性损益的净利润 \n6,069,416,506.67 5,394,663,934.17 12.51 5,965,755,875.29 \n经营活动产生的现金流量\n净额 \n6,843,710,887.07 7,355,650,997.74 -6.96 3,830,314,321.72 \n 2024年末 2023年末 \n本期末比上年同\n期末增减(%) \n2022年末 \n归属于上市公司股东的净\n资产 \n30,895,407,856.81 28,530,612,036.85 8.29 26,397,676,525.41 \n"
+        }
+      ],
+      "expected": [
+        {
+          "metric": "revenue",
+          "period_end": "2024-12-31",
+          "value": "26900977516.70"
+        },
+        {
+          "metric": "revenue",
+          "period_end": "2023-12-31",
+          "value": "24559312356.59"
+        },
+        {
+          "metric": "attributable_net_profit",
+          "period_end": "2024-12-31",
+          "value": "6344125969.00"
+        },
+        {
+          "metric": "attributable_net_profit",
+          "period_end": "2023-12-31",
+          "value": "5626626091.97"
+        },
+        {
+          "metric": "attributable_profit_excluding_nonrecurring",
+          "period_end": "2024-12-31",
+          "value": "6069416506.67"
+        },
+        {
+          "metric": "attributable_profit_excluding_nonrecurring",
+          "period_end": "2023-12-31",
+          "value": "5394663934.17"
+        },
+        {
+          "metric": "operating_cash_flow",
+          "period_end": "2024-12-31",
+          "value": "6843710887.07"
+        },
+        {
+          "metric": "operating_cash_flow",
+          "period_end": "2023-12-31",
+          "value": "7355650997.74"
+        },
+        {
+          "metric": "attributable_net_assets",
+          "period_end": "2024-12-31",
+          "value": "30895407856.81"
+        },
+        {
+          "metric": "attributable_net_assets",
+          "period_end": "2023-12-31",
+          "value": "28530612036.85"
+        }
+      ],
+      "page_count": 208
+    },
+    {
+      "symbol": "603027",
+      "name": "千禾味业",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-16/1223103749.PDF",
+      "published_at": "2025-04-16",
+      "document_sha256": "bc50e75d62cf8fc585828027763c78220768050e0b938554da4b59ffed2215e3",
+      "pages": [
+        {
+          "page": 5,
+          "text": "单位：元 币种：人民币\n主要会计数据\n单位：元 币种：人民币\n主要会计数据 2024年 2023年\n本期比\n上年同\n期增减\n(%)\n2022年\n营业收入 3,073,386,672.97 3,206,797,965.72 -4.16 2,436,471,672.19\n归属于上市公司股东\n的净利润 514,151,627.28 530,447,940.83 -3.07 343,953,008.15\n归属于上市公司股东\n的扣除非经常性损益\n的净利润\n502,939,786.23 530,084,097.36 -5.12 338,355,504.21\n经营活动产生的现金\n流量净额 338,290,747.63 470,030,322.18 -28.03 773,383,847.40\n2024年末 2023年末\n本期末\n比上年\n同期末\n增减（%\n）\n2022年末\n归属于上市公司股东\n的净资产 3,648,269,217.88 3,652,367,547.60 -0.11 2,353,022,936.10\n"
+        }
+      ],
+      "expected": [
+        {
+          "metric": "revenue",
+          "period_end": "2024-12-31",
+          "value": "3073386672.97"
+        },
+        {
+          "metric": "revenue",
+          "period_end": "2023-12-31",
+          "value": "3206797965.72"
+        },
+        {
+          "metric": "attributable_net_profit",
+          "period_end": "2024-12-31",
+          "value": "514151627.28"
+        },
+        {
+          "metric": "attributable_net_profit",
+          "period_end": "2023-12-31",
+          "value": "530447940.83"
+        },
+        {
+          "metric": "attributable_profit_excluding_nonrecurring",
+          "period_end": "2024-12-31",
+          "value": "502939786.23"
+        },
+        {
+          "metric": "attributable_profit_excluding_nonrecurring",
+          "period_end": "2023-12-31",
+          "value": "530084097.36"
+        },
+        {
+          "metric": "operating_cash_flow",
+          "period_end": "2024-12-31",
+          "value": "338290747.63"
+        },
+        {
+          "metric": "operating_cash_flow",
+          "period_end": "2023-12-31",
+          "value": "470030322.18"
+        },
+        {
+          "metric": "attributable_net_assets",
+          "period_end": "2024-12-31",
+          "value": "3648269217.88"
+        },
+        {
+          "metric": "attributable_net_assets",
+          "period_end": "2023-12-31",
+          "value": "3652367547.60"
+        }
+      ],
+      "page_count": 197
+    },
+    {
+      "symbol": "600872",
+      "name": "中炬高新",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-09/1223033026.PDF",
+      "published_at": "2025-04-09",
+      "document_sha256": "0667d38e8f854628827ca3c33eeb4d3e4fbcf37f2eec5fb88b2e8a3ba1557306",
+      "pages": [
+        {
+          "page": 5,
+          "text": "单位：元 币种：人民币\n主要会计数据\n单位：元 币种：人民币\n主要会计数据 2024年 2023年 本期比上年\n同期增减(%) 2022年\n营业收入 5,518,756,937.25 5,139,091,906.63 7.39 5,341,040,998.68\n归属于上市公司股\n东的净利润 893,066,517.48 1,696,954,088.26 -47.37 -592,248,272.39\n归属于上市公司股\n东的扣除非经常性\n损益的净利润\n670,585,671.66 524,015,533.50 27.97 556,230,214.23\n经营活动产生的现\n金流量净额 1,087,762,516.91 841,908,805.69 29.20 677,654,835.65\n2024年末 2023年末\n本期末比上\n年同期末增\n减（%）\n2022年末\n归属于上市公司股\n东的净资产 5,614,023,477.67 4,704,744,444.34 19.33 3,009,131,107.56\n"
+        }
+      ],
+      "expected": [
+        {
+          "metric": "revenue",
+          "period_end": "2024-12-31",
+          "value": "5518756937.25"
+        },
+        {
+          "metric": "revenue",
+          "period_end": "2023-12-31",
+          "value": "5139091906.63"
+        },
+        {
+          "metric": "attributable_net_profit",
+          "period_end": "2024-12-31",
+          "value": "893066517.48"
+        },
+        {
+          "metric": "attributable_net_profit",
+          "period_end": "2023-12-31",
+          "value": "1696954088.26"
+        },
+        {
+          "metric": "attributable_profit_excluding_nonrecurring",
+          "period_end": "2024-12-31",
+          "value": "670585671.66"
+        },
+        {
+          "metric": "attributable_profit_excluding_nonrecurring",
+          "period_end": "2023-12-31",
+          "value": "524015533.50"
+        },
+        {
+          "metric": "operating_cash_flow",
+          "period_end": "2024-12-31",
+          "value": "1087762516.91"
+        },
+        {
+          "metric": "operating_cash_flow",
+          "period_end": "2023-12-31",
+          "value": "841908805.69"
+        },
+        {
+          "metric": "attributable_net_assets",
+          "period_end": "2024-12-31",
+          "value": "5614023477.67"
+        },
+        {
+          "metric": "attributable_net_assets",
+          "period_end": "2023-12-31",
+          "value": "4704744444.34"
+        }
+      ],
+      "page_count": 193
+    }
+  ]
+}

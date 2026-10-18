@@ -1,5 +1,15 @@
 # v2.0 开发版本架构
 
+2026-10-18 新增财报 PDF 导入与同业研究模块：`financial_import_worker` 在有超时的子进程中
+用已有 pypdf 提取文本，`financial_import` 产生带原文页码、文件哈希及候选列的待确认记录。
+`peer_workspace` 校验界面事件；确认后由 Workbench 在单一事务内保存原 PDF 与新财务版本，
+通过最新输入版本校验防止旧预览覆盖并发导入，旧记录和其他期间保留。
+
+`peer_research` 复用财务计算，固定期间、币种、范围与截止日计算比较组中位数和差值。
+新增三张兼容表 `financial_documents`、`peer_groups`、`peer_runs`；比较快照保存各公司输入版本，
+规则线索能以固定输入和结构化来源接入原研究流程。比较组由用户选择，缺失不补零，
+不自动推断行业成员、因果关系或收益。详见 [交付与边界](PEER_RESEARCH_2026-10-18.md)。
+
 2026-10-18 财报研究工具复用 `financial_analysis` 的归一化、披露截止日和 Decimal 运算。
 新增 `financial_diagnostics` 生成七类规则线索与金额勾稽的利润变化桥；记录上下文、阈值、
 观察值、公式和 input_ids。`attach_financial_analysis` 将它们作为结构化证据接入原 Agent，
