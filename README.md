@@ -8,7 +8,7 @@ panels and readable report/source typography. Data versions, saved drafts,
 citations and original financial calculations are preserved.
 
 Acceptance: **51 browser checks** (9 visual/readability + 21 Studio + 14 company
-+ 7 PDF/peer workflows), plus **33/33 offline suites and 252 unit tests**.
+and 7 PDF/peer workflows), plus **33/33 offline suites and 252 unit tests**.
 Screenshots use isolated fictional data. The home description contrast measures
 8.85:1 at the tested widths; this is not a full-interface accessibility certification.
 [Design changes and evidence](docs/DARK_TERMINAL_2026-10-18.md).
