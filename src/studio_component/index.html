@@ -5,7 +5,9 @@
 <link rel="stylesheet" href="interactions.css?v=motion1">
 <link rel="stylesheet" href="cockpit.css?v=cockpit1">
 <link rel="stylesheet" href="peer_workspace.css?v=peer1">
-<link rel="stylesheet" href="research_tools.css?v=research1"></head>
+<link rel="stylesheet" href="research_tools.css?v=research1">
+<link rel="stylesheet" href="design.css?v=desk1">
+<link rel="stylesheet" href="terminal.css?v=terminal1"></head>
 <body>
 <div id="studio" class="studio">
   <nav class="rail" aria-label="工作区导航">
@@ -30,16 +32,16 @@
     <header class="topbar">
       <button class="icon-button mobile-menu" data-action="menu" aria-label="打开任务列表"><span data-icon="menu"></span></button>
       <div class="breadcrumb">工作台 <span>/</span> <b id="workspace-name">研究空间</b></div>
-      <div class="topbar-meta"><span id="preview-badge" class="tag amber" hidden>离线演示 · 虚构数据</span><span class="local-status"><i></i>本地连接</span></div>
+      <div class="topbar-meta"><button class="topbar-search" data-action="palette" aria-label="搜索已有研究"><span data-icon="search"></span><span>搜索研究</span><kbd>Ctrl K</kbd></button><span id="preview-badge" class="tag amber" hidden>离线演示 · 虚构数据</span><span class="local-status"><i></i>本地连接</span></div>
     </header>
     <main id="main" tabindex="-1"></main>
   </div>
 </div>
 <div id="notice" role="status" hidden></div>
 <dialog id="palette" aria-labelledby="palette-title"><div class="palette-header"><span data-icon="search"></span><input id="palette-query" aria-label="搜索研究任务" placeholder="搜索主题、公司、代码…"><button class="icon-button" data-action="close-palette" aria-label="关闭搜索">Esc</button></div><h2 id="palette-title" class="sr-only">查找研究记录</h2><div id="palette-results"></div><div class="palette-foot">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div></dialog>
-<script src="interactions.js?v=peer20261018"></script>
-<script src="research_tools.js?v=peer20261018"></script>
-<script src="cockpit.js?v=peer20261018"></script>
+<script src="interactions.js?v=terminal20261018"></script>
+<script src="research_tools.js?v=terminal20261018"></script>
+<script src="cockpit.js?v=terminal20261018"></script>
 <script src="peer_workspace.js?v=peer1"></script>
-<script src="studio.js?v=peer20261018"></script>
+<script src="studio.js?v=terminal20261018"></script>
 </body></html>

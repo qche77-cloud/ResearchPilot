@@ -1,0 +1,14 @@
+{
+  "mode": "synthetic_temporary_db_and_mock_pdf_extraction",
+  "pdf_parser_acceptance": "see peer-research-original-pdfs.json",
+  "checks": [
+    "pdf_proposals_periods_page_and_original_excerpt_visible",
+    "explicit_confirmation_saves_version_and_exact_source_bytes",
+    "same_period_comparison_missing_coverage_and_versioned_export",
+    "research_questions_visible_paid_actions_disabled_in_preview",
+    "saved_comparison_reopens_after_browser_reload",
+    "tablet_import_and_comparison_no_page_overflow",
+    "mobile_import_and_comparison_no_page_overflow"
+  ],
+  "page_errors": []
+}

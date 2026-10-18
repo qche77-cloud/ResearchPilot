@@ -1,0 +1,38 @@
+{
+  "mode": "fictional_preview_readability_and_visual_acceptance",
+  "checks": [
+    "desktop_home_readability_template_and_search",
+    "desktop_company_finance_and_forms_no_overflow",
+    "desktop_report_readability_and_navigation",
+    "tablet_home_readability_template_and_search",
+    "tablet_company_finance_and_forms_no_overflow",
+    "tablet_report_readability_and_navigation",
+    "mobile_home_readability_template_and_search",
+    "mobile_company_finance_and_forms_no_overflow",
+    "mobile_report_readability_and_navigation"
+  ],
+  "readability": [
+    {
+      "viewport": 1440,
+      "home_description": {
+        "font_size": 13,
+        "contrast": 8.848095246211912
+      }
+    },
+    {
+      "viewport": 1024,
+      "home_description": {
+        "font_size": 13,
+        "contrast": 8.848095246211912
+      }
+    },
+    {
+      "viewport": 390,
+      "home_description": {
+        "font_size": 13,
+        "contrast": 8.848095246211912
+      }
+    }
+  ],
+  "page_errors": []
+}
