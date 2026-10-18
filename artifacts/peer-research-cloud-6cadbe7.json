@@ -1,0 +1,102 @@
+{
+  "commit": "6cadbe7056602687147245c2e19ec61c75edb13c",
+  "run_id": 39137013212,
+  "url": "https://github.com/qche77-cloud/ResearchPilot/actions/runs/39137013212",
+  "conclusion": "success",
+  "artifact_download": "failed_after_three_attempts_tls_eof_no_certificate_bypass",
+  "matching_log_lines": [
+    "offline\tRun python -m scripts.run_offline_tests\t2026-10-18T14:42:15.8808227Z 33/33 suites; 252 unit tests; artifacts\\offline-tests.json"
+  ],
+  "counts_verified_from_logs": false,
+  "run_metadata": {
+    "conclusion": "success",
+    "headSha": "6cadbe7056602687147245c2e19ec61c75edb13c",
+    "jobs": [
+      {
+        "completedAt": "2026-10-18T14:42:21Z",
+        "conclusion": "success",
+        "databaseId": 117703475040,
+        "name": "offline",
+        "startedAt": "2026-10-18T14:40:04Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-10-18T14:40:06Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-10-18T14:40:05Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:40:13Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "number": 2,
+            "startedAt": "2026-10-18T14:40:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:40:20Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-python@v5",
+            "number": 3,
+            "startedAt": "2026-10-18T14:40:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:40:59Z",
+            "conclusion": "success",
+            "name": "Run python -m pip install -r requirements.txt",
+            "number": 4,
+            "startedAt": "2026-10-18T14:40:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:42:15Z",
+            "conclusion": "success",
+            "name": "Run python -m scripts.run_offline_tests",
+            "number": 5,
+            "startedAt": "2026-10-18T14:40:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:42:17Z",
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v4",
+            "number": 6,
+            "startedAt": "2026-10-18T14:42:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:42:17Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-python@v5",
+            "number": 11,
+            "startedAt": "2026-10-18T14:42:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:42:19Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "number": 12,
+            "startedAt": "2026-10-18T14:42:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-18T14:42:19Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-10-18T14:42:19Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/qche77-cloud/ResearchPilot/actions/runs/39137013212/job/117703475040"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/qche77-cloud/ResearchPilot/actions/runs/39137013212"
+  }
+}
