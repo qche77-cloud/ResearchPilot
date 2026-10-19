@@ -17,6 +17,7 @@ UNIT_MODULES = [
     'scripts.test_ui_workspace',
     'scripts.test_studio',
     'scripts.test_worker_reliability',
+    'scripts.test_workspace_context',
     'scripts.test_cockpit',
     'scripts.test_offline_guard',
     'scripts.test_quant_foundation',

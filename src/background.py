@@ -208,7 +208,7 @@ class Runner:
                     self.repo.save_state(state)
                     self.store.ack(cmd['id'])
                 if running:
-                    tick(state)
+                    tick(state, store=self.store)
                     if state.status in {'completed', 'failed'}:
                         running = False
                         normalize_history(state)

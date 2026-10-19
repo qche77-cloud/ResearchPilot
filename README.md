@@ -1,5 +1,17 @@
 # ResearchPilot
 
+## WeChat mini program preparation — 2026-10-19
+
+A small invitation-only companion is planned for creating research, following
+tasks, reading versioned reports and viewing personal watchlists. The current
+change lets the background runner inject its own workbench into market and
+financial reads, including failure fallbacks, with six new offline regressions.
+Legacy desktop calls remain supported. **This is a storage prerequisite, not a
+working mini program or a completed authentication/multi-user implementation.**
+Validation: **34/34 offline suites, 258 unit tests**; the six new checks use
+temporary databases and mocked market requests.
+[Scope, architecture, tests and remaining setup](docs/MINIPROGRAM_PLAN_2026-10-19.md).
+
 ## Dark research terminal — 2026-10-18
 
 Studio now uses a compact dark interface, with unified navigation, real research

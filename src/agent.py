@@ -149,8 +149,12 @@ def choose_action(state):
 
 
 @traced_state('agent.tick')
-def tick(state: ResearchState):
-    """One tool step; caller checkpoints after each tick and controls pause/resume."""
+def tick(state: ResearchState, *, store=None):
+    """One tool step using the caller's workbench when supplied.
+
+    Non-default workspaces must inject their store, including for financial
+    fallback reads. Legacy callers retain the local desktop workbench.
+    """
     load_env()
     a = state.diagnostics['agent']
     a['iterations'] = a.get('iterations', 0) + 1
@@ -166,7 +170,7 @@ def tick(state: ResearchState):
         a['market_checked'] = True
         state.mark_running('collecting_market')
         try:
-            store = Workbench()
+            store = store if store is not None else Workbench()
             cache = store.snapshots(code, 1)
             fresh = cache and (datetime.now(timezone.utc) - datetime.fromisoformat(cache[0]['created'])).total_seconds() < 3600
             data = cache[0]['payload'] if fresh else fetch_stock(code)
@@ -199,7 +203,9 @@ def tick(state: ResearchState):
             # User-imported financials remain usable even when price retrieval
             # fails. An unavailable price source must not disable this tool.
             try:
-                imported = Workbench().financial_dataset(code)
+                if store is None:
+                    store = Workbench()
+                imported = store.financial_dataset(code)
                 if imported and not state.diagnostics.get('financial_analysis'):
                     analysis = attach_financial_analysis(state, imported['payload'])
                     event(state, '财务计算', '行情不可用，继续分析用户保存的财务输入', f'{analysis["usable_records"]} 条可用记录')

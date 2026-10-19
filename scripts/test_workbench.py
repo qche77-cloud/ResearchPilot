@@ -94,7 +94,8 @@ class WorkbenchTests(unittest.TestCase):
         s = create_agent('test')
         self.repo.save_state(s)
         entered, release = threading.Event(), threading.Event()
-        def fake_tick(state):
+        def fake_tick(state, *, store):
+            self.assertIs(store, self.store)
             entered.set()
             if not release.wait(5):
                 raise RuntimeError('test release timeout')

@@ -305,7 +305,8 @@ class BackgroundRecoveryTests(unittest.TestCase):
             self.runner._run(self.state.run_id)
             tool.assert_not_called()
         self.store.enqueue(self.state.run_id, 'resume')
-        def finish(state):
+        def finish(state, *, store):
+            self.assertIs(store, self.store)
             self.assertEqual(state.current_stage, 'reading')
             state.mark_completed()
         with patch('src.background.tick', side_effect=finish) as tool:
