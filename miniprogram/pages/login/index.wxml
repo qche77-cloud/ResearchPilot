@@ -1,0 +1,7 @@
+<view class="page">
+  <view class="topline"><view class="brand"><text class="brand-mark">rp</text>RESEARCHPILOT</view><text wx:if="{{demo}}" class="demo-chip">离线演示 · 虚构数据</text></view>
+  <view class="login-hero"><view class="brand-mark" style="width:90rpx;height:90rpx;font-size:46rpx">rp</view><view class="title">研究，随时继续。</view><view class="subtitle">查看报告、核查证据，<view>把关注的公司留在自己的研究空间。</view></view></view>
+  <view wx:if="{{!demo}}"><view class="card-title">微信登录</view><label class="label">首次使用请输入邀请码；已有账号可留空</label><input password value="{{invitation}}" bindinput="invitation" maxlength="128" placeholder="邀请码" /></view><view wx:if="{{error}}" class="error">{{error}}</view>
+  <button class="login-choice" bindtap="login" loading="{{busy}}" disabled="{{busy}}"><view class="company-avatar">{{demo?'A':'我'}}</view><view class="grow"><view class="card-title">{{demo?'进入离线体验':'微信登录并继续'}}</view><view class="meta">{{demo?'虚构报告 · 自选与财务资料':'研究与自选按账号隔离'}}</view></view><text class="chevron">›</text></button>
+  <view class="note lined">{{demo?'当前只使用虚构资料，不消耗模型费用。演示数据在服务停止后清除。':'服务端不读取你的微信头像、昵称或通讯录。'}}</view>
+</view>

@@ -1,0 +1,18 @@
+{
+  "mode": "fictional_browser_preview_not_wechat_device_acceptance",
+  "lan_demo": false,
+  "checks": [
+    "login_and_home_have_explicit_demo_label_and_no_horizontal_overflow",
+    "report_version_switch_reads_the_selected_immutable_snapshot",
+    "evidence_contains_original_excerpt_date_and_copyable_source",
+    "process_view_discloses_no_real_tool_calls",
+    "research_form_submits_real_api_request_and_opens_fictional_saved_report",
+    "watchlist_can_save_a_valid_company_without_market_fetch",
+    "company_financials_show_record_values_reporting_period_currency_and_unit",
+    "company_research_is_bound_to_the_selected_symbol",
+    "logout_revokes_session_and_returns_to_login",
+    "second_account_cannot_see_first_accounts_research_or_watchlist",
+    "second_mobile_width_has_no_horizontal_overflow"
+  ],
+  "page_errors": []
+}

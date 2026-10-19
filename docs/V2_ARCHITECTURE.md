@@ -1,5 +1,15 @@
 # v2.0 开发版本架构
 
+2026-10-20 增加可选移动边界：`src/mini/api` 负责身份、请求边界与 HTTP，
+`identity` 保存哈希会话/邀请码，`service` 将内部用户映射至独立 ResearchRunRepository
+和 Workbench。服务端选择工作区，现有 Runner 接收该工作台；客户端不能指定数据库。
+配置默认关闭真实研究，显式 demo 使用临时虚构数据；单进程目录锁防止多服务共享同一移动数据根。
+移动数据与桌面历史默认独立，不自动同步。详见[本地交付](MINIPROGRAM_LOCAL_DELIVERY_2026-10-19.md)。
+
+浏览器预览只在 demo 挂载，`mobile-preview/mobile.js` 使用同源 API；原生微信源码
+在 `miniprogram/`，二者共享后端契约而不共享运行环境。前端只展示财务源值和图形坐标，
+确定性财务计算仍由 Python 负责。新版[手机 UI](MOBILE_UI_2026-10-20.md)已做离线和浏览器验证，原生编译/真机尚待验收。
+
 2026-10-18 新增财报 PDF 导入与同业研究模块：`financial_import_worker` 在有超时的子进程中
 用已有 pypdf 提取文本，`financial_import` 产生带原文页码、文件哈希及候选列的待确认记录。
 `peer_workspace` 校验界面事件；确认后由 Workbench 在单一事务内保存原 PDF 与新财务版本，

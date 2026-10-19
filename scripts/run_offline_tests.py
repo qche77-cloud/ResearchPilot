@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -18,6 +20,7 @@ UNIT_MODULES = [
     'scripts.test_studio',
     'scripts.test_worker_reliability',
     'scripts.test_workspace_context',
+    'scripts.test_mini_core',
     'scripts.test_cockpit',
     'scripts.test_offline_guard',
     'scripts.test_quant_foundation',
@@ -125,11 +128,20 @@ def child(kind, module):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', default='artifacts/offline-tests.json')
+    parser.add_argument('--mobile', action='store_true', help='Require optional API dependencies and Node.js client checks')
     parser.add_argument('--child', nargs=2, choices=None, metavar=('KIND', 'MODULE'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.child:
         return child(*args.child)
     modules = [('unit', n) for n in UNIT_MODULES] + [('script', n) for n in SCRIPT_MODULES]
+    mobile_available = all(importlib.util.find_spec(name) is not None for name in ('fastapi', 'httpx'))
+    node_available = shutil.which('node') is not None
+    if args.mobile and not (mobile_available and node_available):
+        parser.error('--mobile requires requirements-miniprogram.txt and Node.js')
+    if mobile_available:
+        modules.append(('unit', 'scripts.test_mini_api'))
+    if node_available:
+        modules.append(('script', 'scripts.check_mini_client'))
     new_tests = ROOT / 'scripts' / 'test_v2_quality.py'
     if new_tests.is_file():
         modules.append(('unit', 'scripts.test_v2_quality'))
@@ -164,6 +176,8 @@ def main(argv=None):
             if detail:
                 print(detail, flush=True)
     result = dict(mode='offline_network_blocked', production_db_access='blocked',
+                  optional_miniprogram_api='included' if mobile_available else 'not_installed; install requirements-miniprogram.txt',
+                  optional_miniprogram_client='included' if node_available else 'not_installed; install Node.js',
                   network_policy='external_and_ordinary_loopback_blocked; internal_socketpair_allowed', python=sys.version,
                   suites=len(rows), passed_suites=sum(bool(r['passed']) for r in rows),
                   unit_tests=sum(r.get('tests') or 0 for r in rows), results=rows)

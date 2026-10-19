@@ -18,6 +18,13 @@ ENV/
 .env
 .env.local
 .env.*.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+**/secrets.toml
 
 # IDE / editor
 .vscode/
@@ -42,6 +49,9 @@ data/*.db-shm
 data/*.db-wal
 data/*.sqlite
 data/*.locks/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
 
 # Dev / test artifacts
 scripts/_*.json
@@ -54,3 +64,7 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 tmp/
+
+# Per-user mobile workspaces and developer-local WeChat configuration
+data/miniprogram/
+miniprogram/project.private.config.json

@@ -1,0 +1,8 @@
+<view class="page">
+  <view class="topline"><view class="brand"><text class="brand-mark">rp</text>RESEARCHPILOT</view><text wx:if="{{demo}}" class="demo-chip">离线演示 · 虚构数据</text></view>
+  <view class="title">我的研究空间</view><view class="subtitle">资料独立保存，按来源和版本查看。</view><view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:if="{{me}}" class="profile-card"><view class="row"><view class="brand"><view class="company-avatar">我</view><view style="margin-left:20rpx"><view class="card-title">{{demo?'演示账号':'个人研究空间'}}</view><view class="meta">资料按账号隔离</view></view></view><text class="badge">{{demo?'演示':'已登录'}}</text></view><view class="row" style="margin-top:36rpx"><text class="muted">今日研究</text><text class="number">{{me.daily_used}}<text class="muted"> / {{me.daily_limit}}</text></text></view><view class="note">{{demo?'不使用真实微信身份，不消耗模型费用。':'服务重启后可能需要手动恢复未结束的研究。'}}</view></view>
+  <view wx:if="{{me}}" class="stats"><view class="stat"><view class="number">{{me.history_count}}</view><view class="muted">研究记录</view></view><view class="stat"><view class="number">{{me.watch_count}}</view><view class="muted">自选公司</view></view><view class="stat"><view class="number">{{me.max_searches}}</view><view class="muted">搜索上限</view></view></view>
+  <view class="settings-list"><button class="settings-row" bindtap="reading"><text>报告阅读字号</text><text class="muted">{{largeText?'大字':'标准'}} ›</text></button><view class="settings-row"><view><view>研究服务</view><view class="meta">{{me.research_enabled?(demo?'只生成虚构演示报告':'已启用真实研究'):'尚未启用'}}</view></view><text class="badge">{{demo?'演示':'个人'}}</text></view></view>
+  <button class="wide" bindtap="logout">退出登录</button><view class="note lined">{{demo?'临时演示数据在服务停止后清除。':''}}财务缺失时保留缺口，不由模型填补；当前移动端没有桌面资料自动同步。</view>
+</view>

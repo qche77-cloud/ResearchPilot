@@ -1,0 +1,20 @@
+{
+  "mode": "native_controller_stubs_not_wechat_runtime",
+  "checks": [
+    "six_native_pages_parse_and_handlers_resolve",
+    "explicit_demo_login_uses_demo_endpoint",
+    "unauthorized_response_clears_session",
+    "wechat_mode_rejects_insecure_transport",
+    "wechat_login_sends_code_only_to_backend",
+    "submit_blocks_double_tap_and_reuses_key_after_network_failure",
+    "hidden_page_ignores_late_response_and_stops_polling",
+    "markdown_treats_raw_html_as_text",
+    "timestamps_display_in_asia_shanghai",
+    "native_search_and_status_filters_do_not_modify_history",
+    "native_sheet_reopen_preserves_idempotency_key",
+    "native_outline_citation_and_reading_preferences_work",
+    "native_finance_period_scope_and_source_detail_preserve_record_identity",
+    "financial_display_keeps_exact_decimal_strings",
+    "canonical_units_have_currency_aware_labels_without_changing_values"
+  ]
+}

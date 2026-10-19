@@ -1,0 +1,8 @@
+{
+  "description": "ResearchPilot 微信小程序体验版",
+  "projectname": "ResearchPilot",
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "setting": {"es6": true, "minified": true, "urlCheck": true}
+}

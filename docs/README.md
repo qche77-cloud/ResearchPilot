@@ -2,6 +2,14 @@
 
 ## Contents
 
+- [今日开发报告](DAILY_2026-10-20.md) — 本次功能、文件、测试、费用与待办
+- [手机界面优化](MOBILE_UI_2026-10-20.md) — 布局交互、截图和离线验收
+- [历史归档](PROJECT_HISTORY.md) — 旧 README 阶段记录，当前状态以最新报告为准
+
+- [手机访问演示](MINIPROGRAM_PHONE_ACCESS_2026-10-20.md) — 同 Wi-Fi 入口、显式局域网演示、HTTP 兼容与验收边界
+
+- [小程序本地开发交付](MINIPROGRAM_LOCAL_DELIVERY_2026-10-19.md) — API、原生源码、虚构手机预览、测试证据和微信真机待办
+
 - [微信小程序体验版准备](MINIPROGRAM_PLAN_2026-10-19.md) — 用户已确认的小范围体验、真实代码边界、存储注入修复及待实现接口
 
 - [Company cockpit delivery](COMPANY_COCKPIT_2026-10-15.md) — finance imports, timeline, reviews, screening replay and cross-process workers

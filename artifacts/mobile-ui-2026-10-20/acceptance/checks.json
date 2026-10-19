@@ -1,0 +1,24 @@
+{
+  "mode": "isolated_fictional_browser_not_wechat_device_acceptance",
+  "checks": [
+    "360_390_430_widths_and_short_viewport_have_no_overflow_and_touchable_primary_action",
+    "sheet_traps_keyboard_focus_and_makes_background_inert",
+    "escape_and_browser_back_close_sheet_preserving_research_draft",
+    "failed_submission_reopens_and_retries_same_idempotency_key_once",
+    "search_and_status_filters_show_empty_state_and_restore_unmodified_history",
+    "navigation_restores_research_list_scroll_position",
+    "report_outline_scrolls_to_selected_section_below_sticky_header",
+    "large_reading_preference_survives_reload",
+    "inline_citation_opens_and_highlights_version_bound_evidence",
+    "old_report_version_does_not_show_new_sections",
+    "late_old_version_response_cannot_overwrite_new_selection",
+    "raw_report_html_remains_text_and_cannot_execute",
+    "chart_period_selection_and_source_sheet_keep_exact_record_identity_and_units",
+    "reporting_period_selector_updates_chart_inspector",
+    "page_changes_clear_toasts_and_reduced_motion_disables_page_animation",
+    "all_browser_requests_are_local_and_no_javascript_errors_occur"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "paid_api_calls": 0
+}

@@ -1,0 +1,8 @@
+<view class="page">
+  <view class="topline"><view class="brand"><text class="brand-mark">rp</text>RESEARCHPILOT</view><text wx:if="{{demo}}" class="demo-chip">离线演示 · 虚构数据</text></view>
+  <view class="row"><view><view class="title">自选公司</view><view class="subtitle">关注对象与研究资料，按公司归集。</view></view><button class="icon-button" bindtap="add">＋</button></view>
+  <view wx:if="{{adding}}" class="card"><view class="card-title">添加自选公司</view><label class="label">六位 A 股代码</label><input type="number" maxlength="6" value="{{symbol}}" bindinput="symbol" placeholder="例如 000001" /><label class="label">显示名称</label><input maxlength="40" value="{{name}}" bindinput="name" placeholder="可留空" /><view class="actions"><button class="primary wide" bindtap="save" loading="{{busy}}" disabled="{{busy}}">保存自选</button></view></view>
+  <view wx:if="{{error}}" class="error">{{error}}</view><view class="row section"><text>我的关注 <text class="muted">{{items.length}}</text></text><text class="muted">最多 50 家</text></view>
+  <view wx:if="{{items.length}}" class="watch-list"><view wx:for="{{items}}" wx:key="symbol" class="watch-row"><button class="watch-open" data-symbol="{{item.symbol}}" data-name="{{item.name}}" bindtap="open"><view class="company-avatar">选</view><view class="grow"><view class="card-title">{{item.name}}</view><view class="code">{{item.symbol}} · 已关注</view></view></button><button class="icon-button" data-symbol="{{item.symbol}}" bindtap="remove">···</button></view></view>
+  <view wx:if="{{!items.length && !error}}" class="empty">还没有自选公司，先添加一个关注对象。</view><view class="note">添加自选只保存关注关系，不会自动获取行情或发起付费研究。</view>
+</view>

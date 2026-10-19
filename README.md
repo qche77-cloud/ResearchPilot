@@ -1,629 +1,214 @@
+<div align="center">
+
 # ResearchPilot
 
-## WeChat mini program preparation — 2026-10-19
+### 从研究问题，到可追溯的结论
 
-A small invitation-only companion is planned for creating research, following
-tasks, reading versioned reports and viewing personal watchlists. The current
-change lets the background runner inject its own workbench into market and
-financial reads, including failure fallbacks, with six new offline regressions.
-Legacy desktop calls remain supported. **This is a storage prerequisite, not a
-working mini program or a completed authentication/multi-user implementation.**
-Validation: **34/34 offline suites, 258 unit tests**; the six new checks use
-temporary databases and mocked market requests.
-[Scope, architecture, tests and remaining setup](docs/MINIPROGRAM_PLAN_2026-10-19.md).
+面向 A 股公司、产业链与行业研究的 AI Agent。<br>
+规划问题、核查证据、计算财务数据，让每一次研究都能继续、回看和验证。
 
-## Dark research terminal — 2026-10-18
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
+![Storage](https://img.shields.io/badge/Storage-SQLite-416A80?style=flat-square&logo=sqlite&logoColor=white)
+![UI](https://img.shields.io/badge/UI-Streamlit_%2B_JavaScript-83E9C0?style=flat-square)
+![Status](https://img.shields.io/badge/v2.0-development_build-D6C59C?style=flat-square)
 
-Studio now uses a compact dark interface, with unified navigation, real research
-and watchlist counts, a working resume card, global search, denser financial
-panels and readable report/source typography. Data versions, saved drafts,
-citations and original financial calculations are preserved.
+[快速体验](#快速体验) · [功能一览](#功能一览) · [研究流程](#研究流程) · [架构](#架构) · [测试](#测试与验证) · [今日报告](docs/DAILY_2026-10-20.md)
 
-Acceptance: **51 browser checks** (9 visual/readability + 21 Studio + 14 company
-and 7 PDF/peer workflows), plus **33/33 offline suites and 252 unit tests**.
-Screenshots use isolated fictional data. The home description contrast measures
-8.85:1 at the tested widths; this is not a full-interface accessibility certification.
-[Design changes and evidence](docs/DARK_TERMINAL_2026-10-18.md).
+</div>
 
-## Financial PDF import and peer research — 2026-10-18
+![ResearchPilot 深色电脑工作台：研究入口、历史与继续研究](docs/assets/studio-home.png)
 
-In **公司研究 → 财报导入**, upload a text PDF, inspect proposed figures and
-original page excerpts, then explicitly confirm the period, units and scope.
-The original file and confirmed records are saved together as a new version.
-Limits: 12 MB / 400 pages; scanned documents and automatic OCR are not supported.
+> 所有展示截图均来自隔离的虚构演示数据。当前为 v2.0 开发版本；微信原生源码已提供，仍待开发者工具编译、真机验收与 HTTPS 部署。
 
-In **同业比较**, save a manually chosen group of 2–50 companies and compare
-the same reporting period, currency, scope and cutoff. Python computes medians,
-coverage and differences; missing inputs remain missing. Results and input
-versions persist. Rule-triggered questions can start research with archived
-financial inputs and traceable comparison evidence.
+## 随时查看研究
 
-Acceptance: **33/33 offline suites, 252 unit tests**, **30/30 source amounts and
-6/6 reported YoY values** from three historical public annual reports; **42
-browser checks** (7 new + 14 company + 21 Studio) in temporary fictional data.
-The three reports are a small acceptance sample, not a general accuracy estimate.
-No new production dependencies or model calls during acceptance.
+手机端将常用操作集中到研究、自选和个人空间：搜索记录、切换报告版本、点开引用、核查财务来源。新建研究使用底部面板，阅读支持目录与大字模式。
 
-[Delivery, sources and limitations](docs/PEER_RESEARCH_2026-10-18.md).
+<table>
+  <tr>
+    <td align="center"><b>研究工作台</b></td>
+    <td align="center"><b>报告阅读</b></td>
+    <td align="center"><b>公司财务</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/mobile-home.png" width="260" alt="手机研究列表与新建研究入口"></td>
+    <td><img src="docs/assets/mobile-report.png" width="260" alt="版本选择、报告目录与大字阅读"></td>
+    <td><img src="docs/assets/mobile-company.png" width="260" alt="财报期选择、财务指标与原始来源"></td>
+  </tr>
+</table>
 
-## Interface wording — 2026-10-18
+[查看引用与来源截图](docs/assets/mobile-sources.png) · [手机界面交付记录](docs/MOBILE_UI_2026-10-20.md)
 
-The interface now uses **公司研究、自选公司、财务检查、验证条件** throughout
-navigation and forms. Search limits, source checks and financial results use
-clearer Chinese explanations. Existing reports and saved user text are preserved.
-[Changes and acceptance evidence](docs/UI_COPY_2026-10-18.md).
+## 功能一览
 
-## Financial research tools — 2026-10-18
+| 能力 | 已实现的功能 |
+| --- | --- |
+| 自主研究 | 问题拆解、研究假设、证据缺口驱动检索、有界反思与补充研究 |
+| 证据追溯 | 引用定位、原文摘录、来源与日期、结论—假设—证据—来源关系 |
+| 报告验证 | 引用有效性、限定规则的数值/方向冲突、逐句原文匹配、Critic 待核查项 |
+| 财务分析 | Python Decimal 计算同比/环比、单季度、TTM、毛利率与基础估值；保留公式和输入编号 |
+| 财报研究 | 文本 PDF 候选提取与人工确认、同口径同业比较、七类财务检查、利润变化分解 |
+| 持续研究 | 后台任务、暂停/恢复、研究版本、历史假设与新数据比较、报告差异 |
+| 公司工作台 | 自选公司、档案、投资观点与验证条件、可重放财务筛选、默认关闭的监控 |
+| 移动端基础 | 可选 FastAPI、邀请式微信登录接口、每人独立 SQLite、幂等任务、配额与并发边界 |
+| 工程评测 | 离线回归、合成评测集、模型/工具轨迹、已知用量与显式价格下的费用估算 |
 
-Open **公司研究 → 财务检查** to inspect seven deterministic financial signals:
-revenue/profit divergence, cash below profit, inventory/receivables growing faster
-than revenue, falling gross margin, lower expensed R&D, and a high gap between
-attributable and adjusted attributable profit. Every signal exposes its threshold,
-reporting period and original inputs. Missing data remains explicitly unresolved.
+引用存在或原文匹配，不等于一般语义和事实得到认证。财务缺失值、未知口径和费用缺失均保留为未知；不由模型补造数值。当前不提供策略回测或自动交易。
 
-The profit waterfall decomposes the change in same-scope net profit into revenue,
-gross margin, available aggregate period expenses and an unexplained remainder.
-Click bars to inspect exact inputs; export the reconciled accounting ledger.
-This is an arithmetic decomposition, not proof of business causality.
+<details>
+<summary><b>更多电脑端画面：报告、引用与财务</b></summary>
 
-In **投资复盘**, set a financial criterion, target reporting period and review date.
-Explicit checks use the selected saved financial version and cutoff, preserving
-criterion versions, actual observations, original inputs and later revisions.
-Results never overwrite manual investment judgments. Checks are user-triggered;
-this release does not add a background scheduler or declare a full thesis true.
+### 版本化报告与引用
 
-Validation: **31/31 offline suites, 236 unit tests**, **12/12 new synthetic
-evaluation cases**, **46 browser checks** (11 new + 14 cockpit + 21 Studio).
-No new production dependencies or paid API calls during acceptance. Existing
-tables remain; two additive tables store criterion versions and check runs.
+![研究报告与来源查看](docs/assets/studio-report.png)
 
-[Delivery report, formulas and limits](docs/FINANCIAL_RESEARCH_2026-10-18.md) ·
-[Profit waterfall](artifacts/research-tools-browser/profit-bridge-desktop.png) ·
-[Criterion tracking](artifacts/research-tools-browser/thesis-tracking-desktop.png)
+### 财务分析与数据来源
 
-[Final code `2318623` passed GitHub CI](https://github.com/qche77-cloud/ResearchPilot/actions/runs/39054561276).
-Downloaded cloud artifacts confirm 31/31 suites, 236 unit tests, 12/12 new cases,
-and an identical canonical evaluation dataset hash.
+![财务指标与可追溯图表](docs/assets/studio-finance.png)
 
-Updated production entry while running: **http://127.0.0.1:8526**. Health check
-returned 200/ok; starting it submitted no research/model tasks and preserved the
-existing services. This health check is not a live financial-provider acceptance.
+</details>
 
-Isolated fictional preview while running: **http://127.0.0.1:8524**.
-Open **自选公司 → 公司 A → 财务检查 / 投资复盘**. Original production services
-were not restarted. Use a fresh updated backend for the new storage features.
+## 研究流程
 
-## Claim verification — 2026-10-18
-
-New reports save sentence-level claim checks alongside their exact report and
-evidence versions. In Studio, open **过程 → 此版本的结论验证** to inspect complete
-source-statement matches, direct conflicts, unresolved claims, original excerpts
-and source dates; download the selected version's verification JSON.
-
-`supported` means a complete saved source statement matches (formatting and case
-normalized), **not independent factual or semantic verification**. Paraphrases,
-causal claims and unmatched scopes remain unresolved. Direct conflicts require
-the same statement template apart from direction/percentages. Conflicting or
-unresolved claims become Critic warnings; direct unopposed conflicts block normal
-report generation. Existing historical versions are not backfilled with newer checks.
-
-Validation: **29/29 offline suites, 216 unit tests**, **32/32 synthetic claim
-fixtures**, **9 new + 21 existing Studio browser checks**. No new dependencies,
-database migrations or model API calls for these checks.
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.evaluate_claims
-.\.venv\Scripts\python.exe -m scripts.run_offline_tests
+```mermaid
+flowchart LR
+    Q["提出研究问题"] --> P["拆解计划与假设"]
+    P --> D{"证据是否足够"}
+    D -->|"仍有缺口且预算允许"| S["检索 → 阅读 → 评估"]
+    S --> H["更新假设与反面证据"]
+    H --> D
+    D -->|"达到覆盖目标或预算边界"| Y["综合与报告草稿"]
+    Y --> V["引用 / 冲突 / Critic 检查"]
+    V --> R["保存报告、证据与待核查项"]
+    R --> C["后续研究与版本差异"]
+    F["财务源记录 → 确定性计算"] --> H
 ```
 
-[Delivery report and limits](docs/CLAIM_VERIFICATION_2026-10-18.md) ·
-[Desktop](artifacts/claim-browser/claims-desktop.png) ·
-[Mobile](artifacts/claim-browser/claims-mobile.png)
+1. 写清对象与问题，例如“收入增长是否转化为经营现金流？”
+2. Agent 根据证据缺口选择下一步；搜索与迭代均有上限。
+3. 财务数值来自保存的源记录和 Python 运算，每个结果保留输入来源。
+4. 阅读报告时检查引用、反面证据与未解决问题，再决定下一轮研究。
 
-[GitHub CI for final code `fc577f2`](https://github.com/qche77-cloud/ResearchPilot/actions/runs/39051470907)
-passed; downloaded cloud artifacts confirm **29/29 suites, 216 unit tests and
-32/32 claim fixtures**.
+直接、无对立证据的规则冲突会阻断正常报告生成；一般语义、因果关系与无法匹配的结论保留待核查状态。旧版本使用当时保存的报告与证据，不回填当前来源。
 
-The isolated fictional preview is **http://127.0.0.1:8522** while its process is
-running. It deliberately includes a conflicting saved report to exercise the UI;
-normal report generation rejects that direct conflict. Existing production
-services were not restarted; use a fresh updated Studio process to load backend changes.
+## 快速体验
 
-## Company research — 2026-10-15
+需要 Python 3.11。使用现有环境时可跳过虚拟环境创建。
 
-Studio now integrates **财务分析、研究时间轴、研究档案、投资复盘**. Open a
-company from **自选公司**, or enter its six-digit code. Financial JSON imports are
-versioned; chart points expose exact inputs, units, disclosure dates and sources.
-The finance panel supports cumulative/single-quarter/TTM views, YoY/QoQ, margins,
-quality checks and deterministic PE/PB with eligible disclosed denominators.
-
-Company research can pin the selected financial version and cutoff as structured
-Agent evidence. The timeline compares saved conclusions, hypotheses, financial
-revisions and actual report text. Profiles, preferences and manual review versions
-persist in the existing workbench database.
-
-Financial screening supports saved fixed-date criteria, durable execution results
-and replay using the original financial input versions, even after new imports.
-Updated workers use OS-backed locks across processes, durable attempts and safe
-checkpoint replay; a crashed process releases its lock without a time-based lease.
-
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run studio_app.py --server.address 127.0.0.1 --server.port 8521
-```
-
-Current full local entry: **http://127.0.0.1:8521**. Isolated writable fictional
-acceptance preview: **http://127.0.0.1:8520**. Earlier services remain untouched.
-Use updated workers for task execution; unupdated running services cannot follow
-the new lock protocol. Studio still does not automatically resume old jobs or
-start another monitor scheduler.
-
-Validation: **27/27 offline suites, 197 unit tests**, **14/14 cockpit browser
-checks**, plus **21/21 existing UI checks**. No paid API calls during acceptance.
-[Delivery report](docs/COMPANY_COCKPIT_2026-10-15.md) ·
-[Finance view](artifacts/cockpit-browser/finance-desktop.png) ·
-[Research timeline](artifacts/cockpit-browser/timeline-desktop.png) ·
-[Mobile finance](artifacts/cockpit-browser/finance-mobile.png)
-
-[GitHub CI for the full cockpit](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38600813215)
-passed 27/27 suites and 197 unit tests for code commit `e3695ba`.
-
-All published screenshots use isolated fictional inputs. Stock quotes, monitor
-configuration and AI judgment-proposal confirmation remain in **完整数据工具**.
-
-## ResearchPilot Studio — 2026-10-14
-
-The new `studio_app.py` entry point replaces the research page layout with a
-dedicated frontend: a persistent task library, report canvas and assistant/source
-inspector. Click a citation to inspect its original saved evidence beside the
-report; switch report versions or open the version associated with a chat message.
-It also adds a resizable workspace, keyboard task search (`Ctrl/Cmd K`), browser
-session drafts, responsive reading and financial screening with input lineage.
-
-The frontend is a local HTML/CSS/JavaScript Streamlit component. It uses the
-existing Python Runner, financial calculations and SQLite repositories; no new
-frontend build tools, graph database or paid service are required. Full financial
-imports, stock tools and investment review remain accessible through **完整数据工具**.
-The original `agent_app.py` remains available.
-
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run studio_app.py --server.address 127.0.0.1 --server.port 8511
-```
-
-The October 14 Studio entry was verified at `http://127.0.0.1:8511`. Its fictional preview:
-`http://127.0.0.1:8510`. These are local links, not public hosting.
-Studio does not automatically resume historical jobs or start a second monitor
-scheduler. Avoid executing the same task from multiple application processes.
-
-[Implementation and acceptance report](docs/STUDIO_INTERFACE_2026-10-14.md) ·
-[Research workspace](artifacts/studio-preview/research-desktop.png) ·
-[Citation inspector](artifacts/studio-preview/evidence-desktop.png) ·
-[Mobile reading](artifacts/studio-preview/report-mobile.png)
-
-Offline regression: **25/25 suites, 178 unit tests**. Browser acceptance: **15/15
-checks** at 1440, 1024 and 390 pixels. All published screenshots use fictional data.
-The [GitHub CI run](https://github.com/qche77-cloud/ResearchPilot/actions/runs/38537194631)
-also passed 25/25 suites and 178 unit tests for code commit `0dc212b`.
-
-Studio now includes delayed hover tooltips, version-scoped citation previews,
-card/button feedback and short page/panel transitions. Polling does not replay
-animations, and reduced-motion preferences are respected. The layout is retained.
-[Interaction polish report](docs/STUDIO_INTERACTIONS_2026-10-14.md) ·
-[Citation hover preview](artifacts/studio-polish/citation-hover.png).
-The updated browser acceptance passes **21/21 checks**.
-
-## Financial screening foundation — 2026-10-14
-
-The stock workspace now includes **财务质量体检** and **财务筛选**. Review
-revenue/profit growth, margins and cash conversion with explicit dates, scope,
-currency, formulas and input IDs. Filter up to 50 locally saved watchlist datasets;
-missing values stay unavailable, and screening does not fetch data or call a model.
-An explicit fictional demo is available without saving or launching real research.
-
-Financial calculations support date-level `as_of`; valuation selects an older
-publicly available report when the latest one was not disclosed at the market date.
-Invalid publication metadata and inconsistent/nonfinite OHLCV bars are rejected.
-
-The prior financial-screening Streamlit entry was verified at `http://127.0.0.1:8506`.
-See the [delivery and limitations](docs/QUANT_FOUNDATION_2026-10-14.md) and
-[review roadmap](docs/REVIEW_AND_QUANT_ROADMAP_2026-10-14.md).
-This is financial research screening, without strategy backtesting or trading.
-
-## Research desk interface — 2026-10-13
-
-The redesigned workspace uses a warm light canvas, a teal navigation sidebar and
-separate views for conversations, reports, evidence and verification. Stock
-research separates market snapshots, financial charts, company profiles and thesis
-reviews. Existing local data and background research commands are retained.
-
-[Interface delivery and test report](docs/UI_REDESIGN_2026-10-13.md) ·
-[Desktop preview](artifacts/ui-preview/home-desktop.png) ·
-[Mobile preview](artifacts/ui-preview/home-mobile.png)
-
-The October 13 interface was verified at `http://127.0.0.1:8504`; the previous
-8502 process was preserved. For a fresh service, use an available port:
-
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8504
-```
-
-Requires Streamlit 1.41 or newer. That delivery included 164 unit tests
-across 24 suite entries, including Windows asyncio/socketpair isolation checks.
-See the [GitHub CI diagnosis and fix](docs/CI_FIX_2026-10-13.md).
-Optional browser acceptance uses isolated fictional data;
-see the interface report for setup and limits.
-
-## v2.0 core capabilities — development build
-
-New usable features are integrated into the existing application:
-
-- **Financial tools**: multi-period revenue/profit/cash-flow data, deterministic
-  YoY, cumulative-to-quarter conversion, QoQ, gross margin, expense/net margin,
-  TTM and basic PE/PB. Explicit reporting scope, currency, units, periods and
-  sources are required. Missing/ambiguous inputs are blocked, never guessed.
-- **Traceable charts**: each financial point exposes record IDs, exact values,
-  source links and update times; calculations export their formulas and inputs.
-- **Hypotheses and reflection**: record supporting data, opposing data, unresolved
-  questions, judgments and uncertainty. Revenue/profit or profit/cash-flow
-  divergence appends targeted research tasks without increasing search budget.
-- **Evidence relations**: explore and export conclusion → hypothesis → evidence →
-  source associations, including calculation lineage. Existing SQLite JSON
-  snapshots persist this lightweight graph without a graph database.
-- **Continuous research**: carry historical hypotheses into a new stock-scoped
-  run, revalidate them, compare report versions and financial revisions, detect
-  changed text at the same URL, and export a structured/Markdown difference report.
-- **Monitoring**: explicit on/off, configurable 1–168-hour minimum interval,
-  daily/financial source-change tracking and durable success/partial/failure logs.
-  Monitoring remains local, defaults off, and does not automatically spend model
-  or search budget or perform trades.
-
-Restart the existing Streamlit service to load the new modules and additive tables:
-
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8502
-```
-
-In **个股与自选 → 多期财务分析**, use existing snapshots after explicitly verifying
-their accounting metadata, or import sourced financial JSON. Original raw values
-are retained; financial imports are versioned separately from market snapshots.
-The same panel offers **查看离线合成演示**, which never saves fictional data as real
-research. In a research conversation, inspect the new hypothesis, plan revision,
-evidence relationship, critic and version-difference panels.
-
-Run an API-free capability demonstration and the complete offline regression:
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.demo_v2
-.\.venv\Scripts\python.exe -m scripts.run_offline_tests --output artifacts/v2-final-regression.json
-```
-
-Optional `RESEARCHPILOT_MODEL_ROUTES_JSON` maps roles such as `planner`, `agent`,
-`synthesizer`, `writer`, `chat`, `judgments`, or exact operation IDs to explicit
-model IDs. Unspecified routes retain `LLM_MODEL`. `RESEARCHPILOT_STRICT_OUTPUTS=1`
-enables a strict JSON Schema for the research controller only; the selected model
-must support it. Both switches default to existing behavior and have offline
-contract tests, not live model/account certification.
-
-See [core implementation and limitations](docs/V2_CORE_DELIVERY.md),
-[architecture](docs/V2_ARCHITECTURE.md), and
-[official-source technology assessment](docs/V2_TECH_EVALUATION.md).
-Latest test and GitHub publication record: [2026-10-13 delivery report](docs/DAILY_2026-10-13.md).
-This is a tested development build. General semantic verification and live API
-quality are not certified; `unknown` must not be interpreted as verified truth.
-
-## v2.0 engineering upgrade — phase 1
-
-The first upgrade increment adds offline agent evaluation and request traces while
-retaining both Streamlit entry points and existing SQLite snapshots. This is a
-phase-1 implementation, not completion of the full v2.0 roadmap.
-
-- Live search configuration/errors/empty results never substitute synthetic sources.
-- Unknown references reject generated report output instead of silently removing
-  citation markers. Chat and final reports check narrow same-metric directional
-  and percentage conflicts. General semantic support remains **unknown**.
-- Rejected evidence is no longer reintroduced during synthesis. The pipeline
-  fails without usable evidence; existing historical snapshots remain readable.
-- Model requests and tools record run/stage/call IDs, start/end times, latency,
-  failure types and available provider token usage in ResearchState diagnostics.
-  Prompts, response bodies and credentials are excluded from traces.
-- Model token costs require explicit, dated rates; missing usage/rates remain
-  unknown. Search and other tool fees are not inferred from model token costs.
-- Background workers handle repeated persistence failures without acknowledging
-  uncommitted commands, and show a process-local failure message if saving fails.
-
-Run the explicit offline suite and the 16 synthetic evaluation cases:
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.run_offline_tests
-.\.venv\Scripts\python.exe -m scripts.evaluate_agent
-```
-
-The regression runner blocks network connections and access to production SQLite
-files under `data/`. It runs both unittest and legacy main/assert scripts, rejects
-zero-test unittest runs, and writes results to `artifacts/offline-tests.json`.
-Evaluation writes `artifacts/agent-evaluation.json`, including the dataset hash,
-fixture expectation matches, citation/typed-number decisions, coverage and
-conflict precision/recall. Fixtures use fictional entities, fixed dates and
-`example.invalid` sources; they do not measure live financial research quality.
-
-Optional `RESEARCHPILOT_MODEL_PRICING_JSON` is a JSON object keyed by the configured
-model ID with `input_per_million`, `output_per_million`, optional
-`cached_input_per_million`, and `as_of` (rate date). Rates are USD per million
-tokens. Cached input requires an explicit cached rate when present in usage.
-No pricing defaults are assumed, and estimates are not billing statements.
-The Agent's existing tool details panel shows trace metadata and missing costs.
-
-Architecture and scope: [phase-1 notes](docs/V2_PHASE1.md).
-Initial audit: [review and baseline](docs/V2_REVIEW_AND_BASELINE_2026-10-12.md).
-Remaining work includes general semantic verification, live source/provider
-certification, cross-process worker ownership and broader production evaluation.
-The later core increment adds financial tools, hypotheses, relations and diffs.
-
-## Agent workspace preview
-
-Requires Python 3.11 and the dependencies in `requirements.txt`.
-
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run agent_app.py --server.address 127.0.0.1 --server.port 8502
-```
-
-Open http://127.0.0.1:8502. The agent selects searches from evidence gaps,
-reads sources, reassesses coverage, and stops when coverage or its search
-budget is reached. Its action log, evidence, and report are saved in SQLite.
-Research runs in a background thread owned by the local server. Browser
-disconnection does not stop it. Messages and pause requests enter a durable
-SQLite queue and are processed between tool calls. After restarting the server,
-explicitly resume interrupted runs. Completed runs can be continued with an
-additional search budget (default new-run budget: 2).
-Model decisions require `OPENAI_API_KEY`; unavailable model decisions visibly
-fall back to coverage rules. Live searches require `TAVILY_API_KEY`; no mock
-research is presented as live research. Search count is bounded, but is not
-a currency spending limit. Conversational replies use stored report evidence;
-quoted references are checked against stored IDs and verbatim excerpts. This
-checks reference integrity, not semantic truth or investment suitability.
-
-The stock workbench includes A-share daily prices and K-lines, raw financial
-indicators, same-period comparisons, watchlists, thesis journals, and editable
-user preferences. AKShare/Eastmoney and Sina are public data dependencies;
-failures and data timestamps are displayed. Prices are unadjusted, not live
-execution quotes. Financial source values must be checked against original
-report units before numerical comparison. No automated trading is implemented.
-
-Optional watchlist monitors update after 16:00 Asia/Shanghai on weekdays while
-the server is running. They default to off, show changes/errors in-app, and do
-not send external notifications. Non-trading holidays may return unchanged data.
-Local research is in `data/researchpilot.db`; preferences, stock snapshots,
-watchlists, journals and commands are in `data/workbench.db` (not encrypted).
-
-Offline agent regression: `.\.venv\Scripts\python.exe -m scripts.test_agent`.
-Workbench/background regression: `.\.venv\Scripts\python.exe -m scripts.test_workbench`.
-The original pipeline UI remains available through `streamlit run app.py`.
-
-> **An AI-powered research agent that transforms complex research into a
-> structured, evidence-driven, and reproducible workflow.**
-
-ResearchPilot is an AI-powered research agent designed to perform
-structured research on industries, companies, and emerging technologies.
-
-Instead of generating answers directly, ResearchPilot decomposes
-research into explicit stages---including planning, web search, evidence
-evaluation, synthesis, and report generation---to improve transparency,
-traceability, and reliability.
-
-Every research session is persisted as a **ResearchState**, making
-research reproducible, reviewable, and recoverable through a built-in
-history system.
-
-------------------------------------------------------------------------
-
-## Last published legacy release
-
-**v1.3.0**
-
-------------------------------------------------------------------------
-
-## ✨ Key Features
-
--   🤖 Multi-stage AI research workflow
--   🧠 LLM-powered research planning
--   🔍 Multi-query web search
--   📖 Automatic evidence reading and extraction
--   📊 Evidence evaluation and credibility scoring
--   🩺 Research Health assessment
--   📝 Structured report generation
--   💾 Persistent ResearchState management
--   🗂 SQLite-backed history storage
--   📜 Historical research browsing and recovery
--   🌐 Interactive Streamlit interface
-
-------------------------------------------------------------------------
-
-# 🏗 Architecture
-
-    Streamlit UI
-          │
-          ▼
-    Application Service
-          │
-          ▼
-    Research Service
-          │
-          ▼
-    Research Engine
-          │
-          ▼
-    SQLite Persistence
-
-The Research Engine executes the complete research workflow while
-sharing a unified **ResearchState** across all stages. This architecture
-separates user interaction, business orchestration, research execution,
-and persistence, making the system easier to extend and maintain.
-
-------------------------------------------------------------------------
-
-# ⚙ Research Workflow
-
-    User Query
-          │
-          ▼
-    Analyze
-          │
-          ▼
-    Plan
-          │
-          ▼
-    Search
-          │
-          ▼
-    Read
-          │
-          ▼
-    Evaluate
-          │
-          ▼
-    Synthesize
-          │
-          ▼
-    Research Health
-          │
-          ▼
-    Write
-          │
-          ▼
-    Persist
-          │
-          ▼
-    History
-
-Every stage communicates through a shared **ResearchState**, ensuring
-the research process is transparent, reproducible, and evidence-driven.
-
-------------------------------------------------------------------------
-
-# 🛠 Tech Stack
-
-  Layer             Technology
-  ----------------- ---------------
-  Language          Python
-  Frontend          Streamlit
-  LLM               OpenAI GPT
-  Search            Tavily API
-  Persistence       SQLite
-  Data Model        ResearchState
-  Version Control   Git + GitHub
-
-------------------------------------------------------------------------
-
-# 🚀 Quick Start
-
-``` bash
-git clone <repository-url>
+```bash
+git clone https://github.com/qche77-cloud/ResearchPilot.git
 cd ResearchPilot
-
 python -m venv .venv
 ```
 
-### Activate Environment
+Windows 激活：`.venv\Scripts\Activate.ps1`；macOS/Linux：`source .venv/bin/activate`。
 
-**Windows**
+### 手机网页演示：无需 API 密钥
 
-``` powershell
-.venv\Scripts\Activate.ps1
+```bash
+python -m pip install -r requirements-miniprogram.txt
+python -m scripts.serve_miniprogram --demo --port 8540
 ```
 
-**macOS / Linux**
+打开 [本机手机预览](http://127.0.0.1:8540/preview/)，选择体验 A/B。它使用临时虚构数据，不调用模型、搜索、行情或微信登录 API；正常停止服务后演示数据清除。
 
-``` bash
-source .venv/bin/activate
+手机与电脑连接同一 Wi-Fi 时，可显式绑定电脑的私有 IPv4：
+
+```bash
+python -m scripts.serve_miniprogram --demo --lan-demo --host YOUR_PRIVATE_IPV4 --port 8542
 ```
 
-### Install Dependencies
+将占位符替换为电脑 WLAN IPv4；手机访问 `http://电脑IP:8542/preview/`。电脑和服务需保持运行。默认演示只允许本机；局域网模式拒绝通配和公网绑定。这是网页体验，尚无微信小程序体验码。
 
-``` bash
-pip install -r requirements.txt
-cp .env.example .env
+[手机访问步骤](docs/MINIPROGRAM_PHONE_ACCESS_2026-10-20.md) · [原生小程序配置与限制](miniprogram/README.md)
+
+### 电脑研究工作台
+
+```bash
+python -m pip install -r requirements.txt
+streamlit run studio_app.py --server.address 127.0.0.1 --server.port 8528
 ```
 
-Configure your `.env` file:
+打开 [电脑工作台](http://127.0.0.1:8528/)。原有 `agent_app.py` 与 `app.py` 继续保留。
 
-  Variable           Description
-  ------------------ -----------------------------------
-  `OPENAI_API_KEY`   OpenAI API Key
-  `TAVILY_API_KEY`   Tavily Search API Key
-  `LLM_MODEL`        Optional (default: `gpt-4o-mini`)
+真实研究需在本机将 `.env.example` 复制为 `.env` 后填写：
 
-Run the application:
+| 配置 | 用途 |
+| --- | --- |
+| `OPENAI_API_KEY` | 现有 OpenAI 兼容模型服务 |
+| `TAVILY_API_KEY` | 真实资料检索 |
+| `LLM_MODEL` | 可选，沿用项目默认模型 |
 
-``` bash
-streamlit run app.py
+密钥只放在本地或后端环境，不放在客户端、截图或 Git 中。真实研究会产生服务商费用；搜索次数上限不是金额硬上限。移动端真实研究默认关闭，须显式配置后才能使用。
+
+## 架构
+
+```mermaid
+flowchart TB
+    ST["Studio / Streamlit 电脑端"] --> RUN["现有 Runner 与研究服务"]
+    WX["原生微信页面"] --> API["可选 FastAPI：鉴权、配额、幂等"]
+    WEB["手机网页：仅虚构 demo"] --> API
+    API --> WS["服务端分配的独立用户工作区"]
+    WS --> RUN
+    RUN --> STATE["ResearchState"]
+    RUN --> TOOLS["规划 / 检索 / 阅读 / 综合 / 验证"]
+    RUN --> FIN["财务计算与来源追溯"]
+    STATE --> DB["SQLite：任务、版本、证据与工作台"]
+    TOOLS --> STATE
+    FIN --> STATE
 ```
 
-------------------------------------------------------------------------
+保留 Python、SQLite 和已有执行链路；逻辑角色通过可测试模块实现。手机用户工作区与桌面历史默认独立，当前没有自动同步。移动 API 按单服务进程设计，不支持多机 SQLite 调度。
 
-# 📂 Project Structure
-
-``` text
-ResearchPilot
-│
-├── app.py
+```text
+ResearchPilot/
+├── studio_app.py              # 当前电脑端入口
+├── agent_app.py / app.py      # 保留的原有入口
 ├── src/
-│   ├── app_service.py
-│   ├── research_service.py
-│   ├── pipeline.py
-│   ├── storage.py
-│   ├── research_state.py
-│   ├── planner.py
-│   ├── searcher.py
-│   ├── reader.py
-│   ├── evaluator.py
-│   ├── synthesizer.py
-│   └── writer.py
-│
-├── docs/
-├── scripts/
-├── data/
-└── README.md
+│   ├── agent.py / background.py
+│   ├── financial_*.py         # 计算、检查、导入与筛选
+│   ├── research_state.py      # 状态与恢复
+│   ├── studio_component/      # 电脑前端
+│   └── mini/                  # 可选移动 API 与独立工作区
+├── miniprogram/               # 微信原生源码
+├── mobile-preview/            # 虚构手机网页演示
+├── evals/                     # 合成评测集与历史财报样本
+├── scripts/                   # 测试、评测与运行工具
+└── docs/                      # 架构、交付报告与展示截图
 ```
 
-------------------------------------------------------------------------
+[详细架构](docs/V2_ARCHITECTURE.md) · [技术评估](docs/V2_TECH_EVALUATION.md) · [文档索引](docs/README.md)
 
-# 💡 Design Principles
+## 测试与验证
 
-### Modular Workflow
+最近本地验收：**2026-10-20**。
 
-Each research stage performs a single responsibility and communicates
-through shared state.
+| 检查 | 结果 | 证据 |
+| --- | --- | --- |
+| 完整离线回归，含移动 API | 37/37 套件，286 项单元测试 | [回归结果](artifacts/mobile-ui-regression-2026-10-20.json) |
+| 原生页面控制器 | 15 项通过，使用 wx 替身 | [检查记录](artifacts/miniprogram-client-checks.json) |
+| 手机网页已有流程 | 11 项通过 | [流程记录](artifacts/mobile-ui-2026-10-20/workflows/checks.json) |
+| 新界面交互与适配 | 16 项通过 | [交互记录](artifacts/mobile-ui-2026-10-20/acceptance/checks.json) |
 
-### State-driven Architecture
+```bash
+python -m scripts.run_offline_tests --mobile
+node scripts/check_mini_client.cjs
+# 浏览器验收需另装 playwright 并安装 Chromium
+python -m scripts.check_mobile_ui
+```
 
-The complete research lifecycle is represented by a unified
-**ResearchState**, making every execution reproducible and inspectable.
+离线回归阻断外网和生产数据库访问；交互脚本自行启动隔离虚构服务，结束后关闭。测试覆盖身份隔离、任务幂等、报告版本、目录与引用、重试、迟到响应、原始 HTML、防溢出和来源记录。合成场景不能代表真实金融研究准确率。
 
-### Evidence-first Research
+## 当前边界与下一步
 
-Every conclusion is grounded in retrieved evidence before entering the
-final report.
+- 微信登录接口和页面源码已有离线测试；微信开发者工具编译、真实登录、手机真机和 HTTPS 部署尚待验收。
+- 桌面与移动资料尚未自动同步；移动端没有财报上传、公开注册或主动通知。
+- PDF 导入支持文本型文件，需人工确认；不支持扫描件 OCR。
+- 财务检查与利润分解提供可核查线索，不证明业务因果，也不预测收益。
+- 通用语义验证、真实服务商质量、大规模生产评测仍需推进。
 
-### Persistent Lifecycle
+[今日报告](docs/DAILY_2026-10-20.md) · [历史更新](docs/PROJECT_HISTORY.md) · [v2.0 能力与限制](docs/V2_CORE_DELIVERY.md)
 
-Completed research sessions are stored in SQLite and can be revisited
-through the History system.
+---
 
-------------------------------------------------------------------------
-
-# 🗺 Roadmap
-
-  Version     Highlights
-  ----------- ------------------------------------------
-  ✅ v1.0     Initial research workflow
-  ✅ v1.1     Evidence evaluation & Research Health
-  ✅ v1.2     ResearchState & SQLite persistence
-  ✅ v1.3     History management & lifecycle
-
-------------------------------------------------------------------------
-
-# 📄 License
-
-**Private --- All Rights Reserved**
-
-This repository is maintained as a personal portfolio project. All
-rights are reserved by the author.
+**Private — All Rights Reserved.** 个人技术作品，未授予开源使用许可。
