@@ -182,7 +182,7 @@ def consume_event(event, service, session):
             handle(event,service,session)
         elif action == 'navigate':
             view = event.get('view')
-            if view not in {'research', 'watchlist', 'screening', 'workbench'}:
+            if view not in {'research', 'watchlist', 'screening', 'workbench', 'signals'}:
                 raise ValueError('未知工作区')
             session['studio_view'] = view
         elif action == 'open':

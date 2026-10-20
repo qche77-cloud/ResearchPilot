@@ -1,5 +1,12 @@
 # v2.0 开发版本架构
 
+2026-10-20 算法层增加 `research_signals`：复用 `financial_quality` 的确定性因子与
+`thesis_tracking` 的明确财务判据，进行规则评分、固定档案的时点检查和共同样本比较。
+原型采用可下载的 JSON manifest/result 保存版本与来源链，不新增数据库表。
+`signal_validation_ui` 从明确版本只读计算；独立入口不加载 .env 或 Runner。
+Studio 新增白名单导航 `signals`，不接入自动研究提交或调度。
+这不是收益回测或真实模型评测。详见[算法交付](RESEARCH_SIGNALS_2026-10-20.md)。
+
 2026-10-20 增加可选移动边界：`src/mini/api` 负责身份、请求边界与 HTTP，
 `identity` 保存哈希会话/邀请码，`service` 将内部用户映射至独立 ResearchRunRepository
 和 Workbench。服务端选择工作区，现有 Runner 接收该工作台；客户端不能指定数据库。

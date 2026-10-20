@@ -52,6 +52,7 @@
 | 公司工作台 | 自选公司、档案、投资观点与验证条件、可重放财务筛选、默认关闭的监控 |
 | 移动端基础 | 可选 FastAPI、邀请式微信登录接口、每人独立 SQLite、幂等任务、配额与并发边界 |
 | 工程评测 | 离线回归、合成评测集、模型/工具轨迹、已知用量与显式价格下的费用估算 |
+| 研究信号验证 | 五因子透明评分、事前档案时点检查、未来财务判据、共同样本对照、精确输入导出重放 |
 
 引用存在或原文匹配，不等于一般语义和事实得到认证。财务缺失值、未知口径和费用缺失均保留为未知；不由模型补造数值。当前不提供策略回测或自动交易。
 
@@ -65,6 +66,24 @@
 ### 财务分析与数据来源
 
 ![财务指标与可追溯图表](docs/assets/studio-finance.png)
+
+</details>
+
+## 研究信号验证
+
+研究信号验证已提供离线原型：在 Studio 左侧打开“研究信号验证”，或独立运行：
+
+```bash
+streamlit run signal_validation_app.py --global.developmentMode false --server.address 127.0.0.1 --server.port 8550 --browser.gatherUsageStats false --theme.base dark
+python -m scripts.evaluate_research_signals --demo
+```
+
+打开 [本机验证页](http://127.0.0.1:8550/)。规则和数据缺失都可追溯；示例研究判断均为虚构，当前没有真实模型对照成绩或收益回测。[算法、档案格式与验收](docs/RESEARCH_SIGNALS_2026-10-20.md)。
+
+<details>
+<summary>查看研究信号验证画面（虚构数据）</summary>
+
+![研究信号验证与共同样本比较](docs/assets/signal-validation.png)
 
 </details>
 
@@ -185,7 +204,8 @@ ResearchPilot/
 
 | 检查 | 结果 | 证据 |
 | --- | --- | --- |
-| 完整离线回归，含移动 API | 37/37 套件，286 项单元测试 | [回归结果](artifacts/mobile-ui-regression-2026-10-20.json) |
+| 完整离线回归，含移动 API | 38/38 套件，322 项单元测试 | [回归结果](artifacts/research-signals-regression-2026-10-20.json) |
+| 研究信号页面 / 原 Studio 回归 | 10 / 21 项浏览器检查通过 | [新功能](artifacts/research-signals-browser/checks.json) · [原功能](artifacts/research-signals-studio-regression/browser-checks.json) |
 | 原生页面控制器 | 15 项通过，使用 wx 替身 | [检查记录](artifacts/miniprogram-client-checks.json) |
 | 手机网页已有流程 | 11 项通过 | [流程记录](artifacts/mobile-ui-2026-10-20/workflows/checks.json) |
 | 新界面交互与适配 | 16 项通过 | [交互记录](artifacts/mobile-ui-2026-10-20/acceptance/checks.json) |

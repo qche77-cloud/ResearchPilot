@@ -1,0 +1,10 @@
+{
+  "provenance": "hand_calculated_synthetic_expectations_not_real_performance",
+  "as_of": "2026-05-02",
+  "scores": ["100", "44", "58", null, "100"],
+  "labels": [true, false, false, true, false],
+  "paired_case_ids": ["fictional-1", "fictional-2", "fictional-3", "fictional-5"],
+  "baseline_confusion": {"tp": 1, "tn": 1, "fp": 2, "fn": 0},
+  "rules_confusion": {"tp": 1, "tn": 2, "fp": 1, "fn": 0},
+  "agent_fixture_confusion": {"tp": 1, "tn": 2, "fp": 1, "fn": 0}
+}

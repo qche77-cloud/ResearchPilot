@@ -46,7 +46,15 @@ def start_research(topic, symbol=None, update=False):
     st.rerun()
 
 
-if st.session_state.get('studio_view') == 'workbench':
+if st.session_state.get('studio_view') == 'signals':
+    from src.signal_validation_ui import render_signal_validation
+    with st.container():
+        st.markdown('<style>.block-container{padding:1.5rem 2rem!important}</style>',unsafe_allow_html=True)
+        if st.button('← 返回研究页面',key='signals_return'):
+            st.session_state['studio_view']='research'
+            st.rerun()
+        render_signal_validation(service.store)
+elif st.session_state.get('studio_view') == 'workbench':
     from src.ui_theme import apply_theme
     from src.workbench_ui import render_workbench
     apply_theme()

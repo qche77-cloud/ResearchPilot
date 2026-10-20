@@ -24,6 +24,7 @@ UNIT_MODULES = [
     'scripts.test_cockpit',
     'scripts.test_offline_guard',
     'scripts.test_quant_foundation',
+    'scripts.test_research_signals',
     'scripts.test_claim_verification',
     'scripts.test_research_tools',
     'scripts.test_peer_research',
