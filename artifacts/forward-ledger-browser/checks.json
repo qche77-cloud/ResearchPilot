@@ -1,0 +1,18 @@
+{
+  "mode": "isolated_fictional_forward_ledger",
+  "checks": [
+    "session_starts_with_explicit_fictional_data_and_clock_in_temporary_database",
+    "registration_persists_once_and_removes_demo_duplicate_submission",
+    "before_decision_result_stays_unknown_instead_of_counting_as_failure",
+    "new_statement_is_explicitly_selected_and_default_manual_prediction_remains_unknown",
+    "revision_appends_new_snapshot_and_preserves_one_exact_financial_value_change",
+    "first_known_and_latest_outcomes_are_separate_with_identical_cohorts_and_no_real_scores",
+    "review_retry_returns_same_saved_version_without_inflating_history",
+    "older_saved_result_replays_unchanged_after_financial_revision",
+    "forward_workflow_has_no_document_horizontal_overflow_at_three_widths",
+    "real_workbench_readonly_inspection_requires_explicit_connection",
+    "no_streamlit_or_javascript_errors_and_no_external_browser_requests"
+  ],
+  "page_errors": [],
+  "external_requests": []
+}

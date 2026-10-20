@@ -53,6 +53,7 @@
 | 移动端基础 | 可选 FastAPI、邀请式微信登录接口、每人独立 SQLite、幂等任务、配额与并发边界 |
 | 工程评测 | 离线回归、合成评测集、模型/工具轨迹、已知用量与显式价格下的费用估算 |
 | 研究信号验证 | 五因子透明评分、事前档案时点检查、未来财务判据、共同样本对照、精确输入导出重放 |
+| 前向研究账本 | 资料只读检查、未来判断登记、输入/规则固定、追加复盘、财报修订差异、首次与最新结果分离 |
 
 引用存在或原文匹配，不等于一般语义和事实得到认证。财务缺失值、未知口径和费用缺失均保留为未知；不由模型补造数值。当前不提供策略回测或自动交易。
 
@@ -71,7 +72,7 @@
 
 ## 研究信号验证
 
-研究信号验证已提供离线原型：在 Studio 左侧打开“研究信号验证”，或独立运行：
+在 Studio 左侧打开“研究信号验证”，或独立运行：
 
 ```bash
 streamlit run signal_validation_app.py --global.developmentMode false --server.address 127.0.0.1 --server.port 8550 --browser.gatherUsageStats false --theme.base dark
@@ -80,10 +81,28 @@ python -m scripts.evaluate_research_signals --demo
 
 打开 [本机验证页](http://127.0.0.1:8550/)。规则和数据缺失都可追溯；示例研究判断均为虚构，当前没有真实模型对照成绩或收益回测。[算法、档案格式与验收](docs/RESEARCH_SIGNALS_2026-10-20.md)。
 
+新增“前向研究”和“数据检查”：先检查已保存财务版本，固定今天的规则、证据与可选人工判断；未来选择新财报版本追加复盘。修订前后数值直接比较，首次已知结果保留，最新结果单独查看，旧版本可下载重放。默认使用隔离虚构演示，明确保存才写入本机附加账本表，不调用外部 API。
+
+```mermaid
+flowchart LR
+    A["财务版本只读检查"] --> B["未来研究登记"]
+    B --> C["固定输入、规则与判断"]
+    C --> D["新财报 / 修订版本"]
+    D --> E["追加复盘 + 数值差异"]
+    E --> F["首次 / 最新结果分别统计"]
+    E --> G["下载并独立重放"]
+```
+
+实际研究需要先导入核对过的标准财务版本。人工登记不是模型预测，本机时间与哈希也不是第三方存证。[账本使用与边界](docs/FORWARD_RESEARCH_2026-10-20.md)。
+
 <details>
 <summary>查看研究信号验证画面（虚构数据）</summary>
 
 ![研究信号验证与共同样本比较](docs/assets/signal-validation.png)
+
+![前向研究登记与修订统计（虚构数据）](docs/assets/forward-ledger.png)
+
+![复盘版本与同期间财务修订值（虚构数据）](docs/assets/forward-revision.png)
 
 </details>
 
@@ -186,6 +205,8 @@ ResearchPilot/
 ├── src/
 │   ├── agent.py / background.py
 │   ├── financial_*.py         # 计算、检查、导入与筛选
+│   ├── forward_*.py           # 前向登记、追加复盘与隔离演示
+│   ├── research_readiness.py  # 已保存财务版本只读检查
 │   ├── research_state.py      # 状态与恢复
 │   ├── studio_component/      # 电脑前端
 │   └── mini/                  # 可选移动 API 与独立工作区
@@ -204,8 +225,8 @@ ResearchPilot/
 
 | 检查 | 结果 | 证据 |
 | --- | --- | --- |
-| 完整离线回归，含移动 API | 38/38 套件，322 项单元测试 | [回归结果](artifacts/research-signals-regression-2026-10-20.json) |
-| 研究信号页面 / 原 Studio 回归 | 10 / 21 项浏览器检查通过 | [新功能](artifacts/research-signals-browser/checks.json) · [原功能](artifacts/research-signals-studio-regression/browser-checks.json) |
+| 完整离线回归，含移动 API | 39/39 套件，364 项单元测试 | [回归结果](artifacts/forward-ledger-regression-2026-10-20.json) |
+| 前向账本 / 原研究信号 / Studio | 11 / 10 / 21 项浏览器检查通过 | [账本](artifacts/forward-ledger-browser/checks.json) · [评分](artifacts/forward-ledger-signal-regression/checks.json) · [Studio](artifacts/forward-ledger-studio-regression/browser-checks.json) |
 | 原生页面控制器 | 15 项通过，使用 wx 替身 | [检查记录](artifacts/miniprogram-client-checks.json) |
 | 手机网页已有流程 | 11 项通过 | [流程记录](artifacts/mobile-ui-2026-10-20/workflows/checks.json) |
 | 新界面交互与适配 | 16 项通过 | [交互记录](artifacts/mobile-ui-2026-10-20/acceptance/checks.json) |
@@ -215,9 +236,11 @@ python -m scripts.run_offline_tests --mobile
 node scripts/check_mini_client.cjs
 # 浏览器验收需另装 playwright 并安装 Chromium
 python -m scripts.check_mobile_ui
+# 另行启动隔离验证页后，验收虚构前向账本
+python -m scripts.check_forward_browser --url http://127.0.0.1:8550
 ```
 
-离线回归阻断外网和生产数据库访问；交互脚本自行启动隔离虚构服务，结束后关闭。测试覆盖身份隔离、任务幂等、报告版本、目录与引用、重试、迟到响应、原始 HTML、防溢出和来源记录。合成场景不能代表真实金融研究准确率。
+离线回归阻断外网和生产数据库访问；手机交互脚本自行启动隔离虚构服务，电脑浏览器脚本需指定已启动的本机预览服务。测试覆盖身份隔离、任务幂等、报告版本、目录与引用、重试、迟到响应、原始 HTML、防溢出、前向日期、财报修订和独立重放。合成场景不能代表真实金融研究准确率。
 
 ## 当前边界与下一步
 
@@ -225,6 +248,7 @@ python -m scripts.check_mobile_ui
 - 桌面与移动资料尚未自动同步；移动端没有财报上传、公开注册或主动通知。
 - PDF 导入支持文本型文件，需人工确认；不支持扫描件 OCR。
 - 财务检查与利润分解提供可核查线索，不证明业务因果，也不预测收益。
+- 前向样本需要真实财务版本和后续到期结果；当前不提供真实模型优越性或投资收益成绩。
 - 通用语义验证、真实服务商质量、大规模生产评测仍需推进。
 
 [今日报告](docs/DAILY_2026-10-20.md) · [历史更新](docs/PROJECT_HISTORY.md) · [v2.0 能力与限制](docs/V2_CORE_DELIVERY.md)

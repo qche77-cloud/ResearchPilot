@@ -1,4 +1,4 @@
-"""Standalone offline validation UI: no environment loading, Runner or databases."""
+"""Offline validation UI. Local workbench access requires an explicit UI opt-in."""
 import streamlit as st
 from src.signal_validation_ui import render_signal_validation
 

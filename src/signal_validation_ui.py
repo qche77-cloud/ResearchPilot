@@ -1,4 +1,4 @@
-"""Read-only research validation UI. No Runner, provider calls or database writes."""
+"""Research validation with read-only analysis and explicit local ledger saves."""
 from datetime import date, datetime
 import json
 from zoneinfo import ZoneInfo
@@ -83,8 +83,8 @@ def _result(result):
 
 def render_signal_validation(store=None):
     st.title('研究信号验证')
-    st.caption('把财务评分、事前研究判断与后续财务判据放在同一份可重放记录中。只读取本地输入，不调用模型、抓取行情或交易。')
-    historical,current,policy=st.tabs(['历史验证','当前财务评分','规则与边界'])
+    st.caption('把财务评分、事前研究判断与后续财务判据放在可追溯记录中。分析读取本地输入；前向账本仅在点击保存时追加记录。不调用模型、抓取行情或交易。')
+    historical,current,forward,readiness,policy=st.tabs(['历史验证','当前财务评分','前向研究','数据检查','规则与边界'])
     with historical:
         source=st.radio('实验来源',['离线虚构实验','本地实验 JSON'],horizontal=True,key='signal_source')
         upload=st.file_uploader('实验 JSON（最多 2 MB）',type=['json'],key='signal_experiment_upload') if source=='本地实验 JSON' else None
@@ -154,6 +154,12 @@ def render_signal_validation(store=None):
             st.metric('综合分（满分 100）',score['score'] if score['score'] is not None else '数据不足')
             _score_detail(score)
             st.download_button('下载评分与精确输入',_json(saved),'financial-research-score.json',mime='application/json',key='signal_score_export')
+    with forward:
+        from src.forward_research_ui import render_forward_research
+        render_forward_research(store)
+    with readiness:
+        from src.forward_research_ui import render_readiness
+        render_readiness(store)
     with policy:
         for text in LIMITATIONS: st.write('• '+text)
         st.write('日期级决策按当日开始处理，档案、样本池、判据和规则必须在前一日或更早确定；带时间戳的元数据统一换算为北京时间。')

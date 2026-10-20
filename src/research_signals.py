@@ -218,6 +218,20 @@ def _metrics(rows, method):
             'accuracy':rate(tp+tn,len(pairs)), 'precision':rate(tp,tp+fp), 'recall':rate(tp,tp+fn)}
 
 
+def signal_criterion(raw, *, decision_on, rules):
+    """Shared label contract for imported experiments and forward registrations."""
+    decision = day(decision_on)
+    checked = validate_test(raw)
+    if any(day(c['period_end']) <= decision for c in checked['criteria']):
+        raise ValueError('此原型只验证决策日之后结束的财报期')
+    if any((c['currency'],c['scope']) != (rules['currency'],rules['scope']) for c in checked['criteria']):
+        raise ValueError('目标财务判据须与评分币种和报表范围一致')
+    signatures = {(c['metric'],c['measure'],c['operator'],c['threshold']) for c in checked['criteria']}
+    if len(checked['criteria']) != 2 or signatures != {('revenue','yoy','>=','0'),('net_profit','value','>','0')} or len({c['period_end'] for c in checked['criteria']}) != 1 or any(c['basis'] != rules['basis'] for c in checked['criteria']):
+        raise ValueError('v1 验证任务固定为同目标期营收同比≥0且净利润>0，且期间口径一致')
+    return checked
+
+
 def evaluate_experiment(manifest, *, as_of, rules=None):
     """Replay fixed decisions and compare methods on explicitly shared cohorts."""
     cutoff = day(as_of)
@@ -270,18 +284,11 @@ def evaluate_experiment(manifest, *, as_of, rules=None):
         if captured_days[feature_id] >= decision:
             raise ValueError('决策仅可使用前一日及以前已采集的档案')
         criterion = case.get('criterion')
-        checked = validate_test(criterion)
+        checked = signal_criterion(criterion,decision_on=decision,rules=rules)
         observation_key = (symbol,str(decision),digest(checked))
         if observation_key in observations_seen:
             raise ValueError('同公司、决策日和判据的样本不得重复计数')
         observations_seen.add(observation_key)
-        if any(day(c['period_end']) <= decision for c in checked['criteria']):
-            raise ValueError('此原型只验证决策日之后结束的财报期')
-        if any((c['currency'],c['scope']) != (rules['currency'],rules['scope']) for c in checked['criteria']):
-            raise ValueError('目标财务判据须与评分币种和报表范围一致')
-        signatures = {(c['metric'],c['measure'],c['operator'],c['threshold']) for c in checked['criteria']}
-        if len(checked['criteria']) != 2 or signatures != {('revenue','yoy','>=','0'),('net_profit','value','>','0')} or len({c['period_end'] for c in checked['criteria']}) != 1 or any(c['basis'] != rules['basis'] for c in checked['criteria']):
-            raise ValueError('v1 验证任务固定为同目标期营收同比≥0且净利润>0，且期间口径一致')
         score = score_archive(snapshots[feature_id], decision_on=decision, rules=rules)
         if score['period_end'] and any(day(c['period_end']) <= day(score['period_end']) for c in checked['criteria']):
             raise ValueError('目标财报期必须晚于评分期')

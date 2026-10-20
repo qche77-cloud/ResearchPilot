@@ -110,6 +110,8 @@ Critic 是独立逻辑角色，不是另起服务。检查引用完整性、有�
 
 ## 数据与监控兼容
 
+2026-10-20 增加前向研究账本：`research_readiness` 只读检查已有 `financial_inputs`；`forward_ledger` 仅在明确保存时以事务追加创建/写入 `signal_registrations` 与 `signal_reviews`，不改写原财务或研究历史。保存输入、规则、预测与本机时间；复盘另存并固定当次来源，首次已知结果与最新结果分别统计。临时演示与真实资料分组，独立页默认不连接真实工作台，不启动监控或外部调用。详见[账本设计与限制](FORWARD_RESEARCH_2026-10-20.md)。
+
 researchpilot.db 仍用既有 research_runs，不进行破坏性迁移。workbench.db 新增独立 financial_inputs、monitor_settings、monitor_events 表，用 CREATE TABLE IF NOT EXISTS 初始化；原 snapshots、观点、命令、档案、历史记录保留。
 
 report_versions 的 payload 保存假设、财务与关系图快照；深拷贝防止后续更新改写旧版本。时间保存在 payload，但不因重复读取的时间变化生成新版本。新研究保留基线，历史假设在本轮先重置为待验证，再用新证据评估。
