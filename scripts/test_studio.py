@@ -39,6 +39,17 @@ class StudioTests(unittest.TestCase):
         self.service.submit.assert_not_called()
         self.service.start_monitors.assert_not_called()
 
+    def test_old_validation_session_returns_to_studio_and_keeps_selected_research(self):
+        self.session['studio_view']='signals'
+        before=self.repo.get_run(self.state.run_id)
+        view=packet(self.service,self.session)
+        self.assertEqual(view['view'],'research')
+        self.assertEqual(self.session['studio_view'],'research')
+        self.assertEqual(self.session['studio_run'],self.state.run_id)
+        self.assertEqual(before,self.repo.get_run(self.state.run_id))
+        self.service.submit.assert_not_called()
+        self.service.start_monitors.assert_not_called()
+
     def test_old_version_keeps_its_own_evidence_and_excerpts(self):
         a = self.state.diagnostics['agent']
         a['report_versions'] = {

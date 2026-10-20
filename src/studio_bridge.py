@@ -68,13 +68,20 @@ def screening_view(store, criteria):
     return result
 
 
+def current_view(session):
+    """Return the Studio view, recovering sessions from the retired lab route."""
+    if session.get('studio_view') == 'signals':
+        session['studio_view'] = 'research'
+    return session.get('studio_view', 'research')
+
+
 def packet(service, session):
     selected = session.get('studio_run')
     # Use the repository for rendering. Runner.read can write legacy normalization;
     # the Studio's polling is deliberately read-only.
     state = service.repo.get_state(selected) if selected else None
     criteria = session.get('studio_criteria', dict(as_of=date.today().isoformat(), minimums={}))
-    view = session.get('studio_view', 'research')
+    view = current_view(session)
     from src.studio_company import company_view
     current_screen = session.get('studio_screen_result')
     result = dict(
@@ -182,7 +189,10 @@ def consume_event(event, service, session):
             handle(event,service,session)
         elif action == 'navigate':
             view = event.get('view')
-            if view not in {'research', 'watchlist', 'screening', 'workbench', 'signals'}:
+            # An already-open component can still send the old navigation event.
+            if view == 'signals':
+                view = 'research'
+            if view not in {'research', 'watchlist', 'screening', 'workbench'}:
                 raise ValueError('未知工作区')
             session['studio_view'] = view
         elif action == 'open':

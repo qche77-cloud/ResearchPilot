@@ -259,13 +259,13 @@ class SignalUITests(unittest.TestCase):
         self.assertTrue(any(m.value=='100' for m in app.metric))
         self.assertTrue(any('虚构财务' in w.value for w in app.warning))
 
-    def test_studio_navigation_is_explicit_and_never_starts_runner(self):
+    def test_retired_studio_validation_navigation_returns_to_research(self):
         from unittest.mock import Mock
         from src.studio_bridge import consume_event
         service=Mock(_studio_preview=True)
         session={}
         self.assertTrue(consume_event({'id':'signal-navigation','action':'navigate','view':'signals'},service,session))
-        self.assertEqual(session['studio_view'],'signals')
+        self.assertEqual(session['studio_view'],'research')
         service.submit.assert_not_called()
         service.start_monitors.assert_not_called()
 

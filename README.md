@@ -70,9 +70,9 @@
 
 </details>
 
-## 研究信号验证
+## 研究验证工具（独立页面）
 
-在 Studio 左侧打开“研究信号验证”，或独立运行：
+电脑主界面使用 [ResearchPilot Studio](http://127.0.0.1:8528/)，保留原有深色布局、研究、自选和财务筛选导航。专项研究验证工具单独运行：
 
 ```bash
 streamlit run signal_validation_app.py --global.developmentMode false --server.address 127.0.0.1 --server.port 8550 --browser.gatherUsageStats false --theme.base dark
@@ -225,8 +225,8 @@ ResearchPilot/
 
 | 检查 | 结果 | 证据 |
 | --- | --- | --- |
-| 完整离线回归，含移动 API | 39/39 套件，364 项单元测试 | [回归结果](artifacts/forward-ledger-regression-2026-10-20.json) |
-| 前向账本 / 原研究信号 / Studio | 11 / 10 / 21 项浏览器检查通过 | [账本](artifacts/forward-ledger-browser/checks.json) · [评分](artifacts/forward-ledger-signal-regression/checks.json) · [Studio](artifacts/forward-ledger-studio-regression/browser-checks.json) |
+| 完整离线回归，含移动 API | 39/39 套件，365 项单元测试 | [回归结果](artifacts/desktop-restore-regression-2026-10-20.json) |
+| 前向账本 / 独立研究验证 / 原 Studio | 11 / 10 / 21 项浏览器检查通过 | [账本](artifacts/forward-ledger-browser/checks.json) · [独立验证](artifacts/desktop-restore-signal-browser/checks.json) · [Studio](artifacts/desktop-restore-studio-browser/browser-checks.json) |
 | 原生页面控制器 | 15 项通过，使用 wx 替身 | [检查记录](artifacts/miniprogram-client-checks.json) |
 | 手机网页已有流程 | 11 项通过 | [流程记录](artifacts/mobile-ui-2026-10-20/workflows/checks.json) |
 | 新界面交互与适配 | 16 项通过 | [交互记录](artifacts/mobile-ui-2026-10-20/acceptance/checks.json) |

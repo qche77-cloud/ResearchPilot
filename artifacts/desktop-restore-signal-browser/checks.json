@@ -1,0 +1,17 @@
+{
+  "mode": "isolated_fictional_signal_validation",
+  "checks": [
+    "explicit_fictional_experiment_runs_with_shared_cohort_counts",
+    "registered_judgment_comparison_remains_explicitly_separate_from_actual_model_calls",
+    "download_contains_exact_replayable_inputs_rules_and_financial_evidence",
+    "missing_cash_inputs_never_become_zero_or_a_complete_score",
+    "not_due_results_remain_unknown_and_do_not_enter_accuracy_denominator",
+    "current_score_has_a_separate_readonly_workflow_and_exact_source_details",
+    "mobile_and_tablet_have_no_document_horizontal_overflow",
+    "original_studio_shell_has_no_embedded_validation_page_or_navigation",
+    "original_studio_navigation_preserves_existing_research_history",
+    "browser_has_no_javascript_errors_or_external_requests"
+  ],
+  "page_errors": [],
+  "external_requests": []
+}
