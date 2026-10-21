@@ -12,13 +12,19 @@
 ![UI](https://img.shields.io/badge/UI-Streamlit_%2B_JavaScript-83E9C0?style=flat-square)
 ![Status](https://img.shields.io/badge/v2.0-development_build-D6C59C?style=flat-square)
 
-[快速体验](#快速体验) · [功能一览](#功能一览) · [研究流程](#研究流程) · [架构](#架构) · [测试](#测试与验证) · [今日报告](docs/DAILY_2026-10-20.md)
+[快速体验](#快速体验) · [功能一览](#功能一览) · [研究流程](#研究流程) · [架构](#架构) · [测试](#测试与验证) · [今日报告](docs/DAILY_2026-10-22.md)
 
 </div>
 
-![ResearchPilot 深色电脑工作台：研究入口、历史与继续研究](docs/assets/studio-home.png)
+![ResearchPilot 玻璃材质电脑工作台：研究入口、历史与继续研究](docs/assets/studio-glass-home.png)
 
 > 所有展示截图均来自隔离的虚构演示数据。当前为 v2.0 开发版本；微信原生源码已提供，仍待开发者工具编译、真机验收与 HTTPS 部署。
+
+## 玻璃材质工作台
+
+沿用原深色 Studio 布局，增加磨砂导航、半透明工具条、圆润控件、细高光与指针反光。报告正文保持清晰实底；右上角水滴按钮可切换实色外观，系统减少透明度或提高对比度时自动降级。
+
+参考 Apple Liquid Glass 原则，以本地 CSS/JavaScript 实现网页材质，不新增外部运行依赖。此次更新应用于电脑 Studio 及其窄屏布局。[设计参考、截图与验收](docs/GLASS_UI_2026-10-22.md)。
 
 ## 随时查看研究
 
@@ -62,7 +68,7 @@
 
 ### 版本化报告与引用
 
-![研究报告与来源查看](docs/assets/studio-report.png)
+![玻璃工具层与清晰的研究报告](docs/assets/studio-glass-report.png)
 
 ### 财务分析与数据来源
 
@@ -221,11 +227,12 @@ ResearchPilot/
 
 ## 测试与验证
 
-最近本地验收：**2026-10-20**。
+最近本地验收：**2026-10-22**。
 
 | 检查 | 结果 | 证据 |
 | --- | --- | --- |
-| 完整离线回归，含移动 API | 39/39 套件，365 项单元测试 | [回归结果](artifacts/desktop-restore-regression-2026-10-20.json) |
+| 完整离线回归，含移动 API | 39/39 套件，365 项单元测试 | [回归结果](artifacts/glass-regression-2026-10-22.json) |
+| 新玻璃材质 / 原 Studio 交互 | 17 / 21 项浏览器检查通过 | [玻璃专项](artifacts/glass-ui-2026-10-22/acceptance/checks.json) · [Studio](artifacts/glass-ui-2026-10-22/studio-regression/browser-checks.json) |
 | 前向账本 / 独立研究验证 / 原 Studio | 11 / 10 / 21 项浏览器检查通过 | [账本](artifacts/forward-ledger-browser/checks.json) · [独立验证](artifacts/desktop-restore-signal-browser/checks.json) · [Studio](artifacts/desktop-restore-studio-browser/browser-checks.json) |
 | 原生页面控制器 | 15 项通过，使用 wx 替身 | [检查记录](artifacts/miniprogram-client-checks.json) |
 | 手机网页已有流程 | 11 项通过 | [流程记录](artifacts/mobile-ui-2026-10-20/workflows/checks.json) |
@@ -251,7 +258,7 @@ python -m scripts.check_forward_browser --url http://127.0.0.1:8550
 - 前向样本需要真实财务版本和后续到期结果；当前不提供真实模型优越性或投资收益成绩。
 - 通用语义验证、真实服务商质量、大规模生产评测仍需推进。
 
-[今日报告](docs/DAILY_2026-10-20.md) · [历史更新](docs/PROJECT_HISTORY.md) · [v2.0 能力与限制](docs/V2_CORE_DELIVERY.md)
+[今日报告](docs/DAILY_2026-10-22.md) · [历史更新](docs/PROJECT_HISTORY.md) · [v2.0 能力与限制](docs/V2_CORE_DELIVERY.md)
 
 ---
 

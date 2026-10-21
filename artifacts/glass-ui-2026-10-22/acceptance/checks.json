@@ -1,0 +1,48 @@
+{
+  "mode": "isolated_fictional_glass_acceptance",
+  "checks": [
+    "original_studio_navigation_and_layout_remain_the_primary_interface",
+    "navigation_uses_real_translucency_backdrop_blur_radii_and_specular_shadows",
+    "pointer_reflection_tracks_only_interactive_controls_and_cleans_up_on_leave",
+    "keyboard_material_toggle_removes_blur_without_changing_the_research_draft",
+    "material_preference_and_draft_survive_refresh_independently",
+    "long_report_uses_opaque_unblurred_paper_with_body_text_contrast_at_least_4_5",
+    "glass_material_does_not_change_version_scoped_report_evidence",
+    "search_dialog_has_glass_material_and_preserves_escape_and_focus_behaviour",
+    "glass_workspace_has_no_document_horizontal_overflow_at_three_widths",
+    "reduced_motion_disables_reflection_tracking_and_existing_motion",
+    "system_reduced_transparency_forces_readable_solid_material_live",
+    "system_increased_contrast_forces_readable_solid_material_live",
+    "system_forced_colors_forces_readable_solid_material_live",
+    "blocked_local_storage_keeps_a_working_in_memory_material_toggle",
+    "simulated_unsupported_backdrop_filter_uses_solid_fallback",
+    "touch_material_control_has_44px_target_and_mobile_navigation_remains_usable",
+    "no_javascript_errors_or_external_browser_requests"
+  ],
+  "report_text_contrast": 11.49,
+  "surfaces": [
+    {
+      "selector": ".rail",
+      "blur": "blur(24px) saturate(1.45)",
+      "background": "rgba(25, 39, 60, 0.68)",
+      "radius": "23px 0px 0px 23px",
+      "shadow": "rgba(2, 8, 20, 0.24) 0px 14px 40px 0px, rgba(246, 253, 255, 0.1) 0px 1px 0px 0px inset"
+    },
+    {
+      "selector": ".library",
+      "blur": "blur(24px) saturate(1.45)",
+      "background": "rgba(25, 39, 60, 0.68)",
+      "radius": "0px 23px 23px 0px",
+      "shadow": "rgba(2, 8, 20, 0.24) 0px 14px 40px 0px, rgba(246, 253, 255, 0.1) 0px 1px 0px 0px inset"
+    },
+    {
+      "selector": ".topbar",
+      "blur": "blur(24px) saturate(1.45)",
+      "background": "rgba(25, 39, 60, 0.68)",
+      "radius": "20px",
+      "shadow": "rgba(2, 8, 20, 0.24) 0px 14px 40px 0px, rgba(246, 253, 255, 0.1) 0px 1px 0px 0px inset"
+    }
+  ],
+  "page_errors": [],
+  "external_requests": []
+}
